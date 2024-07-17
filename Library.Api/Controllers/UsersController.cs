@@ -1,5 +1,7 @@
+using Library.Domain.DTOs;
 using Library.Domain.Models;
-using Library.Interfaces;
+using Library.Interfaces.Repositories;
+using Library.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Library.Api.Controllers
@@ -9,10 +11,12 @@ namespace Library.Api.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUserRepository _userRepository;
+        private readonly IUserService _userService;
 
-        public UsersController(IUserRepository userRepository)
+        public UsersController(IUserRepository userRepository, IUserService userService)
         {
             _userRepository = userRepository;
+            _userService = userService;
         }
 
         // GET: api/Users
@@ -52,10 +56,9 @@ namespace Library.Api.Controllers
 
         // POST: api/Users
         [HttpPost]
-        public async Task<ActionResult<User>> PostUser(User user)
+        public async Task<ActionResult<User>> PostUser(UserDto user)
         {
-            await _userRepository.AddUserAsync(user);
-
+            await _userService.AddUserAsync(user);
             return CreatedAtAction("GetUser", new { id = user.UserId }, user);
         }
 

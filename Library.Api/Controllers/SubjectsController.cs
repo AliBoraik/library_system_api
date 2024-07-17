@@ -2,6 +2,8 @@ using AutoMapper;
 using Library.Domain.DTOs;
 using Library.Domain.Models;
 using Library.Interfaces;
+using Library.Interfaces.Repositories;
+using Library.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Library.Api.Controllers
@@ -10,12 +12,12 @@ namespace Library.Api.Controllers
     [ApiController]
     public class SubjectsController : ControllerBase
     {
-        private readonly ISubjectRepository _subjectRepository;
+        private readonly ISubjectService _subjectService;
         private readonly IMapper _mapper;
 
-        public SubjectsController(ISubjectRepository subjectService, IMapper mapper)
+        public SubjectsController(ISubjectService subjectService, IMapper mapper)
         {
-            _subjectRepository = subjectService;
+            _subjectService = subjectService;
             _mapper = mapper;
         }
 
@@ -24,15 +26,14 @@ namespace Library.Api.Controllers
       
         public async Task<IEnumerable<SubjectInfoDto>> GetSubjects()
         {
-            var subjects = await _subjectRepository.GetAllSubjectsAsync();
-            return _mapper.Map<IEnumerable<SubjectInfoDto>>(subjects);
+           return await _subjectService.GetAllSubjectsAsync();
         }
 
         // GET: api/Subjects/5
         [HttpGet("{id}")]
         public async Task<ActionResult<SubjectDto>> GetSubject(int id)
         {
-            var subject = await _subjectRepository.GetSubjectByIdAsync(id);
+            var subject = await _subjectService.GetSubjectByIdAsync(id);
 
             if (subject == null)
             {
@@ -49,27 +50,24 @@ namespace Library.Api.Controllers
             {
                 return BadRequest();
             }
-            var subject =  _mapper.Map<Subject>(subjectDto);
-            await _subjectRepository.UpdateSubjectAsync(subject);
+            await _subjectService.UpdateSubjectAsync(subjectDto);
 
             return NoContent();
         }
 
         // POST: api/Subjects
         [HttpPost]
-        public async Task<ActionResult<SubjectDto>> PostSubject(SubjectDto subjectDto)
+        public async Task<ActionResult<SubjectInfoDto>> PostSubject(SubjectDto subjectDto)
         {
-            var subject = _mapper.Map<Subject>(subjectDto);
-            await _subjectRepository.AddSubjectAsync(subject);
-            var createdSubjectDto = _mapper.Map<SubjectDto>(subject);
-            return CreatedAtAction("GetSubject", new { id = createdSubjectDto.SubjectId }, createdSubjectDto);
+            await _subjectService.AddSubjectAsync(subjectDto);
+            return Ok();
         }
 
         // DELETE: api/Subjects/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteSubject(int id)
         {
-            await _subjectRepository.DeleteSubjectAsync(id);
+            await _subjectService.DeleteSubjectAsync(id);
 
             return NoContent();
         }

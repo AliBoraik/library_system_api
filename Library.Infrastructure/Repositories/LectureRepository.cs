@@ -1,6 +1,6 @@
 using Library.Domain.Models;
 using Library.Infrastructure.DataContext;
-using Library.Interfaces;
+using Library.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace Library.Infrastructure.Repositories
@@ -17,13 +17,14 @@ namespace Library.Infrastructure.Repositories
         public async Task<IEnumerable<Lecture>> GetAllLecturesAsync()
         {
             return await _context.Lectures
-                .Include(l => l.Subject)
+                .AsNoTracking()
                 .ToListAsync();
         }
 
         public async Task<Lecture?> GetLectureByIdAsync(int id)
         {
             return await _context.Lectures
+                .AsNoTracking()
                 .Include(l => l.Subject)
                 .FirstOrDefaultAsync(l => l.LectureId == id);
         }

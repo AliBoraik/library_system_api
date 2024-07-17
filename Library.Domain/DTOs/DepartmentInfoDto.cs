@@ -1,6 +1,6 @@
 namespace Library.Domain.DTOs;
 
-public class AllDepartmentDto
+public class DepartmentInfoDto
 {
     public int DepartmentId { get; set; }
     public string Name { get; set; }

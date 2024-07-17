@@ -1,6 +1,7 @@
 using Library.Domain.Models;
 using Library.Infrastructure.DataContext;
 using Library.Interfaces;
+using Library.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace Library.Infrastructure.Repositories

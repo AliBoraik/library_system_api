@@ -1,7 +1,6 @@
 using AutoMapper;
 using Library.Domain.DTOs;
-using Library.Domain.Models;
-using Library.Interfaces;
+using Library.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Library.Api.Controllers
@@ -10,32 +9,31 @@ namespace Library.Api.Controllers
     [ApiController]
     public class DepartmentsController : ControllerBase
     {
-        private readonly IDepartmentRepository _departmentRepository;
+        private readonly IDepartmentService _departmentService;
         private readonly IMapper _mapper;
 
-        public DepartmentsController(IDepartmentRepository departmentService, IMapper mapper)
+        public DepartmentsController(IDepartmentService departmentService, IMapper mapper)
         {
-            _departmentRepository = departmentService;
+            _departmentService = departmentService;
             _mapper = mapper;
         }
 
         // GET: api/Departments
         [HttpGet]
-        public async Task<IEnumerable<AllDepartmentDto>> GetDepartments()
+        public async Task<IEnumerable<DepartmentInfoDto>> GetDepartments()
         {
-            var subjects = await _departmentRepository.GetAllDepartmentsAsync();
-            return _mapper.Map<IEnumerable<AllDepartmentDto>>(subjects);
+            return await _departmentService.GetAllDepartmentsAsync();
         }
         // GET: api/Departments/5
         [HttpGet("{id}")]
         public async Task<ActionResult<DepartmentDto>> GetDepartment(int id)
         {
-            var department = await _departmentRepository.GetDepartmentByIdAsync(id);
-            if (department == null)
+            var departmentDto = await _departmentService.GetDepartmentByIdAsync(id);
+            if (departmentDto == null)
             {
                 return NotFound();
             }
-            return _mapper.Map<DepartmentDto>(department);
+            return _mapper.Map<DepartmentDto>(departmentDto);
         }
 
         // PUT: api/Departments/5
@@ -46,8 +44,7 @@ namespace Library.Api.Controllers
             {
                 return BadRequest();
             }
-            var department = _mapper.Map<Department>(departmentDto);
-            await _departmentRepository.UpdateDepartmentAsync(department);
+            await _departmentService.UpdateDepartmentAsync(departmentDto);
             return NoContent();
         }
 
@@ -55,17 +52,15 @@ namespace Library.Api.Controllers
         [HttpPost]
         public async Task<ActionResult<DepartmentDto>> PostDepartment(DepartmentDto departmentDto)
         {
-            var department = _mapper.Map<Department>(departmentDto);
-            await _departmentRepository.AddDepartmentAsync(department);
-            return CreatedAtAction("GetDepartment", new { id = department.DepartmentId }, department);
+            await _departmentService.AddDepartmentAsync(departmentDto);
+            return CreatedAtAction("GetDepartment", new { id = departmentDto.DepartmentId }, departmentDto);
         }
 
         // DELETE: api/Departments/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteDepartment(int id)
         {
-            await _departmentRepository.DeleteDepartmentAsync(id);
-
+            await _departmentService.DeleteDepartmentAsync(id);
             return NoContent();
         }
     }

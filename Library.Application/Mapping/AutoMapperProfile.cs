@@ -2,7 +2,7 @@ using AutoMapper;
 using Library.Domain.DTOs;
 using Library.Domain.Models;
 
-namespace Library.Api.Mapping;
+namespace Library.Application.Mapping;
 
 public class AutoMapperProfile : Profile
 {
@@ -10,9 +10,10 @@ public class AutoMapperProfile : Profile
     {
         CreateMap<User, UserDto>().ReverseMap();
         CreateMap<Department, DepartmentDto>().ReverseMap();
-        CreateMap<Department, AllDepartmentDto>().ReverseMap();
+        CreateMap<Department, DepartmentInfoDto>().ReverseMap();
         CreateMap<Subject, SubjectDto>().ReverseMap();
         CreateMap<Subject, SubjectInfoDto>();
+        CreateMap<SubjectInfoDto, Subject>();
         CreateMap<Lecture, LectureDto>().ReverseMap();
         CreateMap<Book, BookDto>().ReverseMap();
     }

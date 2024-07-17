@@ -1,6 +1,6 @@
 using Library.Domain.Models;
 using Library.Infrastructure.DataContext;
-using Library.Interfaces;
+using Library.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace Library.Infrastructure.Repositories
@@ -18,16 +18,17 @@ namespace Library.Infrastructure.Repositories
         {
             return await _context.Subjects
                 .AsNoTracking()
-                .Include(s => s.Department)
                 .ToListAsync();
         }
         public async Task<Subject?> GetSubjectByIdAsync(int id)
         {
             return await _context.Subjects
                 .AsNoTracking()
+                .Include(s => s.Lectures)
+                .Include(s => s.Books)
                 .FirstOrDefaultAsync(s => s.SubjectId == id);
         }
-        public async Task AddSubjectAsync(Subject? subject)
+        public async Task AddSubjectAsync(Subject subject)
         {
             await _context.Subjects.AddAsync(subject);
             await _context.SaveChangesAsync();
@@ -42,6 +43,10 @@ namespace Library.Infrastructure.Repositories
         public async Task DeleteSubjectAsync(int id)
         {
             var subject = await _context.Subjects.FindAsync(id);
+            if (subject == null)
+            {
+                throw new ArgumentException();
+            }
             _context.Subjects.Remove(subject);
             await _context.SaveChangesAsync();
         }

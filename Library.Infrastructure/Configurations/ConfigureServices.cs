@@ -1,6 +1,7 @@
 using Library.Infrastructure.DataContext;
 using Library.Infrastructure.Repositories;
 using Library.Interfaces;
+using Library.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

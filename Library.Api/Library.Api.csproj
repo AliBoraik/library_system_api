@@ -26,7 +26,12 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Library.Application\Library.Application.csproj" />
       <ProjectReference Include="..\Library.Infrastructure\Library.Infrastructure.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Uploads\" />
     </ItemGroup>
 
 </Project>
