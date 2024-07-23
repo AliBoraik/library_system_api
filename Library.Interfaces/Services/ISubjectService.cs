@@ -1,13 +1,12 @@
-using Library.Domain.DTOs;
+using Library.Domain.DTOs.Subject;
 
-namespace Library.Interfaces.Services
+namespace Library.Interfaces.Services;
+
+public interface ISubjectService
 {
-    public interface ISubjectService
-    {
-        Task<IEnumerable<SubjectInfoDto>> GetAllSubjectsAsync();
-        Task<SubjectDto?> GetSubjectByIdAsync(Guid id);
-        Task AddSubjectAsync(SubjectDto subjectDto);
-        Task UpdateSubjectAsync(SubjectDto subjectDto);
-        Task DeleteSubjectAsync(Guid id);
-    }
+    Task<IEnumerable<SubjectDto>> GetAllSubjectsAsync();
+    Task<SubjectDetailsDto> GetSubjectByIdAsync(Guid id);
+    Task<Guid> AddSubjectAsync(CreateSubjectDto subjectDto);
+    Task UpdateSubjectAsync(SubjectDto subjectDto);
+    Task DeleteSubjectAsync(Guid id);
 }

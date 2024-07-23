@@ -24,6 +24,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
 // Global error handler
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 

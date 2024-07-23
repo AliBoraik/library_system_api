@@ -1,13 +1,12 @@
 using Library.Domain.Models;
 
-namespace Library.Interfaces.Repositories
+namespace Library.Interfaces.Repositories;
+
+public interface IUserRepository
 {
-    public interface IUserRepository
-    {
-        Task<IEnumerable<User?>> GetAllUsersAsync();
-        Task<User?> GetUserByIdAsync(int id);
-        Task AddUserAsync(User? user);
-        Task UpdateUserAsync(User user);
-        Task DeleteUserAsync(int id);
-    }
+    Task<IEnumerable<User?>> GetAllUsersAsync();
+    Task<User?> GetUserByIdAsync(int id);
+    Task AddUserAsync(User? user);
+    Task UpdateUserAsync(User user);
+    Task DeleteUserAsync(int id);
 }

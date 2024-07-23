@@ -30,13 +30,11 @@ public class LecturesController : ControllerBase
     {
         var lecture = await _lectureService.GetLectureByIdAsync(id);
 
-        if (lecture == null)
-        {
-            return NotFound();
-        }
+        if (lecture == null) return NotFound();
 
         return Ok(lecture);
     }
+
     // POST: api/Lectures
     [HttpPost]
     public async Task<ActionResult<LectureDto>> PostLecture([FromForm] LectureDto lectureDto, [Required] IFormFile file)
@@ -47,12 +45,9 @@ public class LecturesController : ControllerBase
 
     // PUT: api/Lectures/5
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutLecture(int id, [FromForm] LectureDto lectureDto,IFormFile? file)
+    public async Task<IActionResult> PutLecture(int id, [FromForm] LectureDto lectureDto, IFormFile? file)
     {
-        if (id != lectureDto.LectureId)
-        {
-            return BadRequest();
-        }
+        if (id != lectureDto.LectureId) return BadRequest();
 
         await _lectureService.UpdateLectureAsync(lectureDto, file);
 
@@ -72,13 +67,10 @@ public class LecturesController : ControllerBase
     public async Task<IActionResult> DownloadLecture(int id)
     {
         var lecture = await _lectureService.GetLectureByIdAsync(id);
-        if (lecture == null)
-        {
-            return NotFound();
-        }
+        if (lecture == null) return NotFound();
 
         var path = lecture.FilePath;
         var fileBytes = await System.IO.File.ReadAllBytesAsync(path);
-        return File(fileBytes, "application/octet-stream", Path.GetFileName(path));  
+        return File(fileBytes, "application/octet-stream", Path.GetFileName(path));
     }
 }

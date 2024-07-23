@@ -17,22 +17,24 @@ public class DepartmentService : IDepartmentService
         _mapper = mapper;
     }
 
-    public async Task<IEnumerable<DepartmentInfoDto>> GetAllDepartmentsAsync()
+    public async Task<IEnumerable<DepartmentDto>> GetAllDepartmentsAsync()
     {
         var subjects = await _departmentRepository.GetAllDepartmentsInfoAsync();
-        return _mapper.Map<IEnumerable<DepartmentInfoDto>>(subjects);
+        return _mapper.Map<IEnumerable<DepartmentDto>>(subjects);
     }
 
-    public async Task<DepartmentDto?> GetDepartmentByIdAsync(Guid id)
+    public async Task<DepartmentDetailsDto> GetDepartmentByIdAsync(Guid id)
     {
         var department = await _departmentRepository.GetDepartmentByIdAsync(id);
-        return _mapper.Map<DepartmentDto>(department);
+        if (department == null) throw new KeyNotFoundException($"Not found department with id = {id}");
+        return _mapper.Map<DepartmentDetailsDto>(department);
     }
 
-    public async Task AddDepartmentAsync(DepartmentDto departmentDto)
+    public async Task<Guid> AddDepartmentAsync(CreateDepartmentDto createDepartmentDto)
     {
-        var department = _mapper.Map<Department>(departmentDto);
+        var department = _mapper.Map<Department>(createDepartmentDto);
         await _departmentRepository.AddDepartmentAsync(department);
+        return department.DepartmentId;
     }
 
     public async Task UpdateDepartmentAsync(DepartmentDto departmentDto)

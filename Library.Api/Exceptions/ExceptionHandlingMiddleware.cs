@@ -1,10 +1,11 @@
 using System.Net;
+
 namespace Library.Api.Exceptions;
 
 public class ExceptionHandlingMiddleware
 {
-    private readonly RequestDelegate _next;
     private readonly ILogger<ExceptionHandlingMiddleware> _logger;
+    private readonly RequestDelegate _next;
 
     public ExceptionHandlingMiddleware(RequestDelegate next, ILogger<ExceptionHandlingMiddleware> logger)
     {
@@ -28,19 +29,16 @@ public class ExceptionHandlingMiddleware
     {
         var response = exception switch
         {
-            ApplicationException _ => new ExceptionResponse(HttpStatusCode.BadRequest, "Application exception occurred."),
-            KeyNotFoundException _ => new ExceptionResponse(HttpStatusCode.NotFound, exception.Message),
-            UnauthorizedAccessException _ => new ExceptionResponse(HttpStatusCode.Unauthorized, "Unauthorized."),
+            ApplicationException => new ExceptionResponse(HttpStatusCode.BadRequest, "Application exception occurred."),
+            KeyNotFoundException => new ExceptionResponse(HttpStatusCode.NotFound, exception.Message),
+            UnauthorizedAccessException => new ExceptionResponse(HttpStatusCode.Unauthorized, "Unauthorized."),
             _ => new ExceptionResponse(HttpStatusCode.InternalServerError, "Internal server error. Please retry later.")
         };
-        if (response.StatusCode >= HttpStatusCode.InternalServerError)
-        {
+        if (response.StatusCode == HttpStatusCode.InternalServerError)
             _logger.LogError(exception, "error during executing {Context}", context.Request.Path.Value);
-        }
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = (int)response.StatusCode;
-        
+
         await context.Response.WriteAsJsonAsync(response);
     }
-    
 }

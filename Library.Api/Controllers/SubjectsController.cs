@@ -1,75 +1,59 @@
-using AutoMapper;
-using Library.Domain.DTOs;
-using Library.Domain.Models;
-using Library.Interfaces;
-using Library.Interfaces.Repositories;
+using Library.Domain.DTOs.Subject;
 using Library.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Library.Api.Controllers
+namespace Library.Api.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public class SubjectsController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class SubjectsController : ControllerBase
+    private readonly ISubjectService _subjectService;
+
+    public SubjectsController(ISubjectService subjectService)
     {
-        private readonly ISubjectService _subjectService;
-        private readonly IMapper _mapper;
+        _subjectService = subjectService;
+    }
 
-        public SubjectsController(ISubjectService subjectService, IMapper mapper)
-        {
-            _subjectService = subjectService;
-            _mapper = mapper;
-        }
+    // GET: api/Subjects
+    [HttpGet]
+    public async Task<IEnumerable<SubjectDto>> GetSubjects()
+    {
+        return await _subjectService.GetAllSubjectsAsync();
+    }
 
-        // GET: api/Subjects
-        [HttpGet]
-      
-        public async Task<IEnumerable<SubjectInfoDto>> GetSubjects()
-        {
-           return await _subjectService.GetAllSubjectsAsync();
-        }
+    // GET: api/Subjects/5
+    [HttpGet("{id:guid}")]
+    public async Task<ActionResult<SubjectDetailsDto>> GetSubject(Guid id)
+    {
+        return await _subjectService.GetSubjectByIdAsync(id);
+    }
 
-        // GET: api/Subjects/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<SubjectDto>> GetSubject(Guid id)
-        {
-            var subject = await _subjectService.GetSubjectByIdAsync(id);
+    // POST: api/Subjects
+    [HttpPost]
+    public async Task<ActionResult> PostSubject([FromBody] CreateSubjectDto createSubjectDto)
+    {
+        if (!ModelState.IsValid) return BadRequest(ModelState);
+        var id = await _subjectService.AddSubjectAsync(createSubjectDto);
+        return CreatedAtAction("GetSubject", new { id }, new { id });
+    }
 
-            if (subject == null)
-            {
-                return NotFound();
-            }
-            return _mapper.Map<SubjectDto>(subject);
-        }
+    // PUT: api/Subjects/5
+    [HttpPut]
+    public async Task<IActionResult> PutSubject(SubjectDto subjectDto)
+    {
+        if (!ModelState.IsValid) return BadRequest(ModelState);
+        await _subjectService.UpdateSubjectAsync(subjectDto);
 
-        // PUT: api/Subjects/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutSubject(Guid id, SubjectDto subjectDto)
-        {
-            if (id != subjectDto.SubjectId)
-            {
-                return BadRequest();
-            }
-            await _subjectService.UpdateSubjectAsync(subjectDto);
+        return NoContent();
+    }
 
-            return NoContent();
-        }
+    // DELETE: api/Subjects/5
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteSubject(Guid id)
+    {
+        await _subjectService.DeleteSubjectAsync(id);
 
-        // POST: api/Subjects
-        [HttpPost]
-        public async Task<ActionResult<SubjectInfoDto>> PostSubject(SubjectDto subjectDto)
-        {
-            await _subjectService.AddSubjectAsync(subjectDto);
-            return Ok();
-        }
-
-        // DELETE: api/Subjects/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteSubject(Guid id)
-        {
-            await _subjectService.DeleteSubjectAsync(id);
-
-            return NoContent();
-        }
+        return NoContent();
     }
 }

@@ -8,8 +8,8 @@ namespace Library.Application;
 
 public class UserService : IUserService
 {
-    private readonly IUserRepository _userRepository;
     private readonly IMapper _mapper;
+    private readonly IUserRepository _userRepository;
 
     public UserService(IUserRepository userRepository, IMapper mapper)
     {

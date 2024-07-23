@@ -1,13 +1,12 @@
 using Library.Domain.Models;
 
-namespace Library.Interfaces.Repositories
+namespace Library.Interfaces.Repositories;
+
+public interface IDepartmentRepository
 {
-    public interface IDepartmentRepository
-    {
-        Task<IEnumerable<Department>> GetAllDepartmentsInfoAsync();
-        Task<Department?> GetDepartmentByIdAsync(Guid id);
-        Task AddDepartmentAsync(Department department);
-        Task UpdateDepartmentAsync(Department department);
-        Task DeleteDepartmentAsync(Guid id);
-    }
+    Task<IEnumerable<Department>> GetAllDepartmentsInfoAsync();
+    Task<Department?> GetDepartmentByIdAsync(Guid id);
+    Task AddDepartmentAsync(Department department);
+    Task UpdateDepartmentAsync(Department department);
+    Task DeleteDepartmentAsync(Guid id);
 }
