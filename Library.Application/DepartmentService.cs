@@ -1,5 +1,5 @@
 using AutoMapper;
-using Library.Domain.DTOs;
+using Library.Domain.DTOs.Department;
 using Library.Domain.Models;
 using Library.Interfaces.Repositories;
 using Library.Interfaces.Services;
@@ -19,11 +19,11 @@ public class DepartmentService : IDepartmentService
 
     public async Task<IEnumerable<DepartmentInfoDto>> GetAllDepartmentsAsync()
     {
-        var subjects = await _departmentRepository.GetAllDepartmentsAsync();
+        var subjects = await _departmentRepository.GetAllDepartmentsInfoAsync();
         return _mapper.Map<IEnumerable<DepartmentInfoDto>>(subjects);
     }
 
-    public async Task<DepartmentDto?> GetDepartmentByIdAsync(int id)
+    public async Task<DepartmentDto?> GetDepartmentByIdAsync(Guid id)
     {
         var department = await _departmentRepository.GetDepartmentByIdAsync(id);
         return _mapper.Map<DepartmentDto>(department);
@@ -41,7 +41,7 @@ public class DepartmentService : IDepartmentService
         await _departmentRepository.UpdateDepartmentAsync(department);
     }
 
-    public async Task DeleteDepartmentAsync(int id)
+    public async Task DeleteDepartmentAsync(Guid id)
     {
         await _departmentRepository.DeleteDepartmentAsync(id);
     }

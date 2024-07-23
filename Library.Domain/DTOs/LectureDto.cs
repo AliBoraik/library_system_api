@@ -10,7 +10,7 @@ public class LectureDto
     [Required]
     public string Description { get; set; }
     [Required]
-    public int SubjectId { get; set; }
+    public string SubjectId { get; set; }
     [Required]
     public int UploadedBy { get; set; }
     public string FilePath { get; set; }

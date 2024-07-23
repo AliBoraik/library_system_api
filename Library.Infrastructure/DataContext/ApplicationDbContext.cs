@@ -18,6 +18,7 @@ namespace Library.Infrastructure.DataContext
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.Username)
                 .IsUnique();
@@ -50,6 +51,52 @@ namespace Library.Infrastructure.DataContext
                 .HasOne(b => b.User)
                 .WithMany(u => u.Books)
                 .HasForeignKey(b => b.UploadedBy);
+            
+            // Seed initial data
+            var department1 = new Department
+            {
+                DepartmentId = Guid.NewGuid(),
+                Name = "Computer Science",
+                Description = "Department of Computer Science"
+            };
+
+            var department2 = new Department
+            {
+                DepartmentId = Guid.NewGuid(),
+                Name = "Mathematics",
+                Description = "Department of Mathematics"
+            };
+            modelBuilder.Entity<Department>().HasData(department1, department2);
+            modelBuilder.Entity<Subject>().HasData(
+                new Subject
+                {
+                    SubjectId = Guid.NewGuid(),
+                    DepartmentId = department1.DepartmentId,
+                    Name = "Algorithms",
+                    Description = "Study of algorithms"
+                },
+                new Subject
+                {
+                    SubjectId = Guid.NewGuid(),
+                    DepartmentId = department1.DepartmentId,
+                    Name = "Data Structures",
+                    Description = "Study of data structures"
+                },
+                new Subject
+                {
+                    SubjectId = Guid.NewGuid(),
+                    DepartmentId = department2.DepartmentId,
+                    Name = "Calculus",
+                    Description = "Study of calculus"
+                },
+                new Subject
+                {
+                    SubjectId = Guid.NewGuid(),
+                    DepartmentId = department2.DepartmentId,
+                    Name = "Linear Algebra",
+                    Description = "Study of linear algebra"
+                }
+            );
         }
     }
 }

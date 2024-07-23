@@ -4,10 +4,10 @@ namespace Library.Interfaces.Repositories
 {
     public interface IDepartmentRepository
     {
-        Task<IEnumerable<Department>> GetAllDepartmentsAsync();
-        Task<Department?> GetDepartmentByIdAsync(int id);
+        Task<IEnumerable<Department>> GetAllDepartmentsInfoAsync();
+        Task<Department?> GetDepartmentByIdAsync(Guid id);
         Task AddDepartmentAsync(Department department);
         Task UpdateDepartmentAsync(Department department);
-        Task DeleteDepartmentAsync(int id);
+        Task DeleteDepartmentAsync(Guid id);
     }
 }

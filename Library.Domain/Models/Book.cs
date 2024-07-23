@@ -9,8 +9,8 @@ namespace Library.Domain.Models
         public string FilePath { get; set; }
         public int UploadedBy { get; set; }
         public DateTime UploadedAt { get; set; } = DateTime.UtcNow;
-        public int SubjectId { get; set; }
-
+        public Guid SubjectId { get; set; }
+        
         public Subject Subject { get; set; }
         public User User { get; set; }
     }

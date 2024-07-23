@@ -4,6 +4,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace Library.Infrastructure.Migrations
 {
     /// <inheritdoc />
@@ -13,11 +15,10 @@ namespace Library.Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Departments",
+                name: "Department",
                 columns: table => new
                 {
-                    DepartmentId = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    DepartmentId = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false)
                 },
@@ -49,9 +50,8 @@ namespace Library.Infrastructure.Migrations
                 name: "Subjects",
                 columns: table => new
                 {
-                    SubjectId = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    DepartmentId = table.Column<int>(type: "integer", nullable: false),
+                    SubjectId = table.Column<Guid>(type: "uuid", nullable: false),
+                    DepartmentId = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false)
                 },
@@ -61,7 +61,7 @@ namespace Library.Infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_Subjects_Departments_DepartmentId",
                         column: x => x.DepartmentId,
-                        principalTable: "Departments",
+                        principalTable: "Department",
                         principalColumn: "DepartmentId",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -77,7 +77,7 @@ namespace Library.Infrastructure.Migrations
                     FilePath = table.Column<string>(type: "text", nullable: false),
                     UploadedBy = table.Column<int>(type: "integer", nullable: false),
                     UploadedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    SubjectId = table.Column<int>(type: "integer", nullable: false)
+                    SubjectId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -102,7 +102,7 @@ namespace Library.Infrastructure.Migrations
                 {
                     LectureId = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    SubjectId = table.Column<int>(type: "integer", nullable: false),
+                    SubjectId = table.Column<Guid>(type: "uuid", nullable: false),
                     Title = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
                     FilePath = table.Column<string>(type: "text", nullable: false),
@@ -124,6 +124,26 @@ namespace Library.Infrastructure.Migrations
                         principalTable: "Users",
                         principalColumn: "UserId",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "Department",
+                columns: new[] { "DepartmentId", "Description", "Name" },
+                values: new object[,]
+                {
+                    { new Guid("53adc674-e6c3-409c-aeab-94b0e94cc523"), "Department of Computer Science", "Computer Science" },
+                    { new Guid("d4e36e02-03bf-42dc-b7cc-de6e6541c5b2"), "Department of Mathematics", "Mathematics" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Subjects",
+                columns: new[] { "SubjectId", "DepartmentId", "Description", "Name" },
+                values: new object[,]
+                {
+                    { new Guid("2dd9d9c2-f09e-4c0f-8255-b0581b1ff9ec"), new Guid("d4e36e02-03bf-42dc-b7cc-de6e6541c5b2"), "Study of calculus", "Calculus" },
+                    { new Guid("740456f9-f63b-4543-916a-7c5fcb9bc8c2"), new Guid("53adc674-e6c3-409c-aeab-94b0e94cc523"), "Study of data structures", "Data Structures" },
+                    { new Guid("99a8d8db-cec3-4c6c-b22b-bd5208428ca7"), new Guid("d4e36e02-03bf-42dc-b7cc-de6e6541c5b2"), "Study of linear algebra", "Linear Algebra" },
+                    { new Guid("b286b7d8-575e-4a9e-8564-1f0b03cc22c5"), new Guid("53adc674-e6c3-409c-aeab-94b0e94cc523"), "Study of algorithms", "Algorithms" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -180,7 +200,7 @@ namespace Library.Infrastructure.Migrations
                 name: "Users");
 
             migrationBuilder.DropTable(
-                name: "Departments");
+                name: "Department");
         }
     }
 }

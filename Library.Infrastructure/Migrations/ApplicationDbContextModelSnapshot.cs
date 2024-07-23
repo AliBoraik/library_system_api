@@ -38,8 +38,8 @@ namespace Library.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("SubjectId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("SubjectId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -62,11 +62,9 @@ namespace Library.Infrastructure.Migrations
 
             modelBuilder.Entity("Library.Domain.Models.Department", b =>
                 {
-                    b.Property<int>("DepartmentId")
+                    b.Property<Guid>("DepartmentId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("DepartmentId"));
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -78,7 +76,21 @@ namespace Library.Infrastructure.Migrations
 
                     b.HasKey("DepartmentId");
 
-                    b.ToTable("Departments");
+                    b.ToTable("Department");
+
+                    b.HasData(
+                        new
+                        {
+                            DepartmentId = new Guid("53adc674-e6c3-409c-aeab-94b0e94cc523"),
+                            Description = "Department of Computer Science",
+                            Name = "Computer Science"
+                        },
+                        new
+                        {
+                            DepartmentId = new Guid("d4e36e02-03bf-42dc-b7cc-de6e6541c5b2"),
+                            Description = "Department of Mathematics",
+                            Name = "Mathematics"
+                        });
                 });
 
             modelBuilder.Entity("Library.Domain.Models.Lecture", b =>
@@ -97,8 +109,8 @@ namespace Library.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("SubjectId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("SubjectId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -121,14 +133,12 @@ namespace Library.Infrastructure.Migrations
 
             modelBuilder.Entity("Library.Domain.Models.Subject", b =>
                 {
-                    b.Property<int>("SubjectId")
+                    b.Property<Guid>("SubjectId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("uuid");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("SubjectId"));
-
-                    b.Property<int>("DepartmentId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("DepartmentId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -143,6 +153,36 @@ namespace Library.Infrastructure.Migrations
                     b.HasIndex("DepartmentId");
 
                     b.ToTable("Subjects");
+
+                    b.HasData(
+                        new
+                        {
+                            SubjectId = new Guid("b286b7d8-575e-4a9e-8564-1f0b03cc22c5"),
+                            DepartmentId = new Guid("53adc674-e6c3-409c-aeab-94b0e94cc523"),
+                            Description = "Study of algorithms",
+                            Name = "Algorithms"
+                        },
+                        new
+                        {
+                            SubjectId = new Guid("740456f9-f63b-4543-916a-7c5fcb9bc8c2"),
+                            DepartmentId = new Guid("53adc674-e6c3-409c-aeab-94b0e94cc523"),
+                            Description = "Study of data structures",
+                            Name = "Data Structures"
+                        },
+                        new
+                        {
+                            SubjectId = new Guid("2dd9d9c2-f09e-4c0f-8255-b0581b1ff9ec"),
+                            DepartmentId = new Guid("d4e36e02-03bf-42dc-b7cc-de6e6541c5b2"),
+                            Description = "Study of calculus",
+                            Name = "Calculus"
+                        },
+                        new
+                        {
+                            SubjectId = new Guid("99a8d8db-cec3-4c6c-b22b-bd5208428ca7"),
+                            DepartmentId = new Guid("d4e36e02-03bf-42dc-b7cc-de6e6541c5b2"),
+                            Description = "Study of linear algebra",
+                            Name = "Linear Algebra"
+                        });
                 });
 
             modelBuilder.Entity("Library.Domain.Models.User", b =>

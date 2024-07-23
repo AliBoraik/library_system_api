@@ -1,3 +1,4 @@
+using Library.Api.Exceptions;
 using Library.Application.Configurations;
 using Library.Infrastructure.Configurations;
 
@@ -23,6 +24,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+// Global error handler
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseHttpsRedirection();
 

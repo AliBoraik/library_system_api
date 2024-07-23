@@ -1,5 +1,4 @@
-using AutoMapper;
-using Library.Domain.DTOs;
+using Library.Domain.DTOs.Department;
 using Library.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,35 +9,33 @@ namespace Library.Api.Controllers
     public class DepartmentsController : ControllerBase
     {
         private readonly IDepartmentService _departmentService;
-        private readonly IMapper _mapper;
 
-        public DepartmentsController(IDepartmentService departmentService, IMapper mapper)
+        public DepartmentsController(IDepartmentService departmentService)
         {
             _departmentService = departmentService;
-            _mapper = mapper;
         }
 
-        // GET: api/Departments
+        // GET: api/Department
         [HttpGet]
         public async Task<IEnumerable<DepartmentInfoDto>> GetDepartments()
         {
             return await _departmentService.GetAllDepartmentsAsync();
         }
-        // GET: api/Departments/5
+        // GET: api/Department/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<DepartmentDto>> GetDepartment(int id)
+        public async Task<ActionResult<DepartmentDto>> GetDepartment(Guid id)
         {
             var departmentDto = await _departmentService.GetDepartmentByIdAsync(id);
             if (departmentDto == null)
             {
-                return NotFound();
+                throw new KeyNotFoundException($"Not found department with id = {id}");
             }
-            return _mapper.Map<DepartmentDto>(departmentDto);
+            return Ok(departmentDto);
         }
 
-        // PUT: api/Departments/5
+        // PUT: api/Department/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutDepartment(int id, DepartmentDto departmentDto)
+        public async Task<IActionResult> PutDepartment(Guid id, DepartmentDto departmentDto)
         {
             if (id != departmentDto.DepartmentId)
             {
@@ -48,7 +45,7 @@ namespace Library.Api.Controllers
             return NoContent();
         }
 
-        // POST: api/Departments
+        // POST: api/Department
         [HttpPost]
         public async Task<ActionResult<DepartmentDto>> PostDepartment(DepartmentDto departmentDto)
         {
@@ -56,9 +53,9 @@ namespace Library.Api.Controllers
             return CreatedAtAction("GetDepartment", new { id = departmentDto.DepartmentId }, departmentDto);
         }
 
-        // DELETE: api/Departments/5
+        // DELETE: api/Department/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteDepartment(int id)
+        public async Task<IActionResult> DeleteDepartment(Guid id)
         {
             await _departmentService.DeleteDepartmentAsync(id);
             return NoContent();

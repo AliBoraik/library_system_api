@@ -31,7 +31,7 @@ namespace Library.Api.Controllers
 
         // GET: api/Subjects/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<SubjectDto>> GetSubject(int id)
+        public async Task<ActionResult<SubjectDto>> GetSubject(Guid id)
         {
             var subject = await _subjectService.GetSubjectByIdAsync(id);
 
@@ -44,7 +44,7 @@ namespace Library.Api.Controllers
 
         // PUT: api/Subjects/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutSubject(int id, SubjectDto subjectDto)
+        public async Task<IActionResult> PutSubject(Guid id, SubjectDto subjectDto)
         {
             if (id != subjectDto.SubjectId)
             {
@@ -65,7 +65,7 @@ namespace Library.Api.Controllers
 
         // DELETE: api/Subjects/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteSubject(int id)
+        public async Task<IActionResult> DeleteSubject(Guid id)
         {
             await _subjectService.DeleteSubjectAsync(id);
 

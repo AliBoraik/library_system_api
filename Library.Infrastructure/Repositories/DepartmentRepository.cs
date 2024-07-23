@@ -1,6 +1,5 @@
 using Library.Domain.Models;
 using Library.Infrastructure.DataContext;
-using Library.Interfaces;
 using Library.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,14 +14,14 @@ namespace Library.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<Department>> GetAllDepartmentsAsync()
+        public async Task<IEnumerable<Department>> GetAllDepartmentsInfoAsync()
         {
             return await _context.Departments
                 .AsNoTracking()
                 .ToListAsync();
         }
 
-        public async Task<Department?> GetDepartmentByIdAsync(int id)
+        public async Task<Department?> GetDepartmentByIdAsync(Guid id)
         {
             return await _context.Departments
                 .AsNoTracking()
@@ -42,10 +41,14 @@ namespace Library.Infrastructure.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteDepartmentAsync(int id)
+        public async Task DeleteDepartmentAsync(Guid id)
         {
             var department = await _context.Departments.FindAsync(id);
             //TODO check department is not null
+            if (department == null)
+            {
+                throw new KeyNotFoundException($"Can't found Department with ID = {id}");
+            }
             _context.Departments.Remove(department);
             await _context.SaveChangesAsync();
         }

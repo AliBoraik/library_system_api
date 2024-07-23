@@ -23,7 +23,7 @@ namespace Library.Application
             return _mapper.Map<IEnumerable<SubjectInfoDto>>(subjects);
         }
 
-        public async Task<SubjectDto?> GetSubjectByIdAsync(int id)
+        public async Task<SubjectDto?> GetSubjectByIdAsync(Guid id)
         {
             var subject = await _subjectRepository.GetSubjectByIdAsync(id);
             return _mapper.Map<SubjectDto>(subject);
@@ -41,7 +41,7 @@ namespace Library.Application
             await _subjectRepository.UpdateSubjectAsync(subject);
         }
 
-        public async Task DeleteSubjectAsync(int id)
+        public async Task DeleteSubjectAsync(Guid id)
         {
             await _subjectRepository.DeleteSubjectAsync(id);
         }

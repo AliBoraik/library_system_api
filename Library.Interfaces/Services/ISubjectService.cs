@@ -5,9 +5,9 @@ namespace Library.Interfaces.Services
     public interface ISubjectService
     {
         Task<IEnumerable<SubjectInfoDto>> GetAllSubjectsAsync();
-        Task<SubjectDto?> GetSubjectByIdAsync(int id);
+        Task<SubjectDto?> GetSubjectByIdAsync(Guid id);
         Task AddSubjectAsync(SubjectDto subjectDto);
         Task UpdateSubjectAsync(SubjectDto subjectDto);
-        Task DeleteSubjectAsync(int id);
+        Task DeleteSubjectAsync(Guid id);
     }
 }

@@ -20,7 +20,7 @@ namespace Library.Infrastructure.Repositories
                 .AsNoTracking()
                 .ToListAsync();
         }
-        public async Task<Subject?> GetSubjectByIdAsync(int id)
+        public async Task<Subject?> GetSubjectByIdAsync(Guid id)
         {
             return await _context.Subjects
                 .AsNoTracking()
@@ -40,7 +40,7 @@ namespace Library.Infrastructure.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteSubjectAsync(int id)
+        public async Task DeleteSubjectAsync(Guid id)
         {
             var subject = await _context.Subjects.FindAsync(id);
             if (subject == null)
