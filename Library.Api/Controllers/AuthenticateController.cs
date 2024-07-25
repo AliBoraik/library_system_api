@@ -37,7 +37,7 @@ public class AuthenticateController : ControllerBase
         var user = await _userManager.FindByNameAsync(model.Username);
         if (user == null) return Unauthorized();
         if (!await _userManager.CheckPasswordAsync(user, model.Password))
-            return Unauthorized(new Response { Status = ResponseStatus.Error, Message = UserMessageConstants.IncorrectPassword });
+            return Unauthorized(new Response { StatusText = ResponseStatus.Error, Message = UserMessageConstants.IncorrectPassword });
         var userRoles = await _userManager.GetRolesAsync(user);
 
         var authClaims = new List<Claim>
@@ -63,7 +63,7 @@ public class AuthenticateController : ControllerBase
         var userExists = await _userManager.FindByNameAsync(model.Username);
         if (userExists != null)
             return StatusCode(StatusCodes.Status500InternalServerError,
-                new Response { Status = ResponseStatus.Error, Message = UserMessageConstants.UserAlreadyExists });
+                new Response { StatusText = ResponseStatus.Error, Message = UserMessageConstants.UserAlreadyExists });
 
         ApplicationUser user = new()
         {
@@ -74,10 +74,10 @@ public class AuthenticateController : ControllerBase
         var result = await _userManager.CreateAsync(user, model.Password);
         if (!result.Succeeded)
             return StatusCode(StatusCodes.Status500InternalServerError,
-                new Response { Status = ResponseStatus.Error, Message = result.Errors.First().Description });
+                new Response { StatusText = ResponseStatus.Error, Message = result.Errors.First().Description });
 
         await _userManager.AddToRoleAsync(user, AppRoles.Teacher);
-        return Ok( new Response { Status = ResponseStatus.Success, Message = UserMessageConstants.UserCreatedSuccessfully });
+        return Ok( new Response { StatusText = ResponseStatus.Success, Message = UserMessageConstants.UserCreatedSuccessfully });
     }
 
     [HttpPost]
@@ -89,7 +89,7 @@ public class AuthenticateController : ControllerBase
         var userExists = await _userManager.FindByNameAsync(model.Username);
         if (userExists != null)
             return StatusCode(StatusCodes.Status500InternalServerError,
-                new Response { Status = ResponseStatus.Error, Message = ResponseMessage.AlreadyExists });
+                new Response { StatusText = ResponseStatus.Error, Message = ResponseMessage.AlreadyExists });
 
         ApplicationUser user = new()
         {
@@ -101,9 +101,9 @@ public class AuthenticateController : ControllerBase
         foreach (var resultError in result.Errors) Console.WriteLine(resultError.Description);
         if (!result.Succeeded)
             return StatusCode(StatusCodes.Status500InternalServerError,
-                new Response { Status = ResponseStatus.Error, Message = UserMessageConstants.UserCreationFailed });
+                new Response { StatusText = ResponseStatus.Error, Message = UserMessageConstants.UserCreationFailed });
         await _userManager.AddToRoleAsync(user, AppRoles.Admin);
-        return Ok( new Response { Status = ResponseStatus.Success, Message = UserMessageConstants.UserCreatedSuccessfully });
+        return Ok( new Response { StatusText = ResponseStatus.Success, Message = UserMessageConstants.UserCreatedSuccessfully });
     }
 
     private JwtSecurityToken GetToken(List<Claim> authClaims)

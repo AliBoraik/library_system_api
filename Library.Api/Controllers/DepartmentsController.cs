@@ -27,9 +27,9 @@ public class DepartmentsController : ControllerBase
 
     // GET: api/Department/5
     [HttpGet("{id:guid}")]
-    [Authorize(Roles = AppRoles.Teacher)]
     public async Task<ActionResult<DepartmentDetailsDto>> GetDepartment(Guid id)
     {
+        if (!ModelState.IsValid) return BadRequest(ModelState);
         var departmentDto = await _departmentService.GetDepartmentByIdAsync(id);
         return Ok(departmentDto);
     }

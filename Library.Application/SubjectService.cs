@@ -1,12 +1,9 @@
 using AutoMapper;
 using Library.Application.Exceptions;
-using Library.Domain;
-using Library.Domain.Constants;
 using Library.Domain.DTOs.Subject;
 using Library.Domain.Models;
 using Library.Interfaces.Repositories;
 using Library.Interfaces.Services;
-using Microsoft.AspNetCore.Http;
 
 namespace Library.Application;
 
@@ -31,8 +28,7 @@ public class SubjectService : ISubjectService
     {
         var subject = await _subjectRepository.GetSubjectByIdAsync(id);
         if (subject == null)
-            throw new ExceptionResponse(StatusCodes.Status404NotFound,
-                new Response { Status = ResponseStatus.Error, Message = $"Not found subject with id = {id}" });
+            throw new NotFoundException( $"Not found subject with id = {id}");
         return _mapper.Map<SubjectDetailsDto>(subject);
     }
 
