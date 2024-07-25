@@ -34,7 +34,7 @@ public class ExceptionMiddleware
             await context.Response.WriteAsJsonAsync(new Response
             {
                 StatusText = "Error",
-                Data = "Internal server error. Please retry later."
+                Message = "Internal server error. Please retry later."
             });
         }
     }

@@ -285,7 +285,7 @@ namespace Library.Infrastructure.Migrations
                 columns: new[] { "SubjectId", "DepartmentId", "Description", "Name" },
                 values: new object[,]
                 {
-                    { new Guid("071de52d-8d24-4d11-be41-021ac28a4398"), new Guid("38142f7d-61b7-413d-9407-7be79617c64e"), "Study of data structures", "Data Structures" },
+                    { new Guid("071de52d-8d24-4d11-be41-021ac28a4398"), new Guid("38142f7d-61b7-413d-9407-7be79617c64e"), "Study of data structures", "Message Structures" },
                     { new Guid("5f38d003-860a-443c-aaff-40e2fee371f3"), new Guid("38142f7d-61b7-413d-9407-7be79617c64e"), "Study of algorithms", "Algorithms" },
                     { new Guid("dfe882e6-df4c-4a84-bbd1-d3f66cd7eea7"), new Guid("85f2e321-3489-42dc-8cdc-76db25c142f7"), "Study of calculus", "Calculus" },
                     { new Guid("f50aeed2-ea39-4ab0-9c8b-2849c915db47"), new Guid("85f2e321-3489-42dc-8cdc-76db25c142f7"), "Study of linear algebra", "Linear Algebra" }

@@ -6,5 +6,5 @@ public class Response
 {
     [JsonPropertyName("status")] public string StatusText { get; set; } = null!;
 
-    public string Data { get; set; } = default!;
+    public string Message { get; set; } = default!;
 }

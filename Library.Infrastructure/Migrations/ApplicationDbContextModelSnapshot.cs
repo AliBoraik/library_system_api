@@ -251,7 +251,7 @@ namespace Library.Infrastructure.Migrations
                             SubjectId = new Guid("071de52d-8d24-4d11-be41-021ac28a4398"),
                             DepartmentId = new Guid("38142f7d-61b7-413d-9407-7be79617c64e"),
                             Description = "Study of data structures",
-                            Name = "Data Structures"
+                            Name = "Message Structures"
                         },
                         new
                         {

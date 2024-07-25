@@ -12,7 +12,7 @@ public class HttpServerErrorException : Exception
         Response = new Response
         {
             StatusText = ResponseStatus.Error,
-            Data = responseMessage
+            Message = responseMessage
         };
     }
 

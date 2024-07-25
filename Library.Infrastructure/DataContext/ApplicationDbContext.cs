@@ -114,7 +114,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             {
                 SubjectId = Guid.NewGuid(),
                 DepartmentId = department1.DepartmentId,
-                Name = "Data Structures",
+                Name = "Message Structures",
                 Description = "Study of data structures"
             },
             new Subject
