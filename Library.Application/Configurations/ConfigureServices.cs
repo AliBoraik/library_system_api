@@ -10,6 +10,7 @@ public static class ConfigureServices
     public static void AddApplication(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddAuth(configuration);
+        services.AddRedis(configuration);
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<ILectureService, LectureService>();
         services.AddScoped<IDepartmentService, DepartmentService>();

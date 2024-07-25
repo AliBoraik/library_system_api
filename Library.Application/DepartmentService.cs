@@ -1,3 +1,4 @@
+using System.Text.Json;
 using AutoMapper;
 using Library.Application.Exceptions;
 using Library.Domain.DTOs.Department;
@@ -11,11 +12,14 @@ public class DepartmentService : IDepartmentService
 {
     private readonly IDepartmentRepository _departmentRepository;
     private readonly IMapper _mapper;
+    private readonly IRedisCacheService _redisCacheService;
 
-    public DepartmentService(IDepartmentRepository departmentRepository, IMapper mapper)
+    public DepartmentService(IDepartmentRepository departmentRepository, IMapper mapper,
+        IRedisCacheService redisCacheService)
     {
         _departmentRepository = departmentRepository;
         _mapper = mapper;
+        _redisCacheService = redisCacheService;
     }
 
     public async Task<IEnumerable<DepartmentDto>> GetAllDepartmentsAsync()
@@ -26,10 +30,19 @@ public class DepartmentService : IDepartmentService
 
     public async Task<DepartmentDetailsDto> GetDepartmentByIdAsync(Guid id)
     {
+        var cacheValue = await _redisCacheService.GetCacheValueAsync(id.ToString());
+        if (cacheValue is { IsNullOrEmpty: false, HasValue: true })
+        {
+            var cacheDepartmentDetailsDto = JsonSerializer.Deserialize<DepartmentDetailsDto>(cacheValue!)!;
+            return cacheDepartmentDetailsDto;
+        }
+
         var department = await _departmentRepository.GetDepartmentByIdAsync(id);
         if (department == null)
             throw new NotFoundException($"Not found department with id = {id}");
-        return _mapper.Map<DepartmentDetailsDto>(department);
+        var departmentDetailsDto = _mapper.Map<DepartmentDetailsDto>(department);
+        await _redisCacheService.SetCacheValueAsync(id.ToString(), JsonSerializer.Serialize(departmentDetailsDto));
+        return departmentDetailsDto;
     }
 
     public async Task<Guid> AddDepartmentAsync(CreateDepartmentDto createDepartmentDto)

@@ -1,7 +1,5 @@
-using Library.Domain.Constants;
 using Library.Domain.DTOs.Department;
 using Library.Interfaces.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Library.Api.Controllers;
@@ -19,7 +17,6 @@ public class DepartmentsController : ControllerBase
 
     // GET: api/Department
     [HttpGet]
-    [Authorize(Roles = AppRoles.Admin)]
     public async Task<IEnumerable<DepartmentDto>> GetDepartments()
     {
         return await _departmentService.GetAllDepartmentsAsync();

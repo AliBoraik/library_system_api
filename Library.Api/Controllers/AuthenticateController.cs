@@ -41,7 +41,8 @@ public class AuthenticateController : ControllerBase
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
         await _authService.RegisterTeacher(model);
-        return Ok(new Response { StatusText = ResponseStatus.Success, Message = StringConstants.UserCreatedSuccessfully });
+        return Ok(new Response
+            { StatusText = ResponseStatus.Success, Message = StringConstants.UserCreatedSuccessfully });
     }
 
     [HttpPost]
@@ -51,6 +52,7 @@ public class AuthenticateController : ControllerBase
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
         await _authService.RegisterAdmin(model);
-        return Ok(new Response { StatusText = ResponseStatus.Success, Message = StringConstants.UserCreatedSuccessfully });
+        return Ok(new Response
+            { StatusText = ResponseStatus.Success, Message = StringConstants.UserCreatedSuccessfully });
     }
 }
