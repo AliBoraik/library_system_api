@@ -10,7 +10,8 @@ builder.Services.AddAuthorization();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication(builder.Configuration);
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c => {
+builder.Services.AddSwaggerGen(c =>
+{
     c.SwaggerDoc("v1", new OpenApiInfo
     {
         Title = "JWTToken_Auth_API",
@@ -22,13 +23,15 @@ builder.Services.AddSwaggerGen(c => {
         Type = SecuritySchemeType.ApiKey,
         Scheme = "Bearer",
         BearerFormat = "JWT",
-        In = ParameterLocation.Header,
-        Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 1safsfsdfdfd\"",
+        In = ParameterLocation.Header
     });
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement {
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
         {
-            new OpenApiSecurityScheme {
-                Reference = new OpenApiReference {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
                     Type = ReferenceType.SecurityScheme,
                     Id = "Bearer"
                 }

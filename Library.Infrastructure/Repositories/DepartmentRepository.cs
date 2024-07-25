@@ -38,7 +38,8 @@ public class DepartmentRepository : IDepartmentRepository
     public async Task UpdateDepartmentAsync(Department department)
     {
         var departmentExists = await _context.Departments.AnyAsync(d => d.DepartmentId == department.DepartmentId);
-        if (!departmentExists) throw new KeyNotFoundException($"Can't found Department with ID = {department.DepartmentId}");
+        if (!departmentExists)
+            throw new KeyNotFoundException($"Can't found Department with ID = {department.DepartmentId}");
         _context.Entry(department).State = EntityState.Modified;
         await _context.SaveChangesAsync();
     }

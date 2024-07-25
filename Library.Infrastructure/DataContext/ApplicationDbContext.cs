@@ -14,6 +14,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         : base(options)
     {
     }
+
     public DbSet<Department> Departments { get; set; }
     public DbSet<Subject> Subjects { get; set; }
     public DbSet<Lecture> Lectures { get; set; }
@@ -22,7 +23,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        
+
         modelBuilder.Entity<Department>()
             .HasMany(d => d.Subjects)
             .WithOne(s => s.Department)
@@ -46,13 +47,13 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .HasOne(b => b.User)
             .WithMany(u => u.Books)
             .HasForeignKey(b => b.UploadedBy);
-        
+
         // roles ids
         var adminRoleId = Guid.NewGuid().ToString();
         var teacherRoleId = Guid.NewGuid().ToString();
         // admin id 
         var adminId = Guid.NewGuid().ToString();
-        
+
         modelBuilder.Entity<IdentityRole>()
             .HasData(new IdentityRole
             {
@@ -78,15 +79,15 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                 NormalizedUserName = "ADMIN",
                 PasswordHash = "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q=="
             });
-        
+
         modelBuilder.Entity<IdentityUserRole<string>>().HasData(
             new IdentityUserRole<string>
-        {
-            RoleId = adminRoleId,
-            UserId = adminId
-        });
-        
-        
+            {
+                RoleId = adminRoleId,
+                UserId = adminId
+            });
+
+
         var department1 = new Department
         {
             DepartmentId = Guid.NewGuid(),

@@ -22,20 +22,19 @@ public class ExceptionMiddleware
         }
         catch (HttpServerErrorException exceptionResponse)
         {
-            Console.WriteLine(exceptionResponse.Message);
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)exceptionResponse.StatusCode;
             await context.Response.WriteAsJsonAsync(exceptionResponse.Response);
         }
         catch (Exception ex)
-        { 
+        {
             _logger.LogError(ex, "error during executing {Context}", context.Request.Path.Value);
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = StatusCodes.Status500InternalServerError;
             await context.Response.WriteAsJsonAsync(new Response
             {
                 StatusText = "Error",
-                Message = "Internal server error. Please retry later."
+                Data = "Internal server error. Please retry later."
             });
         }
     }

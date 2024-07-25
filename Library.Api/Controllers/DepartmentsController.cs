@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Library.Api.Controllers;
 
-
 [Route("api/[controller]")]
 [ApiController]
 public class DepartmentsController : ControllerBase
@@ -20,6 +19,7 @@ public class DepartmentsController : ControllerBase
 
     // GET: api/Department
     [HttpGet]
+    [Authorize(Roles = AppRoles.Admin)]
     public async Task<IEnumerable<DepartmentDto>> GetDepartments()
     {
         return await _departmentService.GetAllDepartmentsAsync();

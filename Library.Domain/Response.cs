@@ -4,7 +4,7 @@ namespace Library.Domain;
 
 public class Response
 {
-    [JsonPropertyName("status")]
-    public string StatusText { get; set; } = null!;
-    public string Message { get; set; } = null!;
+    [JsonPropertyName("status")] public string StatusText { get; set; } = null!;
+
+    public string Data { get; set; } = default!;
 }
