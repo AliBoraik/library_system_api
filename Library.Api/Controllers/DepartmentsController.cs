@@ -1,8 +1,11 @@
+using Library.Domain.Constants;
 using Library.Domain.DTOs.Department;
 using Library.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Library.Api.Controllers;
+
 
 [Route("api/[controller]")]
 [ApiController]
@@ -24,6 +27,7 @@ public class DepartmentsController : ControllerBase
 
     // GET: api/Department/5
     [HttpGet("{id:guid}")]
+    [Authorize(Roles = AppRoles.Teacher)]
     public async Task<ActionResult<DepartmentDetailsDto>> GetDepartment(Guid id)
     {
         var departmentDto = await _departmentService.GetDepartmentByIdAsync(id);

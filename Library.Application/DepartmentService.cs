@@ -1,8 +1,12 @@
 using AutoMapper;
+using Library.Application.Exceptions;
+using Library.Domain;
+using Library.Domain.Constants;
 using Library.Domain.DTOs.Department;
 using Library.Domain.Models;
 using Library.Interfaces.Repositories;
 using Library.Interfaces.Services;
+using Microsoft.AspNetCore.Http;
 
 namespace Library.Application;
 
@@ -26,7 +30,9 @@ public class DepartmentService : IDepartmentService
     public async Task<DepartmentDetailsDto> GetDepartmentByIdAsync(Guid id)
     {
         var department = await _departmentRepository.GetDepartmentByIdAsync(id);
-        if (department == null) throw new KeyNotFoundException($"Not found department with id = {id}");
+        if (department == null)
+            throw new ExceptionResponse(StatusCodes.Status404NotFound,
+                new Response { Status = ResponseStatus.Error, Message = $"Not found department with id = {id}" });
         return _mapper.Map<DepartmentDetailsDto>(department);
     }
 

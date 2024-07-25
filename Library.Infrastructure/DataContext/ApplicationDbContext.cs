@@ -1,16 +1,19 @@
+using Library.Domain.Constants;
 using Library.Domain.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Library.Infrastructure.DataContext;
+//  dotnet ef --startup-project ../Library.Api/ migrations add Initial
+//  dotnet ef --startup-project ../Library.Api/ database update
 
-public class ApplicationDbContext : DbContext
+public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)
     {
     }
-
-    public DbSet<User> Users { get; set; }
     public DbSet<Department> Departments { get; set; }
     public DbSet<Subject> Subjects { get; set; }
     public DbSet<Lecture> Lectures { get; set; }
@@ -18,19 +21,12 @@ public class ApplicationDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<User>()
-            .HasIndex(u => u.Username)
-            .IsUnique();
-
-        modelBuilder.Entity<User>()
-            .HasIndex(u => u.Email)
-            .IsUnique();
-
+        base.OnModelCreating(modelBuilder);
+        
         modelBuilder.Entity<Department>()
             .HasMany(d => d.Subjects)
             .WithOne(s => s.Department)
             .HasForeignKey(s => s.DepartmentId);
-
         modelBuilder.Entity<Subject>()
             .HasMany(s => s.Lectures)
             .WithOne(l => l.Subject)
@@ -50,8 +46,47 @@ public class ApplicationDbContext : DbContext
             .HasOne(b => b.User)
             .WithMany(u => u.Books)
             .HasForeignKey(b => b.UploadedBy);
-
-        // Seed initial data
+        
+        // roles ids
+        var adminRoleId = Guid.NewGuid().ToString();
+        var teacherRoleId = Guid.NewGuid().ToString();
+        // admin id 
+        var adminId = Guid.NewGuid().ToString();
+        
+        modelBuilder.Entity<IdentityRole>()
+            .HasData(new IdentityRole
+            {
+                Id = adminRoleId,
+                Name = AppRoles.Admin,
+                NormalizedName = AppRoles.Admin.ToUpper()
+            });
+        modelBuilder.Entity<IdentityRole>()
+            .HasData(new IdentityRole
+            {
+                Id = teacherRoleId,
+                Name = AppRoles.Teacher,
+                NormalizedName = AppRoles.Teacher.ToUpper()
+            });
+        modelBuilder.Entity<ApplicationUser>()
+            .HasData(new ApplicationUser
+            {
+                Id = adminId,
+                Email = "admin@gmail.com",
+                NormalizedEmail = "ADMIN@GMAIL.COM",
+                SecurityStamp = Guid.NewGuid().ToString(),
+                UserName = "admin",
+                NormalizedUserName = "ADMIN",
+                PasswordHash = "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q=="
+            });
+        
+        modelBuilder.Entity<IdentityUserRole<string>>().HasData(
+            new IdentityUserRole<string>
+        {
+            RoleId = adminRoleId,
+            UserId = adminId
+        });
+        
+        
         var department1 = new Department
         {
             DepartmentId = Guid.NewGuid(),
