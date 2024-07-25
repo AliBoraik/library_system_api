@@ -28,7 +28,7 @@ public class SubjectService : ISubjectService
     {
         var subject = await _subjectRepository.GetSubjectByIdAsync(id);
         if (subject == null)
-            throw new NotFoundException( $"Not found subject with id = {id}");
+            throw new NotFoundException($"Not found subject with id = {id}");
         return _mapper.Map<SubjectDetailsDto>(subject);
     }
 

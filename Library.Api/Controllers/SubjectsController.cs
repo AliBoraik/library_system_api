@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-using System.Runtime.InteropServices;
 using Library.Domain.DTOs.Subject;
 using Library.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -42,7 +40,7 @@ public class SubjectsController : ControllerBase
 
     // PUT: api/Subjects/5
     [HttpPut]
-    public async Task<IActionResult> PutSubject([FromBody]SubjectDto subjectDto)
+    public async Task<IActionResult> PutSubject([FromBody] SubjectDto subjectDto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
         await _subjectService.UpdateSubjectAsync(subjectDto);
