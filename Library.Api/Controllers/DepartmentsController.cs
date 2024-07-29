@@ -11,7 +11,7 @@ public class DepartmentsController(IDepartmentService departmentService) : Contr
 {
     // GET: api/Department
     [HttpGet]
-    [OutputCache(Duration = 10)]
+    [OutputCache]
     public async Task<IEnumerable<DepartmentDto>> GetDepartments()
     {
         return await departmentService.GetAllDepartmentsAsync();

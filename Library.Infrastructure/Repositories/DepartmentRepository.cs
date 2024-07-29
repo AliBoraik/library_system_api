@@ -1,3 +1,4 @@
+using Library.Application.Exceptions;
 using Library.Domain.Models;
 using Library.Infrastructure.DataContext;
 using Library.Interfaces.Repositories;
@@ -39,7 +40,7 @@ public class DepartmentRepository : IDepartmentRepository
     {
         var departmentExists = await _context.Departments.AnyAsync(d => d.DepartmentId == department.DepartmentId);
         if (!departmentExists)
-            throw new KeyNotFoundException($"Can't found Department with ID = {department.DepartmentId}");
+            throw new NotFoundException($"Can't found Department with ID = {department.DepartmentId}");
         _context.Entry(department).State = EntityState.Modified;
         await _context.SaveChangesAsync();
     }
@@ -47,7 +48,7 @@ public class DepartmentRepository : IDepartmentRepository
     public async Task DeleteDepartmentAsync(Guid id)
     {
         var department = await _context.Departments.FindAsync(id);
-        if (department == null) throw new KeyNotFoundException($"Can't found Department with ID = {id}");
+        if (department == null) throw new NotFoundException($"Can't found Department with ID = {id}");
         _context.Departments.Remove(department);
         await _context.SaveChangesAsync();
     }

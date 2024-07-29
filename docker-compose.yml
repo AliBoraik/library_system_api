@@ -21,8 +21,6 @@
     restart: always
     command: [ "redis-server", "--appendonly", "no", "--maxmemory", "500mb", "--maxmemory-policy", "allkeys-lru" ]
     hostname: redis
-    volumes:
-      - redis-data:/data
+
 volumes:
   db_data:
-  redis-data:

@@ -26,18 +26,10 @@ public class DepartmentService : IDepartmentService
 
     public async Task<DepartmentDetailsDto> GetDepartmentByIdAsync(Guid id)
     {
-        /*var cacheValue = await _redisCacheService.GetCacheValueAsync(id.ToString());
-        if (cacheValue is { IsNullOrEmpty: false, HasValue: true })
-        {
-            var cacheDepartmentDetailsDto = JsonSerializer.Deserialize<DepartmentDetailsDto>(cacheValue!)!;
-            return cacheDepartmentDetailsDto;
-        }*/
-
         var department = await _departmentRepository.GetDepartmentByIdAsync(id);
         if (department == null)
             throw new NotFoundException($"Not found department with id = {id}");
         var departmentDetailsDto = _mapper.Map<DepartmentDetailsDto>(department);
-       // await _redisCacheService.SetCacheValueAsync(id.ToString(), JsonSerializer.Serialize(departmentDetailsDto));
         return departmentDetailsDto;
     }
 
