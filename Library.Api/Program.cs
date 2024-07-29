@@ -55,6 +55,8 @@ app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseHttpsRedirection();
 
+app.UseOutputCache();
+
 // Authentication & Authorization
 app.UseAuthentication();
 app.UseAuthorization();

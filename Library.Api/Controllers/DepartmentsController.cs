@@ -1,25 +1,20 @@
 using Library.Domain.DTOs.Department;
 using Library.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 
 namespace Library.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class DepartmentsController : ControllerBase
+public class DepartmentsController(IDepartmentService departmentService) : ControllerBase
 {
-    private readonly IDepartmentService _departmentService;
-
-    public DepartmentsController(IDepartmentService departmentService)
-    {
-        _departmentService = departmentService;
-    }
-
     // GET: api/Department
     [HttpGet]
+    [OutputCache(Duration = 10)]
     public async Task<IEnumerable<DepartmentDto>> GetDepartments()
     {
-        return await _departmentService.GetAllDepartmentsAsync();
+        return await departmentService.GetAllDepartmentsAsync();
     }
 
     // GET: api/Department/5
@@ -27,7 +22,7 @@ public class DepartmentsController : ControllerBase
     public async Task<ActionResult<DepartmentDetailsDto>> GetDepartment(Guid id)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
-        var departmentDto = await _departmentService.GetDepartmentByIdAsync(id);
+        var departmentDto = await departmentService.GetDepartmentByIdAsync(id);
         return Ok(departmentDto);
     }
 
@@ -36,7 +31,7 @@ public class DepartmentsController : ControllerBase
     public async Task<ActionResult> PostDepartment([FromBody] CreateDepartmentDto createDepartmentDto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
-        var id = await _departmentService.AddDepartmentAsync(createDepartmentDto);
+        var id = await departmentService.AddDepartmentAsync(createDepartmentDto);
         return CreatedAtAction("GetDepartment", new { id }, new { id });
     }
 
@@ -45,7 +40,7 @@ public class DepartmentsController : ControllerBase
     public async Task<IActionResult> PutDepartment([FromBody] DepartmentDto departmentDto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
-        await _departmentService.UpdateDepartmentAsync(departmentDto);
+        await departmentService.UpdateDepartmentAsync(departmentDto);
         return NoContent();
     }
 
@@ -53,7 +48,7 @@ public class DepartmentsController : ControllerBase
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteDepartment(Guid id)
     {
-        await _departmentService.DeleteDepartmentAsync(id);
+        await departmentService.DeleteDepartmentAsync(id);
         return NoContent();
     }
 }

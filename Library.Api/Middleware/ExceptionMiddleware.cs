@@ -1,5 +1,6 @@
 using Library.Application.Exceptions;
 using Library.Domain;
+using Library.Domain.Constants;
 
 namespace Library.Api.Middleware;
 
@@ -33,7 +34,7 @@ public class ExceptionMiddleware
             context.Response.StatusCode = StatusCodes.Status500InternalServerError;
             await context.Response.WriteAsJsonAsync(new Response
             {
-                StatusText = "Error",
+                StatusText = ResponseStatus.Error,
                 Message = "Internal server error. Please retry later."
             });
         }

@@ -1,6 +1,6 @@
 namespace Library.Domain.Constants;
 
-public class ResponseMessage
+public static class ResponseMessage
 {
     public const string ItemNotFound = "Not Found the item";
     public const string Successfully = "Successfully";
