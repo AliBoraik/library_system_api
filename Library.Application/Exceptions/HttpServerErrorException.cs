@@ -4,18 +4,13 @@ using Library.Domain.Constants;
 
 namespace Library.Application.Exceptions;
 
-public class HttpServerErrorException : Exception
+public class HttpServerErrorException(HttpStatusCode statusCode, string responseMessage) : Exception
 {
-    public HttpServerErrorException(HttpStatusCode statusCode, string responseMessage)
+    public Response Response { get; } = new()
     {
-        StatusCode = statusCode;
-        Response = new Response
-        {
-            StatusText = ResponseStatus.Error,
-            Message = responseMessage
-        };
-    }
+        StatusText = ResponseStatus.Error,
+        Message = responseMessage
+    };
 
-    public Response Response { get; }
-    public HttpStatusCode StatusCode { get; }
+    public HttpStatusCode StatusCode { get; } = statusCode;
 }
