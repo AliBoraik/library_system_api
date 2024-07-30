@@ -24,10 +24,10 @@ public static class ConfigureServices
         services.AddIdentity<ApplicationUser, IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
-        services.AddTransient<IDepartmentRepository, DepartmentRepository>();
-        services.AddTransient<ILectureRepository, LectureRepository>();
-        services.AddTransient<ISubjectRepository, SubjectRepository>();
-        services.AddTransient<IBookRepository, BookRepository>();
+        services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+        services.AddScoped<ILectureRepository, LectureRepository>();
+        services.AddScoped<ISubjectRepository, SubjectRepository>();
+        services.AddScoped<IBookRepository, BookRepository>();
         return services;
     }
 }
