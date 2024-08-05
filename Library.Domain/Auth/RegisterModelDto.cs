@@ -3,7 +3,7 @@ using Library.Domain.Constants;
 
 namespace Library.Domain.Auth;
 
-public class RegisterModel
+public class RegisterModelDto
 {
     [Required(ErrorMessage = "User Name is required")]
     public string Username { get; set; } = null!;

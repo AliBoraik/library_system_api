@@ -22,20 +22,20 @@ public class AuthenticateController : ControllerBase
 
     [HttpPost]
     [Route("login")]
-    public async Task<IActionResult> Login([FromBody] LoginModel model)
+    public async Task<IActionResult> Login([FromBody] LoginModelDto modelDto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
-        var authData = await _authService.Login(model);
+        var authData = await _authService.Login(modelDto);
         return Ok(authData);
     }
 
     [HttpPost]
     [Route("register-teacher")]
     [Authorize(Roles = AppRoles.Admin)]
-    public async Task<IActionResult> RegisterTeacher([FromBody] RegisterModel model)
+    public async Task<IActionResult> RegisterTeacher([FromBody] RegisterModelDto modelDto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
-        await _authService.RegisterTeacher(model);
+        await _authService.RegisterTeacher(modelDto);
         return Ok(new Response
             { StatusText = ResponseStatus.Success, Message = StringConstants.UserCreatedSuccessfully });
     }
@@ -43,10 +43,10 @@ public class AuthenticateController : ControllerBase
     [HttpPost]
     [Route("register-admin")]
     [Authorize(Roles = AppRoles.Admin)]
-    public async Task<IActionResult> RegisterAdmin([FromBody] RegisterModel model)
+    public async Task<IActionResult> RegisterAdmin([FromBody] RegisterModelDto modelDto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
-        await _authService.RegisterAdmin(model);
+        await _authService.RegisterAdmin(modelDto);
         return Ok(new Response
             { StatusText = ResponseStatus.Success, Message = StringConstants.UserCreatedSuccessfully });
     }

@@ -24,11 +24,11 @@ public class AuthService : IAuthService
         _userManager = userManager;
     }
 
-    public async Task<AuthDataResponse> Login(LoginModel loginModel)
+    public async Task<AuthDataResponse> Login(LoginModelDto loginModelDto)
     {
-        var user = await _userManager.FindByNameAsync(loginModel.Username);
+        var user = await _userManager.FindByNameAsync(loginModelDto.Username);
         if (user == null) throw new UnauthorizedException(ResponseMessage.UnauthorizedAccess);
-        if (!await _userManager.CheckPasswordAsync(user, loginModel.Password))
+        if (!await _userManager.CheckPasswordAsync(user, loginModelDto.Password))
             throw new UnauthorizedException(StringConstants.IncorrectPassword);
         var userRoles = await _userManager.GetRolesAsync(user);
         var authClaims = new List<Claim>
@@ -40,40 +40,40 @@ public class AuthService : IAuthService
         var accessToken = GetToken(authClaims);
         return new AuthDataResponse
         {
-            AccessToken = new JwtSecurityTokenHandler().WriteToken(accessToken), 
+            AccessToken = new JwtSecurityTokenHandler().WriteToken(accessToken),
             Expiration = accessToken.ValidTo
         };
     }
 
-    public async Task RegisterTeacher(RegisterModel model)
+    public async Task RegisterTeacher(RegisterModelDto modelDto)
     {
-        var userExists = await _userManager.FindByNameAsync(model.Username);
+        var userExists = await _userManager.FindByNameAsync(modelDto.Username);
         if (userExists != null)
             throw new BadRequestException(StringConstants.UserAlreadyExists);
         ApplicationUser user = new()
         {
-            Email = model.Email,
+            Email = modelDto.Email,
             SecurityStamp = Guid.NewGuid().ToString(),
-            UserName = model.Username
+            UserName = modelDto.Username
         };
-        var result = await _userManager.CreateAsync(user, model.Password);
+        var result = await _userManager.CreateAsync(user, modelDto.Password);
         if (!result.Succeeded)
             throw new BadRequestException(result.Errors.First().Description);
         await _userManager.AddToRoleAsync(user, AppRoles.Teacher);
     }
 
-    public async Task RegisterAdmin(RegisterModel model)
+    public async Task RegisterAdmin(RegisterModelDto modelDto)
     {
-        var userExists = await _userManager.FindByNameAsync(model.Username);
+        var userExists = await _userManager.FindByNameAsync(modelDto.Username);
         if (userExists != null)
             throw new BadRequestException(StringConstants.UserAlreadyExists);
         ApplicationUser user = new()
         {
-            Email = model.Email,
+            Email = modelDto.Email,
             SecurityStamp = Guid.NewGuid().ToString(),
-            UserName = model.Username
+            UserName = modelDto.Username
         };
-        var result = await _userManager.CreateAsync(user, model.Password);
+        var result = await _userManager.CreateAsync(user, modelDto.Password);
         if (!result.Succeeded)
             throw new HttpServerErrorException(HttpStatusCode.InternalServerError, result.Errors.First().Description);
         await _userManager.AddToRoleAsync(user, AppRoles.Admin);

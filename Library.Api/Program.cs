@@ -9,6 +9,8 @@ builder.Services.AddAuthorization();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication(builder.Configuration);
 builder.Services.AddSwaggerConfiguration();
+//Caching
+builder.Services.AddOutputCache();
 
 var app = builder.Build();
 
@@ -23,14 +25,12 @@ if (app.Environment.IsDevelopment())
 app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseHttpsRedirection();
-
-app.UseOutputCache();
-
 // Authentication & Authorization
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.UseOutputCache();
 app.MapGet("_health", () => Results.Ok()).ShortCircuit();
 
 app.Run();

@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Library.Domain.Auth;
 
-public class LoginModel
+public class LoginModelDto
 {
     [Required(ErrorMessage = "User Name is required")]
     public string Username { get; set; } = null!;
