@@ -56,6 +56,7 @@ public class LectureService : ILectureService
 
     public async Task UpdateLectureAsync(LectureDto lectureDto, IFormFile? file)
     {
+        //TODO test this 
         if (file != null)
         {
             var filePath = Path.Combine("Uploads", file.FileName);
@@ -67,7 +68,7 @@ public class LectureService : ILectureService
             var oldLecture = await _lectureRepository.GetLectureByIdAsync((Guid)lectureDto.LectureId!);
             if (oldLecture != null && File.Exists(oldLecture.FilePath)) File.Delete(oldLecture.FilePath);
 
-            lectureDto.FilePath = filePath;
+            oldLecture.FilePath = filePath;
         }
 
         var lecture = _mapper.Map<Lecture>(lectureDto);

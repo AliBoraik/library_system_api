@@ -9,5 +9,5 @@ public class LectureDto : CreateLectureDto
     [JsonPropertyOrder(0)]
     public Guid? LectureId { get; set; }
     
-    public string FilePath { get; set; } = null!;
+    public DateTime UploadedAt { get; set; }
 }
