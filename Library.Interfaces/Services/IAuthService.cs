@@ -5,7 +5,7 @@ namespace Library.Interfaces.Services;
 
 public interface IAuthService
 {
-    Task<JwtSecurityToken> Login(LoginModel loginModel);
+    Task<AuthDataResponse> Login(LoginModel loginModel);
     Task RegisterTeacher(RegisterModel model);
     Task RegisterAdmin(RegisterModel model);
 }

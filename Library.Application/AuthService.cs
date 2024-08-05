@@ -24,7 +24,7 @@ public class AuthService : IAuthService
         _userManager = userManager;
     }
 
-    public async Task<JwtSecurityToken> Login(LoginModel loginModel)
+    public async Task<AuthDataResponse> Login(LoginModel loginModel)
     {
         var user = await _userManager.FindByNameAsync(loginModel.Username);
         if (user == null) throw new UnauthorizedException(ResponseMessage.UnauthorizedAccess);
@@ -37,8 +37,12 @@ public class AuthService : IAuthService
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
         authClaims.AddRange(userRoles.Select(userRole => new Claim(ClaimTypes.Role, userRole)));
-        var token = GetToken(authClaims);
-        return token;
+        var accessToken = GetToken(authClaims);
+        return new AuthDataResponse
+        {
+            AccessToken = new JwtSecurityTokenHandler().WriteToken(accessToken), 
+            Expiration = accessToken.ValidTo
+        };
     }
 
     public async Task RegisterTeacher(RegisterModel model)

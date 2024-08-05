@@ -1,6 +1,9 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace Library.Domain.DTOs.Subject;
 
 public class SubjectDto : CreateSubjectDto
 {
-    public Guid SubjectId { get; init; }
+    [Required]
+    public Guid? SubjectId { get; set; }
 }

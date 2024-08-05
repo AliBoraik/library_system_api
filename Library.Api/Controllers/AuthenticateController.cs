@@ -1,4 +1,3 @@
-using System.IdentityModel.Tokens.Jwt;
 using Library.Domain;
 using Library.Domain.Auth;
 using Library.Domain.Constants;
@@ -26,12 +25,8 @@ public class AuthenticateController : ControllerBase
     public async Task<IActionResult> Login([FromBody] LoginModel model)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
-        var token = await _authService.Login(model);
-        return Ok(new AuthDataResponse
-        {
-            Token = new JwtSecurityTokenHandler().WriteToken(token),
-            Expiration = token.ValidTo
-        });
+        var authData = await _authService.Login(model);
+        return Ok(authData);
     }
 
     [HttpPost]
