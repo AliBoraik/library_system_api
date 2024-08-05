@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Library.Domain.DTOs;
+using Library.Domain.DTOs.Lecture;
 using Library.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,7 +27,7 @@ public class LecturesController : ControllerBase
 
     // GET: api/Lectures/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<LectureDto>> GetLecture(int id)
+    public async Task<ActionResult<LectureDto>> GetLecture(Guid id)
     {
         var lecture = await _lectureService.GetLectureByIdAsync(id);
 
@@ -37,15 +38,15 @@ public class LecturesController : ControllerBase
 
     // POST: api/Lectures
     [HttpPost]
-    public async Task<ActionResult<LectureDto>> PostLecture([FromForm] LectureDto lectureDto, [Required] IFormFile file)
+    public async Task<ActionResult<LectureDto>> PostLecture([FromForm] CreateLectureDto createLectureDto, [Required] IFormFile file)
     {
-        await _lectureService.AddLectureAsync(lectureDto, file);
+        await _lectureService.AddLectureAsync(createLectureDto, file);
         return Ok();
     }
 
     // PUT: api/Lectures/5
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutLecture(int id, [FromForm] LectureDto lectureDto, IFormFile? file)
+    public async Task<IActionResult> PutLecture(Guid id, [FromForm] LectureDto lectureDto, IFormFile? file)
     {
         if (id != lectureDto.LectureId) return BadRequest();
 
@@ -56,7 +57,7 @@ public class LecturesController : ControllerBase
 
     // DELETE: api/Lectures/5
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteLecture(int id)
+    public async Task<IActionResult> DeleteLecture(Guid id)
     {
         await _lectureService.DeleteLectureAsync(id);
         return NoContent();
@@ -64,12 +65,9 @@ public class LecturesController : ControllerBase
 
     // GET: api/Lectures/download/5
     [HttpGet("download/{id}")]
-    public async Task<IActionResult> DownloadLecture(int id)
+    public async Task<IActionResult> DownloadLecture(Guid id)
     {
-        var lecture = await _lectureService.GetLectureByIdAsync(id);
-        if (lecture == null) return NotFound();
-
-        var path = lecture.FilePath;
+        var path = await _lectureService.GetLectureFilePathByIdAsync(id);
         var fileBytes = await System.IO.File.ReadAllBytesAsync(path);
         return File(fileBytes, "application/octet-stream", Path.GetFileName(path));
     }
