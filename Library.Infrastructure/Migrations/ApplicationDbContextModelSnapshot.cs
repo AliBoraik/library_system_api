@@ -17,7 +17,7 @@ namespace Library.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.0")
+                .HasAnnotation("ProductVersion", "8.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -88,9 +88,9 @@ namespace Library.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "8cee7f08-910c-4eec-b056-a98e15d59ede",
+                            Id = "a24cecd4-8cdf-4679-99d6-966f29ab412a",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "95dbd7e2-e53c-40b6-b667-35948fa993b8",
+                            ConcurrencyStamp = "49f778ae-3e62-4132-bb21-00533d2dbbdc",
                             Email = "admin@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
@@ -98,7 +98,7 @@ namespace Library.Infrastructure.Migrations
                             NormalizedUserName = "ADMIN",
                             PasswordHash = "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "655cfc5b-f174-43b8-b044-a71dbc075b47",
+                            SecurityStamp = "9a9aba36-ae16-4860-98ca-6fc0eb5882eb",
                             TwoFactorEnabled = false,
                             UserName = "admin"
                         });
@@ -164,13 +164,13 @@ namespace Library.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            DepartmentId = new Guid("38142f7d-61b7-413d-9407-7be79617c64e"),
+                            DepartmentId = new Guid("fb1dd5ec-e45a-4452-bea5-5fa35b0e665d"),
                             Description = "Department of Computer Science",
                             Name = "Computer Science"
                         },
                         new
                         {
-                            DepartmentId = new Guid("85f2e321-3489-42dc-8cdc-76db25c142f7"),
+                            DepartmentId = new Guid("13071bb5-95f7-42ce-a7ef-60aa0940d779"),
                             Description = "Department of Mathematics",
                             Name = "Mathematics"
                         });
@@ -178,11 +178,9 @@ namespace Library.Infrastructure.Migrations
 
             modelBuilder.Entity("Library.Domain.Models.Lecture", b =>
                 {
-                    b.Property<int>("LectureId")
+                    b.Property<Guid>("LectureId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("LectureId"));
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -241,29 +239,29 @@ namespace Library.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            SubjectId = new Guid("5f38d003-860a-443c-aaff-40e2fee371f3"),
-                            DepartmentId = new Guid("38142f7d-61b7-413d-9407-7be79617c64e"),
+                            SubjectId = new Guid("aea9b91b-f5ad-4cd2-9c2c-dd8995380ac9"),
+                            DepartmentId = new Guid("fb1dd5ec-e45a-4452-bea5-5fa35b0e665d"),
                             Description = "Study of algorithms",
                             Name = "Algorithms"
                         },
                         new
                         {
-                            SubjectId = new Guid("071de52d-8d24-4d11-be41-021ac28a4398"),
-                            DepartmentId = new Guid("38142f7d-61b7-413d-9407-7be79617c64e"),
+                            SubjectId = new Guid("8932db65-756a-414a-9e1d-c843c6d86f8a"),
+                            DepartmentId = new Guid("fb1dd5ec-e45a-4452-bea5-5fa35b0e665d"),
                             Description = "Study of data structures",
                             Name = "Message Structures"
                         },
                         new
                         {
-                            SubjectId = new Guid("dfe882e6-df4c-4a84-bbd1-d3f66cd7eea7"),
-                            DepartmentId = new Guid("85f2e321-3489-42dc-8cdc-76db25c142f7"),
+                            SubjectId = new Guid("321976e4-3fae-4a45-8e43-0acaba100de5"),
+                            DepartmentId = new Guid("13071bb5-95f7-42ce-a7ef-60aa0940d779"),
                             Description = "Study of calculus",
                             Name = "Calculus"
                         },
                         new
                         {
-                            SubjectId = new Guid("f50aeed2-ea39-4ab0-9c8b-2849c915db47"),
-                            DepartmentId = new Guid("85f2e321-3489-42dc-8cdc-76db25c142f7"),
+                            SubjectId = new Guid("59f3b576-c8aa-4492-ba4f-f534eccb524c"),
+                            DepartmentId = new Guid("13071bb5-95f7-42ce-a7ef-60aa0940d779"),
                             Description = "Study of linear algebra",
                             Name = "Linear Algebra"
                         });
@@ -297,13 +295,13 @@ namespace Library.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "4bd2b700-081f-4326-a230-266c6dab7a96",
+                            Id = "71d86137-a527-4233-ba81-1c6bea1354c9",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "9936597b-fb8a-467e-8c01-4147628aaa6b",
+                            Id = "0fcc65b3-7e54-41e4-ba63-a4ba76a359e9",
                             Name = "Teacher",
                             NormalizedName = "TEACHER"
                         });
@@ -398,8 +396,8 @@ namespace Library.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "8cee7f08-910c-4eec-b056-a98e15d59ede",
-                            RoleId = "4bd2b700-081f-4326-a230-266c6dab7a96"
+                            UserId = "a24cecd4-8cdf-4679-99d6-966f29ab412a",
+                            RoleId = "71d86137-a527-4233-ba81-1c6bea1354c9"
                         });
                 });
 

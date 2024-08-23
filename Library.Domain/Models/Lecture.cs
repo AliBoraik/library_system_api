@@ -2,7 +2,7 @@ namespace Library.Domain.Models;
 
 public class Lecture
 {
-    public int LectureId { get; set; }
+    public Guid LectureId { get; set; }
     public Guid SubjectId { get; set; }
     public string Title { get; set; }
     public string Description { get; set; }

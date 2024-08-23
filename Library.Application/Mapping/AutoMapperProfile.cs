@@ -1,6 +1,7 @@
 using AutoMapper;
 using Library.Domain.DTOs;
 using Library.Domain.DTOs.Department;
+using Library.Domain.DTOs.Lecture;
 using Library.Domain.DTOs.Subject;
 using Library.Domain.Models;
 
@@ -20,6 +21,8 @@ public class AutoMapperProfile : Profile
         CreateMap<Subject, SubjectDetailsDto>().ReverseMap();
         // Lecture
         CreateMap<Lecture, LectureDto>().ReverseMap();
+        CreateMap<Lecture, CreateLectureDto>().ReverseMap();
+        // Book
         CreateMap<Book, BookDto>().ReverseMap();
     }
 }
