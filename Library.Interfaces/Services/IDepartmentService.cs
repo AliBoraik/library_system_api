@@ -1,12 +1,13 @@
+using Library.Domain;
 using Library.Domain.DTOs.Department;
 
 namespace Library.Interfaces.Services;
 
 public interface IDepartmentService
 {
-    Task<IEnumerable<DepartmentDto>> GetAllDepartmentsAsync();
-    Task<DepartmentDetailsDto> GetDepartmentByIdAsync(Guid id);
-    Task<Guid> AddDepartmentAsync(CreateDepartmentDto createDepartmentDto);
-    Task UpdateDepartmentAsync(DepartmentDto createDepartmentDto);
-    Task DeleteDepartmentAsync(Guid id);
+    Task<Result<IEnumerable<DepartmentDto>, Error>> GetAllDepartmentsAsync();
+    Task<Result<DepartmentDetailsDto,Error>> GetDepartmentByIdAsync(Guid id);
+    Task<Result<Guid,Error>> AddDepartmentAsync(CreateDepartmentDto createDepartmentDto);
+    Task<Result<Ok,Error>> UpdateDepartmentAsync(DepartmentDto createDepartmentDto);
+    Task<Result<Ok,Error>> DeleteDepartmentAsync(Guid id);
 }

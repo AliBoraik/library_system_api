@@ -1,15 +1,16 @@
 using System.IdentityModel.Tokens.Jwt;
-using System.Net;
 using System.Security.Claims;
 using System.Text;
-using Library.Application.Exceptions;
+using Library.Domain;
 using Library.Domain.Auth;
 using Library.Domain.Constants;
 using Library.Domain.Models;
 using Library.Interfaces.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Ok = Library.Domain.Ok;
 
 namespace Library.Application;
 
@@ -24,12 +25,12 @@ public class AuthService : IAuthService
         _userManager = userManager;
     }
 
-    public async Task<AuthDataResponse> Login(LoginModelDto loginModelDto)
+    public async Task<Result<AuthDataResponse, Error>> Login(LoginModelDto loginModelDto)
     {
         var user = await _userManager.FindByNameAsync(loginModelDto.Username);
-        if (user == null) throw new UnauthorizedException(ResponseMessage.UnauthorizedAccess);
-        if (!await _userManager.CheckPasswordAsync(user, loginModelDto.Password))
-            throw new UnauthorizedException(StringConstants.IncorrectPassword);
+        if (user == null) return new Error(StatusCodes.Status401Unauthorized,ResponseMessage.UnauthorizedAccess);
+        if (!await _userManager.CheckPasswordAsync(user, loginModelDto.Password)) 
+            return new Error(StatusCodes.Status401Unauthorized,StringConstants.IncorrectPassword); 
         var userRoles = await _userManager.GetRolesAsync(user);
         var authClaims = new List<Claim>
         {
@@ -45,38 +46,41 @@ public class AuthService : IAuthService
         };
     }
 
-    public async Task RegisterTeacher(RegisterModelDto modelDto)
+    public async Task<Result<Ok, Error>> RegisterTeacher(RegisterModelDto modelDto)
     {
         var userExists = await _userManager.FindByNameAsync(modelDto.Username);
-        if (userExists != null)
-            throw new BadRequestException(StringConstants.UserAlreadyExists);
+         if (userExists != null)
+             return new Error(StatusCodes.Status409Conflict,StringConstants.UserAlreadyExists);
         ApplicationUser user = new()
         {
             Email = modelDto.Email,
             SecurityStamp = Guid.NewGuid().ToString(),
             UserName = modelDto.Username
         };
-        var result = await _userManager.CreateAsync(user, modelDto.Password);
+        var result = await _userManager.CreateAsync(user, modelDto.Password); 
         if (!result.Succeeded)
-            throw new BadRequestException(result.Errors.First().Description);
+            return new Error(StatusCodes.Status500InternalServerError,result.Errors.First().Description);
         await _userManager.AddToRoleAsync(user, AppRoles.Teacher);
+        return new Ok();
+        
     }
 
-    public async Task RegisterAdmin(RegisterModelDto modelDto)
+    public async Task<Result<Ok, Error>> RegisterAdmin(RegisterModelDto modelDto)
     {
         var userExists = await _userManager.FindByNameAsync(modelDto.Username);
         if (userExists != null)
-            throw new BadRequestException(StringConstants.UserAlreadyExists);
+            return new Error(StatusCodes.Status409Conflict,StringConstants.UserAlreadyExists);
         ApplicationUser user = new()
         {
             Email = modelDto.Email,
             SecurityStamp = Guid.NewGuid().ToString(),
             UserName = modelDto.Username
         };
-        var result = await _userManager.CreateAsync(user, modelDto.Password);
+        var result = await _userManager.CreateAsync(user, modelDto.Password); 
         if (!result.Succeeded)
-            throw new HttpServerErrorException(HttpStatusCode.InternalServerError, result.Errors.First().Description);
+            return new Error(StatusCodes.Status500InternalServerError,result.Errors.First().Description);
         await _userManager.AddToRoleAsync(user, AppRoles.Admin);
+        return new Ok();
     }
 
     private JwtSecurityToken GetToken(List<Claim> authClaims)

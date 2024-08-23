@@ -1,4 +1,3 @@
-using Library.Application.Exceptions;
 using Library.Domain.Models;
 using Library.Infrastructure.DataContext;
 using Library.Interfaces.Repositories;
@@ -33,23 +32,23 @@ public class DepartmentRepository : IDepartmentRepository
     public async Task AddDepartmentAsync(Department department)
     {
         await _context.Departments.AddAsync(department);
-        await _context.SaveChangesAsync();
+        await Save();
     }
 
     public async Task UpdateDepartmentAsync(Department department)
     {
-        var departmentExists = await _context.Departments.AnyAsync(d => d.DepartmentId == department.DepartmentId);
-        if (!departmentExists)
-            throw new NotFoundException($"Can't found Department with ID = {department.DepartmentId}");
         _context.Entry(department).State = EntityState.Modified;
-        await _context.SaveChangesAsync();
+        await Save();
     }
 
-    public async Task DeleteDepartmentAsync(Guid id)
+    public async Task DeleteDepartmentAsync(Department department)
     {
-        var department = await _context.Departments.FindAsync(id);
-        if (department == null) throw new NotFoundException($"Can't found Department with ID = {id}");
         _context.Departments.Remove(department);
+        await Save();
+    }
+
+    private async Task Save()
+    {
         await _context.SaveChangesAsync();
     }
 }

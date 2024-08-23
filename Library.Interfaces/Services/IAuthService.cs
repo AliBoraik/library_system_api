@@ -1,10 +1,12 @@
+
+using Library.Domain;
 using Library.Domain.Auth;
 
 namespace Library.Interfaces.Services;
 
 public interface IAuthService
 {
-    Task<AuthDataResponse> Login(LoginModelDto loginModelDto);
-    Task RegisterTeacher(RegisterModelDto modelDto);
-    Task RegisterAdmin(RegisterModelDto modelDto);
+    Task<Result<AuthDataResponse,Error>> Login(LoginModelDto loginModelDto);
+    Task<Result<Ok ,Error>> RegisterTeacher(RegisterModelDto modelDto);
+    Task<Result<Ok,Error>> RegisterAdmin(RegisterModelDto modelDto);
 }

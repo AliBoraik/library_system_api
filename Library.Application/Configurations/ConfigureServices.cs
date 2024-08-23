@@ -11,7 +11,6 @@ public static class ConfigureServices
     {
         services.AddAuth(configuration);
         services.AddRedis(configuration);
-
         // Service 
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<ILectureService, LectureService>();

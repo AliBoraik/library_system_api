@@ -22,11 +22,13 @@ public class AuthenticateController : ControllerBase
 
     [HttpPost]
     [Route("login")]
-    public async Task<IActionResult> Login([FromBody] LoginModelDto modelDto)
+    public async Task<ActionResult<AuthDataResponse>> Login([FromBody] LoginModelDto modelDto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
-        var authData = await _authService.Login(modelDto);
-        return Ok(authData);
+        var result = await _authService.Login(modelDto);
+        return result.Match<ActionResult<AuthDataResponse>>(
+            authData => Ok(authData),
+            error => StatusCode(error.Code , error));
     }
 
     [HttpPost]
@@ -35,9 +37,10 @@ public class AuthenticateController : ControllerBase
     public async Task<IActionResult> RegisterTeacher([FromBody] RegisterModelDto modelDto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
-        await _authService.RegisterTeacher(modelDto);
-        return Ok(new Response
-            { StatusText = ResponseStatus.Success, Message = StringConstants.UserCreatedSuccessfully });
+       var result = await _authService.RegisterTeacher(modelDto);
+        return result.Match<IActionResult>(
+            _ => Ok(),
+            error => StatusCode(error.Code , error));
     }
 
     [HttpPost]
@@ -45,9 +48,11 @@ public class AuthenticateController : ControllerBase
     [Authorize(Roles = AppRoles.Admin)]
     public async Task<IActionResult> RegisterAdmin([FromBody] RegisterModelDto modelDto)
     {
-        if (!ModelState.IsValid) return BadRequest(ModelState);
-        await _authService.RegisterAdmin(modelDto);
-        return Ok(new Response
-            { StatusText = ResponseStatus.Success, Message = StringConstants.UserCreatedSuccessfully });
+        if (!ModelState.IsValid) return BadRequest(ModelState); 
+        var result =  await _authService.RegisterAdmin(modelDto);
+        return result.Match<IActionResult>(
+            _ => Ok(new Response
+                { Message = StringConstants.UserCreatedSuccessfully }),
+            error => StatusCode(error.Code , error));
     }
 }

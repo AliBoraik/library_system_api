@@ -1,5 +1,4 @@
 using AutoMapper;
-using Library.Application.Exceptions;
 using Library.Domain.DTOs.Subject;
 using Library.Domain.Models;
 using Library.Interfaces.Repositories;
@@ -27,8 +26,8 @@ public class SubjectService : ISubjectService
     public async Task<SubjectDetailsDto> GetSubjectByIdAsync(Guid id)
     {
         var subject = await _subjectRepository.GetSubjectByIdAsync(id);
-        if (subject == null)
-            throw new NotFoundException($"Not found subject with id = {id}");
+       // if (subject == null)
+         //   throw new NotFoundException($"Not found subject with id = {id}");
         return _mapper.Map<SubjectDetailsDto>(subject);
     }
 

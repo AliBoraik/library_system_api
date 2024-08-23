@@ -8,5 +8,5 @@ public interface IDepartmentRepository
     Task<Department?> GetDepartmentByIdAsync(Guid id);
     Task AddDepartmentAsync(Department department);
     Task UpdateDepartmentAsync(Department department);
-    Task DeleteDepartmentAsync(Guid id);
+    Task DeleteDepartmentAsync(Department department);
 }
