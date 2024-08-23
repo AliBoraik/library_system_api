@@ -1,4 +1,3 @@
-using Library.Domain;
 using Library.Domain.Auth;
 using Library.Domain.Constants;
 using Library.Interfaces.Services;
@@ -28,7 +27,7 @@ public class AuthenticateController : ControllerBase
         var result = await _authService.Login(modelDto);
         return result.Match<ActionResult<AuthDataResponse>>(
             authData => Ok(authData),
-            error => StatusCode(error.Code , error));
+            error => StatusCode(error.Code, error));
     }
 
     [HttpPost]
@@ -37,10 +36,10 @@ public class AuthenticateController : ControllerBase
     public async Task<IActionResult> RegisterTeacher([FromBody] RegisterModelDto modelDto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
-       var result = await _authService.RegisterTeacher(modelDto);
+        var result = await _authService.RegisterTeacher(modelDto);
         return result.Match<IActionResult>(
             _ => Ok(),
-            error => StatusCode(error.Code , error));
+            error => StatusCode(error.Code, error));
     }
 
     [HttpPost]
@@ -48,11 +47,10 @@ public class AuthenticateController : ControllerBase
     [Authorize(Roles = AppRoles.Admin)]
     public async Task<IActionResult> RegisterAdmin([FromBody] RegisterModelDto modelDto)
     {
-        if (!ModelState.IsValid) return BadRequest(ModelState); 
-        var result =  await _authService.RegisterAdmin(modelDto);
+        if (!ModelState.IsValid) return BadRequest(ModelState);
+        var result = await _authService.RegisterAdmin(modelDto);
         return result.Match<IActionResult>(
-            _ => Ok(new Response
-                { Message = StringConstants.UserCreatedSuccessfully }),
-            error => StatusCode(error.Code , error));
+            _ => Ok(),
+            error => StatusCode(error.Code, error));
     }
 }

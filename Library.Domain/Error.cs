@@ -1,3 +1,3 @@
 namespace Library.Domain;
 
-public sealed record Error(int Code , string Message);
+public sealed record Error(int Code, string Message);

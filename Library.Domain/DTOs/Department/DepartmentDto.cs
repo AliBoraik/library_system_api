@@ -4,6 +4,5 @@ namespace Library.Domain.DTOs.Department;
 
 public class DepartmentDto : CreateDepartmentDto
 {
-    [Required]
-    public Guid? DepartmentId { get; set; }
+    [Required] public Guid? DepartmentId { get; set; }
 }

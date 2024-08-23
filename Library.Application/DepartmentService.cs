@@ -18,37 +18,40 @@ public class DepartmentService : IDepartmentService
     {
         _departmentRepository = departmentRepository;
         _mapper = mapper;
-    } public async Task<Result<IEnumerable<DepartmentDto>, Error>> GetAllDepartmentsAsync()
+    }
+
+    public async Task<Result<IEnumerable<DepartmentDto>, Error>> GetAllDepartmentsAsync()
     {
-        var subjects = await _departmentRepository.GetAllDepartmentsInfoAsync();
-        if(!subjects.Any()) {
-            return  new Error(StatusCodes.Status404NotFound,"Not found any departments");
-        }
+        var subjects = await _departmentRepository.FindAllDepartmentsInfoAsync();
+        if (!subjects.Any()) return new Error(StatusCodes.Status404NotFound, "Not found any departments");
         var dto = _mapper.Map<IEnumerable<DepartmentDto>>(subjects);
         return Result<IEnumerable<DepartmentDto>, Error>.Ok(dto);
     }
 
     public async Task<Result<DepartmentDetailsDto, Error>> GetDepartmentByIdAsync(Guid id)
     {
-        var department = await _departmentRepository.GetDepartmentByIdAsync(id);
+        var department = await _departmentRepository.FindDepartmentByIdAsync(id);
         if (department == null)
-            return new Error(StatusCodes.Status404NotFound ,$"Not found department with id = {id}");
-        var departmentDetailsDto = _mapper.Map<DepartmentDetailsDto>(department);
-        return departmentDetailsDto;
+            return new Error(StatusCodes.Status404NotFound, $"Not found department with id = {id}");
+        return _mapper.Map<DepartmentDetailsDto>(department);
     }
 
     public async Task<Result<Guid, Error>> AddDepartmentAsync(CreateDepartmentDto createDepartmentDto)
     {
         var department = _mapper.Map<Department>(createDepartmentDto);
+        var departmentExists = await _departmentRepository.FindDepartmentByIdAsync(department.DepartmentId);
+        if (departmentExists != null)
+            return new Error(StatusCodes.Status409Conflict, "Department already exists");
         await _departmentRepository.AddDepartmentAsync(department);
         return department.DepartmentId;
     }
 
     public async Task<Result<Ok, Error>> UpdateDepartmentAsync(DepartmentDto departmentDto)
     {
-        var departmentExists = await _departmentRepository.GetDepartmentByIdAsync((Guid)departmentDto.DepartmentId!);
-        if (departmentExists == null)
-            return new Error(StatusCodes.Status404NotFound, $"Can't found Department with ID = {departmentDto.DepartmentId}");
+        var departmentExists = await _departmentRepository.DepartmentExistsAsync((Guid)departmentDto.DepartmentId!);
+        if (!departmentExists)
+            return new Error(StatusCodes.Status404NotFound,
+                $"Can't found Department with ID = {departmentDto.DepartmentId}");
         var department = _mapper.Map<Department>(departmentDto);
         await _departmentRepository.UpdateDepartmentAsync(department);
         return new Ok();
@@ -56,9 +59,9 @@ public class DepartmentService : IDepartmentService
 
     public async Task<Result<Ok, Error>> DeleteDepartmentAsync(Guid id)
     {
-        var departmentExists = await _departmentRepository.GetDepartmentByIdAsync(id);
+        var departmentExists = await _departmentRepository.FindDepartmentByIdAsync(id);
         if (departmentExists == null)
-            return new Error( StatusCodes.Status404NotFound, $"Can't found Department with ID = {id}");
+            return new Error(StatusCodes.Status404NotFound, $"Can't found Department with ID = {id}");
         await _departmentRepository.DeleteDepartmentAsync(departmentExists);
         return new Ok();
     }

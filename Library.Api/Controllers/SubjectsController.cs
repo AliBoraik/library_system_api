@@ -26,7 +26,10 @@ public class SubjectsController : ControllerBase
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<SubjectDetailsDto>> GetSubject(Guid id)
     {
-        return await _subjectService.GetSubjectByIdAsync(id);
+        var result = await _subjectService.GetSubjectByIdAsync(id);
+        return result.Match<ActionResult<SubjectDetailsDto>>(
+            dto => Ok(dto),
+            error => StatusCode(error.Code, error));
     }
 
     // POST: api/Subjects
@@ -34,8 +37,10 @@ public class SubjectsController : ControllerBase
     public async Task<ActionResult> PostSubject([FromBody] CreateSubjectDto createSubjectDto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
-        var id = await _subjectService.AddSubjectAsync(createSubjectDto);
-        return CreatedAtAction("GetSubject", new { id }, new { id });
+        var result = await _subjectService.AddSubjectAsync(createSubjectDto);
+        return result.Match<ActionResult>(
+            id => CreatedAtAction("GetSubject", new { id }, new { id }),
+            error => StatusCode(error.Code, error));
     }
 
     // PUT: api/Subjects/5
@@ -43,17 +48,19 @@ public class SubjectsController : ControllerBase
     public async Task<IActionResult> PutSubject([FromBody] SubjectDto subjectDto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
-        await _subjectService.UpdateSubjectAsync(subjectDto);
-
-        return NoContent();
+        var result = await _subjectService.UpdateSubjectAsync(subjectDto);
+        return result.Match<IActionResult>(
+            _ => Ok(),
+            error => StatusCode(error.Code, error));
     }
 
     // DELETE: api/Subjects/5
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteSubject(Guid id)
     {
-        await _subjectService.DeleteSubjectAsync(id);
-
-        return NoContent();
+        var result = await _subjectService.DeleteSubjectAsync(id);
+        return result.Match<ActionResult>(
+            _ => Ok(),
+            error => StatusCode(error.Code, error));
     }
 }

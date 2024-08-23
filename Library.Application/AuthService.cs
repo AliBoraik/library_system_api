@@ -28,9 +28,9 @@ public class AuthService : IAuthService
     public async Task<Result<AuthDataResponse, Error>> Login(LoginModelDto loginModelDto)
     {
         var user = await _userManager.FindByNameAsync(loginModelDto.Username);
-        if (user == null) return new Error(StatusCodes.Status401Unauthorized,ResponseMessage.UnauthorizedAccess);
-        if (!await _userManager.CheckPasswordAsync(user, loginModelDto.Password)) 
-            return new Error(StatusCodes.Status401Unauthorized,StringConstants.IncorrectPassword); 
+        if (user == null) return new Error(StatusCodes.Status401Unauthorized, ResponseMessage.UnauthorizedAccess);
+        if (!await _userManager.CheckPasswordAsync(user, loginModelDto.Password))
+            return new Error(StatusCodes.Status401Unauthorized, StringConstants.IncorrectPassword);
         var userRoles = await _userManager.GetRolesAsync(user);
         var authClaims = new List<Claim>
         {
@@ -49,36 +49,35 @@ public class AuthService : IAuthService
     public async Task<Result<Ok, Error>> RegisterTeacher(RegisterModelDto modelDto)
     {
         var userExists = await _userManager.FindByNameAsync(modelDto.Username);
-         if (userExists != null)
-             return new Error(StatusCodes.Status409Conflict,StringConstants.UserAlreadyExists);
+        if (userExists != null)
+            return new Error(StatusCodes.Status409Conflict, StringConstants.UserAlreadyExists);
         ApplicationUser user = new()
         {
             Email = modelDto.Email,
             SecurityStamp = Guid.NewGuid().ToString(),
             UserName = modelDto.Username
         };
-        var result = await _userManager.CreateAsync(user, modelDto.Password); 
+        var result = await _userManager.CreateAsync(user, modelDto.Password);
         if (!result.Succeeded)
-            return new Error(StatusCodes.Status500InternalServerError,result.Errors.First().Description);
+            return new Error(StatusCodes.Status500InternalServerError, result.Errors.First().Description);
         await _userManager.AddToRoleAsync(user, AppRoles.Teacher);
         return new Ok();
-        
     }
 
     public async Task<Result<Ok, Error>> RegisterAdmin(RegisterModelDto modelDto)
     {
         var userExists = await _userManager.FindByNameAsync(modelDto.Username);
         if (userExists != null)
-            return new Error(StatusCodes.Status409Conflict,StringConstants.UserAlreadyExists);
+            return new Error(StatusCodes.Status409Conflict, StringConstants.UserAlreadyExists);
         ApplicationUser user = new()
         {
             Email = modelDto.Email,
             SecurityStamp = Guid.NewGuid().ToString(),
             UserName = modelDto.Username
         };
-        var result = await _userManager.CreateAsync(user, modelDto.Password); 
+        var result = await _userManager.CreateAsync(user, modelDto.Password);
         if (!result.Succeeded)
-            return new Error(StatusCodes.Status500InternalServerError,result.Errors.First().Description);
+            return new Error(StatusCodes.Status500InternalServerError, result.Errors.First().Description);
         await _userManager.AddToRoleAsync(user, AppRoles.Admin);
         return new Ok();
     }

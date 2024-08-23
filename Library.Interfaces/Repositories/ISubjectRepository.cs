@@ -4,9 +4,10 @@ namespace Library.Interfaces.Repositories;
 
 public interface ISubjectRepository
 {
-    Task<IEnumerable<Subject>> GetAllSubjectsInfoAsync();
-    Task<Subject?> GetSubjectByIdAsync(Guid id);
+    Task<IEnumerable<Subject>> FindAllSubjectsInfoAsync();
+    Task<Subject?> FindSubjectByIdAsync(Guid id);
+    Task<bool> SubjectExistsAsync(Guid id);
     Task AddSubjectAsync(Subject subject);
     Task UpdateSubjectAsync(Subject subject);
-    Task DeleteSubjectAsync(Guid id);
+    Task DeleteSubjectAsync(Subject id);
 }

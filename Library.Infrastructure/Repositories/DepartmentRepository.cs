@@ -5,50 +5,56 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Library.Infrastructure.Repositories;
 
-public class DepartmentRepository : IDepartmentRepository
+public class DepartmentRepository(ApplicationDbContext context) : IDepartmentRepository
 {
-    private readonly ApplicationDbContext _context;
-
-    public DepartmentRepository(ApplicationDbContext context)
+    public async Task<IEnumerable<Department>> FindAllDepartmentsInfoAsync()
     {
-        _context = context;
-    }
-
-    public async Task<IEnumerable<Department>> GetAllDepartmentsInfoAsync()
-    {
-        return await _context.Departments
+        return await context.Departments
             .AsNoTracking()
             .ToListAsync();
     }
 
-    public async Task<Department?> GetDepartmentByIdAsync(Guid id)
+    public async Task<Department?> FindDepartmentByIdAsync(Guid id)
     {
-        return await _context.Departments
+        return await context.Departments
             .AsNoTracking()
             .Include(d => d.Subjects)
             .FirstOrDefaultAsync(d => d.DepartmentId == id);
     }
 
+    public async Task<bool> DepartmentExistsAsync(Guid id)
+    {
+        return await context.Departments.AnyAsync(d => d.DepartmentId == id);
+    }
+
     public async Task AddDepartmentAsync(Department department)
     {
-        await _context.Departments.AddAsync(department);
+        await context.Departments.AddAsync(department);
         await Save();
     }
 
     public async Task UpdateDepartmentAsync(Department department)
     {
-        _context.Entry(department).State = EntityState.Modified;
+        context.Entry(department).State = EntityState.Modified;
         await Save();
     }
 
     public async Task DeleteDepartmentAsync(Department department)
     {
-        _context.Departments.Remove(department);
+        context.Departments.Remove(department);
         await Save();
+    }
+
+    public async Task<Department?> FindDepartmentByNameAsync(string name)
+    {
+        return await context.Departments
+            .AsNoTracking()
+            .Include(d => d.Subjects)
+            .FirstOrDefaultAsync(d => d.Name == name);
     }
 
     private async Task Save()
     {
-        await _context.SaveChangesAsync();
+        await context.SaveChangesAsync();
     }
 }

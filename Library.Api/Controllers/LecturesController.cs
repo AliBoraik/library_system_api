@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using Library.Domain.DTOs;
 using Library.Domain.DTOs.Lecture;
 using Library.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -29,45 +28,51 @@ public class LecturesController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<LectureDto>> GetLecture(Guid id)
     {
-        var lecture = await _lectureService.GetLectureByIdAsync(id);
-
-        if (lecture == null) return NotFound();
-
-        return Ok(lecture);
+        var result = await _lectureService.GetLectureByIdAsync(id);
+        return result.Match<ActionResult<LectureDto>>(
+            dto => Ok(dto),
+            error => StatusCode(error.Code, error));
     }
 
     // POST: api/Lectures
     [HttpPost]
-    public async Task<ActionResult<LectureDto>> PostLecture([FromForm] CreateLectureDto createLectureDto, [Required] IFormFile file)
+    public async Task<ActionResult<LectureDto>> PostLecture([FromForm] CreateLectureDto createLectureDto,
+        [Required] IFormFile file)
     {
-        await _lectureService.AddLectureAsync(createLectureDto, file);
-        return Ok();
+        if (!ModelState.IsValid) return BadRequest(ModelState);
+        var result = await _lectureService.AddLectureAsync(createLectureDto, file);
+        return result.Match<ActionResult>(
+            id => CreatedAtAction("GetLecture", new { id }, new { id }),
+            error => StatusCode(error.Code, error));
     }
 
-    // PUT: api/Lectures/5
-    [HttpPut("{id}")]
-    public async Task<IActionResult> PutLecture(Guid id, [FromForm] LectureDto lectureDto, IFormFile? file)
+    // PUT: api/Lectures
+    [HttpPut]
+    public async Task<IActionResult> PutLecture([FromForm] LectureDto lectureDto, IFormFile? file)
     {
-        if (id != lectureDto.LectureId) return BadRequest();
-
-        await _lectureService.UpdateLectureAsync(lectureDto, file);
-
-        return NoContent();
+        var result = await _lectureService.UpdateLectureAsync(lectureDto, file);
+        return result.Match<IActionResult>(
+            _ => Ok(),
+            error => StatusCode(error.Code, error));
     }
 
     // DELETE: api/Lectures/5
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteLecture(Guid id)
     {
-        await _lectureService.DeleteLectureAsync(id);
-        return NoContent();
+        var result = await _lectureService.DeleteLectureAsync(id);
+        return result.Match<IActionResult>(
+            _ => Ok(),
+            error => StatusCode(error.Code, error));
     }
 
     // GET: api/Lectures/download/5
     [HttpGet("download/{id}")]
     public async Task<IActionResult> DownloadLecture(Guid id)
     {
-        var path = await _lectureService.GetLectureFilePathByIdAsync(id);
+        var result = await _lectureService.GetLectureFilePathByIdAsync(id);
+        if (!result.IsOk) return StatusCode(result.Error.Code, result.Error.Message);
+        var path = result.Value;
         var fileBytes = await System.IO.File.ReadAllBytesAsync(path);
         return File(fileBytes, "application/octet-stream", Path.GetFileName(path));
     }

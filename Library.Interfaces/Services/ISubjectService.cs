@@ -1,3 +1,4 @@
+using Library.Domain;
 using Library.Domain.DTOs.Subject;
 
 namespace Library.Interfaces.Services;
@@ -5,8 +6,8 @@ namespace Library.Interfaces.Services;
 public interface ISubjectService
 {
     Task<IEnumerable<SubjectDto>> GetAllSubjectsAsync();
-    Task<SubjectDetailsDto> GetSubjectByIdAsync(Guid id);
-    Task<Guid> AddSubjectAsync(CreateSubjectDto subjectDto);
-    Task UpdateSubjectAsync(SubjectDto subjectDto);
-    Task DeleteSubjectAsync(Guid id);
+    Task<Result<SubjectDetailsDto, Error>> GetSubjectByIdAsync(Guid id);
+    Task<Result<Guid, Error>> AddSubjectAsync(CreateSubjectDto subjectDto);
+    Task<Result<Ok, Error>> UpdateSubjectAsync(SubjectDto subjectDto);
+    Task<Result<Ok, Error>> DeleteSubjectAsync(Guid id);
 }

@@ -1,4 +1,3 @@
-using Library.Application.Exceptions;
 using Library.Domain.Models;
 using Library.Infrastructure.DataContext;
 using Library.Interfaces.Repositories;
@@ -6,62 +5,54 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Library.Infrastructure.Repositories;
 
-public class LectureRepository : ILectureRepository
+public class LectureRepository(ApplicationDbContext context) : ILectureRepository
 {
-    private readonly ApplicationDbContext _context;
-
-    public LectureRepository(ApplicationDbContext context)
+    public async Task<IEnumerable<Lecture>> FindAllLecturesAsync()
     {
-        _context = context;
-    }
-
-    public async Task<IEnumerable<Lecture>> GetAllLecturesAsync()
-    {
-        return await _context.Lectures
+        return await context.Lectures
             .AsNoTracking()
             .ToListAsync();
     }
 
-    public async Task<Lecture?> GetLectureByIdAsync(Guid id)
+    public async Task<Lecture?> FindLectureByIdAsync(Guid id)
     {
-        return await _context.Lectures
+        return await context.Lectures
             .AsNoTracking()
             .Include(l => l.Subject)
             .FirstOrDefaultAsync(l => l.LectureId == id);
     }
 
-    public async Task<string> GetLectureFilePathByIdAsync(Guid id)
+    public async Task<Lecture?> FindLectureByNameAsync(string name)
     {
-        var filePath = await _context.Lectures
+        return await context.Lectures
+            .AsNoTracking()
+            .Include(l => l.Subject)
+            .FirstOrDefaultAsync(l => l.Title == name);
+    }
+
+    public async Task<string?> FindLectureFilePathByIdAsync(Guid id)
+    {
+        return await context.Lectures
             .Where(l => l.LectureId == id)
             .Select(l => l.FilePath)
             .FirstOrDefaultAsync();
-        Console.WriteLine();
-        if (filePath == null)
-            throw new NotFoundException($"Can't found Lecture with ID = {id}");
-        return filePath;
     }
 
     public async Task AddLectureAsync(Lecture lecture)
     {
-        await _context.Lectures.AddAsync(lecture);
-        await _context.SaveChangesAsync();
+        await context.Lectures.AddAsync(lecture);
+        await context.SaveChangesAsync();
     }
 
     public async Task UpdateLectureAsync(Lecture lecture)
     {
-        var lectureExists = await _context.Lectures.FindAsync(lecture.LectureId);
-        if (lectureExists == null)
-            throw new NotFoundException($"Can't found Lecture with ID = {lecture.LectureId}");
-        _context.Entry(lecture).State = EntityState.Modified;
-        await _context.SaveChangesAsync();
+        context.Entry(lecture).State = EntityState.Modified;
+        await context.SaveChangesAsync();
     }
 
-    public async Task DeleteLectureAsync(Guid id)
+    public async Task DeleteLectureAsync(Lecture lecture)
     {
-        var lecture = await _context.Lectures.FindAsync(id);
-        if (lecture == null) throw new NotFoundException($"Can't found Lecture with ID = {id}");
-        _context.Lectures.Remove(lecture);
-        await _context.SaveChangesAsync();
+        context.Lectures.Remove(lecture);
+        await context.SaveChangesAsync();
     }
 }

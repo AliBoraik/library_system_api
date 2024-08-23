@@ -5,25 +5,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Library.Infrastructure.Repositories;
 
-public class SubjectRepository : ISubjectRepository
+public class SubjectRepository(ApplicationDbContext context) : ISubjectRepository
 {
-    private readonly ApplicationDbContext _context;
-
-    public SubjectRepository(ApplicationDbContext context)
+    public async Task<IEnumerable<Subject>> FindAllSubjectsInfoAsync()
     {
-        _context = context;
-    }
-
-    public async Task<IEnumerable<Subject>> GetAllSubjectsInfoAsync()
-    {
-        return await _context.Subjects
+        return await context.Subjects
             .AsNoTracking()
             .ToListAsync();
     }
 
-    public async Task<Subject?> GetSubjectByIdAsync(Guid id)
+    public async Task<Subject?> FindSubjectByIdAsync(Guid id)
     {
-        return await _context.Subjects
+        return await context.Subjects
             .AsNoTracking()
             .Include(s => s.Lectures)
             .Include(s => s.Books)
@@ -31,31 +24,26 @@ public class SubjectRepository : ISubjectRepository
             .FirstOrDefaultAsync(s => s.SubjectId == id);
     }
 
+    public async Task<bool> SubjectExistsAsync(Guid id)
+    {
+        return await context.Subjects.AnyAsync(d => d.SubjectId == id);
+    }
+
     public async Task AddSubjectAsync(Subject subject)
     {
-        var departmentsExists = await _context.Departments.AnyAsync(d => d.DepartmentId == subject.DepartmentId);
-      //  if (!departmentsExists)
-        //    throw new NotFoundException($"Not found department with id = {subject.DepartmentId}");
-        await _context.Subjects.AddAsync(subject);
-        await _context.SaveChangesAsync();
+        await context.Subjects.AddAsync(subject);
+        await context.SaveChangesAsync();
     }
 
     public async Task UpdateSubjectAsync(Subject subject)
     {
-        var subjectExists = await _context.Subjects.AnyAsync(d => d.SubjectId == subject.SubjectId);
-      //  if (!subjectExists) throw new NotFoundException($"Can't found subject with ID = {subject.SubjectId}");
-        var departmentsExists = await _context.Departments.AnyAsync(d => d.DepartmentId == subject.DepartmentId);
-       // if (!departmentsExists)
-         //   throw new NotFoundException($"Not found department with id = {subject.DepartmentId}");
-        _context.Entry(subject).State = EntityState.Modified;
-        await _context.SaveChangesAsync();
+        context.Entry(subject).State = EntityState.Modified;
+        await context.SaveChangesAsync();
     }
 
-    public async Task DeleteSubjectAsync(Guid id)
+    public async Task DeleteSubjectAsync(Subject subject)
     {
-        var subject = await _context.Subjects.FindAsync(id);
-      //  if (subject == null) throw new NotFoundException($"Can't found subject with ID = {id}");
-        _context.Subjects.Remove(subject);
-        await _context.SaveChangesAsync();
+        context.Subjects.Remove(subject);
+        await context.SaveChangesAsync();
     }
 }
