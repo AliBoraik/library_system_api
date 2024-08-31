@@ -7,11 +7,11 @@ namespace Library.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class DepartmentsController(IDepartmentService departmentService) : ControllerBase
+[OutputCache(Tags = ["GetDepartments"])]
+public class DepartmentsController(IDepartmentService departmentService , IOutputCacheStore cacheStore) : ControllerBase
 {
     // GET: api/Department
     [HttpGet]
-    [OutputCache]
     public async Task<ActionResult<IEnumerable<DepartmentDto>>> GetDepartments()
     {
         var result = await departmentService.GetAllDepartmentsAsync();
@@ -33,13 +33,14 @@ public class DepartmentsController(IDepartmentService departmentService) : Contr
 
     // POST: api/Department
     [HttpPost]
-    public async Task<ActionResult> PostDepartment([FromBody] CreateDepartmentDto createDepartmentDto)
+    public async Task<ActionResult> PostDepartment([FromBody] CreateDepartmentDto createDepartmentDto , CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
         var result = await departmentService.AddDepartmentAsync(createDepartmentDto);
-        return result.Match<ActionResult>(
-            id => CreatedAtAction("GetDepartment", new { id }, new { id }),
-            error => StatusCode(error.Code, error));
+        if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
+        await cacheStore.EvictByTagAsync("GetDepartments",cancellationToken);
+        var id = result.Value;
+        return CreatedAtAction("GetDepartment", new { id }, new { id });
     }
 
     // PUT: api/Department/5
