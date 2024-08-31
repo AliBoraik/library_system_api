@@ -17,9 +17,10 @@ public class DepartmentRepository(ApplicationDbContext context) : IDepartmentRep
     public async Task<Department?> FindDepartmentByIdAsync(Guid id)
     {
         return await context.Departments
+            .Where(d => d.DepartmentId == id)
             .AsNoTracking()
             .Include(d => d.Subjects)
-            .FirstOrDefaultAsync(d => d.DepartmentId == id);
+            .FirstOrDefaultAsync();
     }
 
     public async Task<bool> DepartmentExistsAsync(Guid id)
@@ -48,9 +49,10 @@ public class DepartmentRepository(ApplicationDbContext context) : IDepartmentRep
     public async Task<Department?> FindDepartmentByNameAsync(string name)
     {
         return await context.Departments
+            .Where(d => d.Name == name)
             .AsNoTracking()
             .Include(d => d.Subjects)
-            .FirstOrDefaultAsync(d => d.Name == name);
+            .FirstOrDefaultAsync();
     }
 
     private async Task Save()

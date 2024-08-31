@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Library.Domain.DTOs.Book;
 using Library.Domain.DTOs.Lecture;
 
 namespace Library.Domain.DTOs.Subject;

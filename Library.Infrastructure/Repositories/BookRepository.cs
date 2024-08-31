@@ -7,35 +7,51 @@ namespace Library.Infrastructure.Repositories;
 
 public class BookRepository(ApplicationDbContext context) : IBookRepository
 {
-    public async Task<IEnumerable<Book>> GetAllBooksAsync()
+    public async Task<IEnumerable<Book>> FindAllBooksAsync()
     {
-        return await context.Books.Include(b => b.Subject)
+        return await context.Books
+            .AsNoTracking()
             .ToListAsync();
     }
 
-    public async Task<Book?> GetBookByIdAsync(int id)
+    public async Task<Book?> FindBookByIdAsync(Guid id)
     {
         return await context.Books
-            .Include(b => b.Subject)
-            .FirstOrDefaultAsync(b => b.BookId == id);
+            .Where(l => l.BookId == id)
+            .AsNoTracking()
+            .FirstOrDefaultAsync();
     }
 
-    public async Task AddBookAsync(Book? book)
+    public async Task<Book?> FindBookByNameAsync(string name , Guid subjectId)
     {
-        await context.Books.AddAsync(book);
-        await context.SaveChangesAsync();
+        return await context.Books
+            .AsNoTracking()
+            .Where(l => l.Title == name && l.SubjectId == subjectId)
+            .FirstOrDefaultAsync();
     }
 
-    public async Task UpdateBookAsync(Book book)
+    public async Task<string?> FindBookFilePathByIdAsync(Guid id)
     {
-        context.Entry(book).State = EntityState.Modified;
-        await context.SaveChangesAsync();
+        return await context.Books
+            .AsNoTracking()
+            .Where(l => l.BookId == id)
+            .Select(l => l.FilePath)
+            .FirstOrDefaultAsync();
     }
 
-    public async Task DeleteBookAsync(int id)
+    public async Task AddBookAsync(Book book)
     {
-        var book = await context.Books.FindAsync(id);
+        await context.Books.AddAsync(book); 
+        await Save();
+    }
+
+    public async Task DeleteBookAsync(Book book)
+    {
         context.Books.Remove(book);
+        await Save();
+    }
+    private async Task Save()
+    {
         await context.SaveChangesAsync();
     }
 }

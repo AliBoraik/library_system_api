@@ -4,9 +4,10 @@ namespace Library.Interfaces.Repositories;
 
 public interface IBookRepository
 {
-    Task<IEnumerable<Book>> GetAllBooksAsync();
-    Task<Book?> GetBookByIdAsync(int id);
-    Task AddBookAsync(Book? book);
-    Task UpdateBookAsync(Book book);
-    Task DeleteBookAsync(int id);
+    Task<IEnumerable<Book>> FindAllBooksAsync();
+    Task<Book?> FindBookByIdAsync(Guid id);
+    Task<Book?> FindBookByNameAsync(string name, Guid subjectId);
+    Task<string?> FindBookFilePathByIdAsync(Guid id);
+    Task AddBookAsync(Book lecture);
+    Task DeleteBookAsync(Book book);
 }

@@ -18,10 +18,11 @@ public class SubjectRepository(ApplicationDbContext context) : ISubjectRepositor
     {
         return await context.Subjects
             .AsNoTracking()
+            .Where(s => s.SubjectId == id)
             .Include(s => s.Lectures)
             .Include(s => s.Books)
             .AsSplitQuery()
-            .FirstOrDefaultAsync(s => s.SubjectId == id);
+            .FirstOrDefaultAsync();
     }
 
     public async Task<bool> SubjectExistsAsync(Guid id)
@@ -32,18 +33,22 @@ public class SubjectRepository(ApplicationDbContext context) : ISubjectRepositor
     public async Task AddSubjectAsync(Subject subject)
     {
         await context.Subjects.AddAsync(subject);
-        await context.SaveChangesAsync();
+        await Save();
     }
 
     public async Task UpdateSubjectAsync(Subject subject)
     {
         context.Entry(subject).State = EntityState.Modified;
-        await context.SaveChangesAsync();
+        await Save();
     }
 
     public async Task DeleteSubjectAsync(Subject subject)
     {
         context.Subjects.Remove(subject);
+        await Save();
+    }
+    private async Task Save()
+    {
         await context.SaveChangesAsync();
     }
 }

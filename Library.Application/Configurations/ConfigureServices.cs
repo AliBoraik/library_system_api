@@ -17,6 +17,7 @@ public static class ConfigureServices
         services.AddScoped<IDepartmentService, DepartmentService>();
         services.AddScoped<ISubjectService, SubjectService>();
         services.AddScoped<IBookService, BookService>();
+        services.AddSingleton<IUploadsService, UploadsService>();
         services.AddAutoMapper(typeof(AutoMapperProfile));
     }
 }

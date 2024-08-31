@@ -6,27 +6,20 @@ namespace Library.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class SubjectsController : ControllerBase
+public class SubjectsController(ISubjectService subjectService) : ControllerBase
 {
-    private readonly ISubjectService _subjectService;
-
-    public SubjectsController(ISubjectService subjectService)
-    {
-        _subjectService = subjectService;
-    }
-
     // GET: api/Subjects
     [HttpGet]
     public async Task<IEnumerable<SubjectDto>> GetSubjects()
     {
-        return await _subjectService.GetAllSubjectsAsync();
+        return await subjectService.GetAllSubjectsAsync();
     }
 
     // GET: api/Subjects/5
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<SubjectDetailsDto>> GetSubject(Guid id)
     {
-        var result = await _subjectService.GetSubjectByIdAsync(id);
+        var result = await subjectService.GetSubjectByIdAsync(id);
         return result.Match<ActionResult<SubjectDetailsDto>>(
             dto => Ok(dto),
             error => StatusCode(error.Code, error));
@@ -37,7 +30,7 @@ public class SubjectsController : ControllerBase
     public async Task<ActionResult> PostSubject([FromBody] CreateSubjectDto createSubjectDto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
-        var result = await _subjectService.AddSubjectAsync(createSubjectDto);
+        var result = await subjectService.AddSubjectAsync(createSubjectDto);
         return result.Match<ActionResult>(
             id => CreatedAtAction("GetSubject", new { id }, new { id }),
             error => StatusCode(error.Code, error));
@@ -48,7 +41,7 @@ public class SubjectsController : ControllerBase
     public async Task<IActionResult> PutSubject([FromBody] SubjectDto subjectDto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
-        var result = await _subjectService.UpdateSubjectAsync(subjectDto);
+        var result = await subjectService.UpdateSubjectAsync(subjectDto);
         return result.Match<IActionResult>(
             _ => Ok(),
             error => StatusCode(error.Code, error));
@@ -58,7 +51,7 @@ public class SubjectsController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteSubject(Guid id)
     {
-        var result = await _subjectService.DeleteSubjectAsync(id);
+        var result = await subjectService.DeleteSubjectAsync(id);
         return result.Match<ActionResult>(
             _ => Ok(),
             error => StatusCode(error.Code, error));

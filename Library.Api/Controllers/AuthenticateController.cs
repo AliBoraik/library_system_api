@@ -10,21 +10,14 @@ namespace Library.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class AuthenticateController : ControllerBase
+public class AuthenticateController(IAuthService authService) : ControllerBase
 {
-    private readonly IAuthService _authService;
-
-    public AuthenticateController(IAuthService authService)
-    {
-        _authService = authService;
-    }
-
     [HttpPost]
     [Route("login")]
     public async Task<ActionResult<AuthDataResponse>> Login([FromBody] LoginModelDto modelDto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
-        var result = await _authService.Login(modelDto);
+        var result = await authService.Login(modelDto);
         return result.Match<ActionResult<AuthDataResponse>>(
             authData => Ok(authData),
             error => StatusCode(error.Code, error));
@@ -36,7 +29,7 @@ public class AuthenticateController : ControllerBase
     public async Task<IActionResult> RegisterTeacher([FromBody] RegisterModelDto modelDto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
-        var result = await _authService.RegisterTeacher(modelDto);
+        var result = await authService.RegisterTeacher(modelDto);
         return result.Match<IActionResult>(
             _ => Ok(),
             error => StatusCode(error.Code, error));
@@ -48,7 +41,7 @@ public class AuthenticateController : ControllerBase
     public async Task<IActionResult> RegisterAdmin([FromBody] RegisterModelDto modelDto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
-        var result = await _authService.RegisterAdmin(modelDto);
+        var result = await authService.RegisterAdmin(modelDto);
         return result.Match<IActionResult>(
             _ => Ok(),
             error => StatusCode(error.Code, error));
