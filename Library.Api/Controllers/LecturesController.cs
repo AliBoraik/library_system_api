@@ -71,7 +71,7 @@ public class LecturesController : ControllerBase
     public async Task<IActionResult> DownloadLecture(Guid id)
     {
         var result = await _lectureService.GetLectureFilePathByIdAsync(id);
-        if (!result.IsOk) return StatusCode(result.Error.Code, result.Error.Message);
+        if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
         var path = result.Value;
         var fileBytes = await System.IO.File.ReadAllBytesAsync(path);
         return File(fileBytes, "application/octet-stream", Path.GetFileName(path));

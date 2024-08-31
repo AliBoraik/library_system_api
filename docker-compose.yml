@@ -8,7 +8,6 @@
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "admin"
       POSTGRES_DB: "LibraryDB"
-    restart: always
     extra_hosts:
       - "database:172.17.0.1"
     volumes:
@@ -18,7 +17,6 @@
     container_name: "redis"
     ports:
       - "6379:6379"
-    restart: always
     command: [ "redis-server", "--appendonly", "no", "--maxmemory", "500mb", "--maxmemory-policy", "allkeys-lru" ]
     hostname: redis
 
