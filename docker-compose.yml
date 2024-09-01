@@ -17,8 +17,19 @@
     container_name: "redis"
     ports:
       - "6379:6379"
-    command: [ "redis-server", "--appendonly", "no", "--maxmemory", "500mb", "--maxmemory-policy", "allkeys-lru" ]
     hostname: redis
+    volumes:
+      - "redis_data:/data"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
 
 volumes:
   db_data:
+  redis_data:
+    driver: local

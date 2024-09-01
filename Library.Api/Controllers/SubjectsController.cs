@@ -1,15 +1,18 @@
+using Library.Domain.Constants;
 using Library.Domain.DTOs.Subject;
 using Library.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 
 namespace Library.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class SubjectsController(ISubjectService subjectService) : ControllerBase
+public class SubjectsController(ISubjectService subjectService, IOutputCacheStore cacheStore)  : ControllerBase
 {
     // GET: api/Subjects
     [HttpGet]
+    [OutputCache(Tags = [OutputCacheTags.Subjects])]
     public async Task<IEnumerable<SubjectDto>> GetSubjects()
     {
         return await subjectService.GetAllSubjectsAsync();
@@ -17,6 +20,7 @@ public class SubjectsController(ISubjectService subjectService) : ControllerBase
 
     // GET: api/Subjects/5
     [HttpGet("{id:guid}")]
+    [OutputCache(Tags = [OutputCacheTags.Subjects])]
     public async Task<ActionResult<SubjectDetailsDto>> GetSubject(Guid id)
     {
         var result = await subjectService.GetSubjectByIdAsync(id);
@@ -31,9 +35,10 @@ public class SubjectsController(ISubjectService subjectService) : ControllerBase
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
         var result = await subjectService.AddSubjectAsync(createSubjectDto);
-        return result.Match<ActionResult>(
-            id => CreatedAtAction("GetSubject", new { id }, new { id }),
-            error => StatusCode(error.Code, error));
+        if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
+        await cacheStore.EvictByTagAsync(OutputCacheTags.Subjects,CancellationToken.None);
+        var id = result.Value;
+        return CreatedAtAction("GetSubject", new { id }, new { id });
     }
 
     // PUT: api/Subjects/5
@@ -42,9 +47,9 @@ public class SubjectsController(ISubjectService subjectService) : ControllerBase
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
         var result = await subjectService.UpdateSubjectAsync(subjectDto);
-        return result.Match<IActionResult>(
-            _ => Ok(),
-            error => StatusCode(error.Code, error));
+        if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
+        await cacheStore.EvictByTagAsync(OutputCacheTags.Subjects,CancellationToken.None);
+        return Ok();
     }
 
     // DELETE: api/Subjects/5
@@ -52,8 +57,8 @@ public class SubjectsController(ISubjectService subjectService) : ControllerBase
     public async Task<IActionResult> DeleteSubject(Guid id)
     {
         var result = await subjectService.DeleteSubjectAsync(id);
-        return result.Match<ActionResult>(
-            _ => Ok(),
-            error => StatusCode(error.Code, error));
+        if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
+        await cacheStore.EvictByTagAsync(OutputCacheTags.Subjects,CancellationToken.None);
+        return Ok();
     }
 }

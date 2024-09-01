@@ -1,3 +1,4 @@
+using Library.Domain.Constants;
 using Library.Domain.DTOs.Department;
 using Library.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -7,11 +8,11 @@ namespace Library.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[OutputCache(Tags = ["GetDepartments"])]
 public class DepartmentsController(IDepartmentService departmentService , IOutputCacheStore cacheStore) : ControllerBase
 {
     // GET: api/Department
     [HttpGet]
+    [OutputCache(Tags = [OutputCacheTags.Departments])]
     public async Task<ActionResult<IEnumerable<DepartmentDto>>> GetDepartments()
     {
         var result = await departmentService.GetAllDepartmentsAsync();
@@ -22,6 +23,7 @@ public class DepartmentsController(IDepartmentService departmentService , IOutpu
 
     // GET: api/Department/5
     [HttpGet("{id:guid}")]
+    [OutputCache(Tags = [OutputCacheTags.Departments])]
     public async Task<ActionResult<DepartmentDetailsDto>> GetDepartment(Guid id)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -33,12 +35,12 @@ public class DepartmentsController(IDepartmentService departmentService , IOutpu
 
     // POST: api/Department
     [HttpPost]
-    public async Task<ActionResult> PostDepartment([FromBody] CreateDepartmentDto createDepartmentDto , CancellationToken cancellationToken)
+    public async Task<ActionResult> PostDepartment([FromBody] CreateDepartmentDto createDepartmentDto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
         var result = await departmentService.AddDepartmentAsync(createDepartmentDto);
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
-        await cacheStore.EvictByTagAsync("GetDepartments",cancellationToken);
+        await cacheStore.EvictByTagAsync(OutputCacheTags.Departments,CancellationToken.None);
         var id = result.Value;
         return CreatedAtAction("GetDepartment", new { id }, new { id });
     }
@@ -49,9 +51,9 @@ public class DepartmentsController(IDepartmentService departmentService , IOutpu
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
         var result = await departmentService.UpdateDepartmentAsync(departmentDto);
-        return result.Match<ActionResult>(
-            _ => Ok(),
-            error => StatusCode(error.Code, error));
+        if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
+        await cacheStore.EvictByTagAsync(OutputCacheTags.Departments,CancellationToken.None);
+        return Ok();
     }
 
     // DELETE: api/Department/5
@@ -59,8 +61,8 @@ public class DepartmentsController(IDepartmentService departmentService , IOutpu
     public async Task<IActionResult> DeleteDepartment(Guid id)
     {
         var result = await departmentService.DeleteDepartmentAsync(id);
-        return result.Match<ActionResult>(
-            _ => Ok(),
-            error => StatusCode(error.Code, error));
+        if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
+        await cacheStore.EvictByTagAsync(OutputCacheTags.Departments,CancellationToken.None);
+        return Ok();
     }
 }

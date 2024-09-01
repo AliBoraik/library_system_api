@@ -10,13 +10,14 @@ public static class RedisConfiguration
         var dockerEnv = Environment.GetEnvironmentVariable("CONNECTION_STRING_REDIS");
         services.AddStackExchangeRedisOutputCache(options =>
         {
-            options.InstanceName = "Library-App";
+            
             options.Configuration = configuration.GetConnectionString("Redis")!;
+            options.InstanceName = "LibraryApp";
         });
         services.AddOutputCache(options =>
         {
-            /*options.AddBasePolicy(builder =>
-                builder.Expire(TimeSpan.FromSeconds(10)));*/
+            options.AddBasePolicy(builder =>
+                builder.Expire(TimeSpan.FromDays(1)));
         });
         return services;
     }

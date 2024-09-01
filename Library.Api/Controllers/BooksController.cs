@@ -1,17 +1,20 @@
+using Library.Domain.Constants;
 using Library.Domain.DTOs;
 using Library.Domain.DTOs.Book;
 using Library.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 
 namespace Library.Api.Controllers;
 
 
 [Route("api/[controller]")]
 [ApiController]
-public class BooksController(IBookService bookService) : ControllerBase
+public class BooksController(IBookService bookService, IOutputCacheStore cacheStore) : ControllerBase
 {
     // GET: api/Books
     [HttpGet]
+    [OutputCache(Tags = [OutputCacheTags.Books])]
     public async Task<ActionResult<IEnumerable<BookDto>>> GetBooks()
     {
         var lectures = await bookService.GetAllBooksAsync();
@@ -20,6 +23,7 @@ public class BooksController(IBookService bookService) : ControllerBase
     
     // GET: api/Books/5
     [HttpGet("{id}")]
+    [OutputCache(Tags = [OutputCacheTags.Books])]
     public async Task<ActionResult<BookDto>> GetBook(Guid id)
     {
         var result = await bookService.GetBookByIdAsync(id);
@@ -34,22 +38,24 @@ public class BooksController(IBookService bookService) : ControllerBase
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
         var result = await bookService.AddBookAsync(createLectureDto, fileUploadDto.File);
-        return result.Match<ActionResult>(
-            id => CreatedAtAction("GetBook", new { id }, new { id }),
-            error => StatusCode(error.Code, error));
+        if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
+        await cacheStore.EvictByTagAsync(OutputCacheTags.Books,CancellationToken.None);
+        var id = result.Value;
+        return CreatedAtAction("GetBook", new { id }, new { id });
     }
     // DELETE: api/Books/5
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteLecture(Guid id)
+    public async Task<IActionResult> DeleteBook(Guid id)
     {
         var result = await bookService.DeleteBookAsync(id);
-        return result.Match<IActionResult>(
-            _ => Ok(),
-            error => StatusCode(error.Code, error));
+        if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
+        await cacheStore.EvictByTagAsync(OutputCacheTags.Books, CancellationToken.None);
+        return Ok();
     }
-    
+
     // GET: api/Books/download/5
     [HttpGet("download/{id}")]
+    [OutputCache(Tags = [OutputCacheTags.Books])]
     public async Task<IActionResult> DownloadBook(Guid id)
     {
         var result = await bookService.GetBookFilePathByIdAsync(id);
