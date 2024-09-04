@@ -11,15 +11,29 @@ builder.Services.AddApplication(builder.Configuration);
 builder.Services.AddSwaggerConfiguration();
 //Caching
 builder.Services.AddOutputCache();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("ClientPermission", policy =>
+    {
+        policy.AllowAnyHeader()
+            .AllowAnyMethod()
+            .WithOrigins("http://localhost:3000")
+            .AllowCredentials();
+    });
+});
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+/*if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-}
+}*/
+app.UseSwagger();
+app.UseSwaggerUI();
+
+app.UseCors("ClientPermission");
 
 // Global error handler
 app.UseMiddleware<ExceptionMiddleware>();
