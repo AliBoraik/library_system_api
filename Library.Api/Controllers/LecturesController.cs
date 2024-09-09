@@ -22,7 +22,7 @@ public class LecturesController(ILectureService lectureService , IOutputCacheSto
 
     // GET: api/Lectures/5
     [HttpGet("{id}")]
-    [OutputCache(Tags = [OutputCacheTags.Lectures])]
+    [OutputCache(Tags = [OutputCacheTags.Lectures , OutputCacheTags.Subjects])]
     public async Task<ActionResult<LectureDto>> GetLecture(Guid id)
     {
         var result = await lectureService.GetLectureByIdAsync(id);
@@ -40,6 +40,7 @@ public class LecturesController(ILectureService lectureService , IOutputCacheSto
         var result = await lectureService.AddLectureAsync(createLectureDto, fileUploadDto.File);
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Lectures,CancellationToken.None);
+        await cacheStore.EvictByTagAsync(OutputCacheTags.Subjects,CancellationToken.None);
         var id = result.Value;
         return CreatedAtAction("GetLecture", new { id }, new { id });
     }
@@ -51,6 +52,7 @@ public class LecturesController(ILectureService lectureService , IOutputCacheSto
         var result = await lectureService.DeleteLectureAsync(id);
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Lectures,CancellationToken.None);
+        await cacheStore.EvictByTagAsync(OutputCacheTags.Subjects,CancellationToken.None);
         return Ok();
     }
 

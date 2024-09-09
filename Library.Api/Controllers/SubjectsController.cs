@@ -37,6 +37,7 @@ public class SubjectsController(ISubjectService subjectService, IOutputCacheStor
         var result = await subjectService.AddSubjectAsync(createSubjectDto);
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Subjects,CancellationToken.None);
+        await cacheStore.EvictByTagAsync(OutputCacheTags.Departments,CancellationToken.None);
         var id = result.Value;
         return CreatedAtAction("GetSubject", new { id }, new { id });
     }
@@ -49,6 +50,7 @@ public class SubjectsController(ISubjectService subjectService, IOutputCacheStor
         var result = await subjectService.UpdateSubjectAsync(subjectDto);
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Subjects,CancellationToken.None);
+        await cacheStore.EvictByTagAsync(OutputCacheTags.Departments,CancellationToken.None);
         return Ok();
     }
 
@@ -59,6 +61,7 @@ public class SubjectsController(ISubjectService subjectService, IOutputCacheStor
         var result = await subjectService.DeleteSubjectAsync(id);
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Subjects,CancellationToken.None);
+        await cacheStore.EvictByTagAsync(OutputCacheTags.Departments,CancellationToken.None);
         return Ok();
     }
 }

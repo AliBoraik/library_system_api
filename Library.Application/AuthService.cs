@@ -14,12 +14,12 @@ using Ok = Library.Domain.Ok;
 
 namespace Library.Application;
 
-public class AuthService(IConfiguration configuration, UserManager<ApplicationUser> userManager)
+public class AuthService(IConfiguration configuration, UserManager<ApplicationUser> userManager )
     : IAuthService
 {
     public async Task<Result<AuthDataResponse, Error>> Login(LoginModelDto loginModelDto)
     {
-        var user = await userManager.FindByNameAsync(loginModelDto.Username);
+        var user = await userManager.FindByEmailAsync(loginModelDto.Email);
         if (user == null) return new Error(StatusCodes.Status401Unauthorized, ResponseMessage.UnauthorizedAccess);
         if (!await userManager.CheckPasswordAsync(user, loginModelDto.Password))
             return new Error(StatusCodes.Status401Unauthorized, StringConstants.IncorrectPassword);
@@ -31,6 +31,7 @@ public class AuthService(IConfiguration configuration, UserManager<ApplicationUs
         };
         authClaims.AddRange(userRoles.Select(userRole => new Claim(ClaimTypes.Role, userRole)));
         var accessToken = GetToken(authClaims);
+       
         return new AuthDataResponse
         {
             AccessToken = new JwtSecurityTokenHandler().WriteToken(accessToken),
@@ -40,7 +41,7 @@ public class AuthService(IConfiguration configuration, UserManager<ApplicationUs
 
     public async Task<Result<Ok, Error>> RegisterTeacher(RegisterModelDto modelDto)
     {
-        var userExists = await userManager.FindByNameAsync(modelDto.Username);
+        var userExists = await userManager.FindByEmailAsync(modelDto.Email);
         if (userExists != null)
             return new Error(StatusCodes.Status409Conflict, StringConstants.UserAlreadyExists);
         ApplicationUser user = new()
@@ -58,7 +59,7 @@ public class AuthService(IConfiguration configuration, UserManager<ApplicationUs
 
     public async Task<Result<Ok, Error>> RegisterAdmin(RegisterModelDto modelDto)
     {
-        var userExists = await userManager.FindByNameAsync(modelDto.Username);
+        var userExists = await userManager.FindByEmailAsync(modelDto.Email);
         if (userExists != null)
             return new Error(StatusCodes.Status409Conflict, StringConstants.UserAlreadyExists);
         ApplicationUser user = new()

@@ -40,6 +40,7 @@ public class BooksController(IBookService bookService, IOutputCacheStore cacheSt
         var result = await bookService.AddBookAsync(createLectureDto, fileUploadDto.File);
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Books,CancellationToken.None);
+        await cacheStore.EvictByTagAsync(OutputCacheTags.Subjects,CancellationToken.None);
         var id = result.Value;
         return CreatedAtAction("GetBook", new { id }, new { id });
     }
@@ -50,6 +51,7 @@ public class BooksController(IBookService bookService, IOutputCacheStore cacheSt
         var result = await bookService.DeleteBookAsync(id);
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Books, CancellationToken.None);
+        await cacheStore.EvictByTagAsync(OutputCacheTags.Subjects,CancellationToken.None);
         return Ok();
     }
 

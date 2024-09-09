@@ -1,5 +1,6 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -10,7 +11,7 @@ public static class AuthConfigurations
 {
     public static void AddAuth(this IServiceCollection services, IConfiguration configuration)
     {
-        // Adding Authentication
+        // Adding Auth
         services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -34,6 +35,7 @@ public static class AuthConfigurations
                     LifetimeValidator = CustomLifetimeValidator
                 };
             });
+        services.AddAuthorization();
     }
 
     private static bool CustomLifetimeValidator(DateTime? notBefore, DateTime? expires, SecurityToken tokenToValidate,

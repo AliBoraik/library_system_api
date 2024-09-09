@@ -1,11 +1,14 @@
 using Library.Api.Middleware;
 using Library.Application.Configurations;
+using Library.Domain.Models;
 using Library.Infrastructure.Configurations;
+using Library.Infrastructure.DataContext;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllers();
-builder.Services.AddAuthorization();
+builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication(builder.Configuration);
 builder.Services.AddSwaggerConfiguration();
