@@ -8,13 +8,12 @@ using Library.Domain.Models;
 using Library.Interfaces.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Ok = Library.Domain.Ok;
 
 namespace Library.Application;
 
-public class AuthService(IConfiguration configuration, UserManager<ApplicationUser> userManager )
+public class AuthService(UserManager<ApplicationUser> userManager , JwtOptions jwtOptions )
     : IAuthService
 {
     public async Task<Result<AuthDataResponse, Error>> Login(LoginModelDto loginModelDto)
@@ -77,11 +76,11 @@ public class AuthService(IConfiguration configuration, UserManager<ApplicationUs
 
     private JwtSecurityToken GetToken(List<Claim> authClaims)
     {
-        var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"]!));
+        var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.SigningKey));
         var token = new JwtSecurityToken(
-            configuration["JWT:ValidIssuer"],
-            configuration["JWT:ValidAudience"],
-            expires: DateTime.Now.AddDays(1),
+            jwtOptions.Issuer,
+            jwtOptions.Audience,
+            expires: DateTime.Now.AddSeconds(jwtOptions.ExpirationSeconds),
             claims: authClaims,
             signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
         );

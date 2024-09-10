@@ -1,4 +1,5 @@
 using System.Text;
+using Library.Domain.Auth;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
@@ -11,6 +12,10 @@ public static class AuthConfigurations
 {
     public static void AddAuth(this IServiceCollection services, IConfiguration configuration)
     {
+        var jwtOptions = configuration
+            .GetSection("JwtOptions")
+            .Get<JwtOptions>()!;
+        services.AddSingleton(jwtOptions);
         // Adding Auth
         services.AddAuthentication(options =>
             {
@@ -21,20 +26,25 @@ public static class AuthConfigurations
             // Adding Bearer
             .AddJwtBearer(options =>
             {
+                //convert the string signing key to byte array
+                byte[] signingKeyBytes = Encoding.UTF8
+                    .GetBytes(jwtOptions.SigningKey);
+                
                 options.SaveToken = true;
                 options.RequireHttpsMetadata = false;
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
                     ValidateAudience = true,
-                    ValidAudience = configuration["JWT:ValidAudience"],
-                    ValidIssuer = configuration["JWT:ValidIssuer"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"]!)),
+                    ValidAudience = jwtOptions.Audience,
+                    ValidIssuer = jwtOptions.Issuer,
+                    IssuerSigningKey = new SymmetricSecurityKey(signingKeyBytes),
                     ValidateLifetime = true,
                     RequireExpirationTime = true,
                     LifetimeValidator = CustomLifetimeValidator
                 };
             });
+
         services.AddAuthorization();
     }
 
