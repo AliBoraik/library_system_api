@@ -10,10 +10,10 @@ namespace Library.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class AuthenticateController(IAuthService authService) : ControllerBase
+public class AuthController(IAuthService authService) : ControllerBase
 {
     [HttpPost]
-    [Route("login")]
+    [Route("Login")]
     public async Task<ActionResult<AuthDataResponse>> Login([FromBody] LoginModelDto modelDto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -24,7 +24,18 @@ public class AuthenticateController(IAuthService authService) : ControllerBase
     }
 
     [HttpPost]
-    [Route("register-teacher")]
+    [Route("Register-Admin")]
+    [Authorize(Roles = AppRoles.Admin)]
+    public async Task<IActionResult> RegisterAdmin([FromBody] RegisterModelDto modelDto)
+    {
+        if (!ModelState.IsValid) return BadRequest(ModelState);
+        var result = await authService.RegisterAdmin(modelDto);
+        return result.Match<IActionResult>(
+            _ => Ok(),
+            error => StatusCode(error.Code, error));
+    }
+    [HttpPost]
+    [Route("Register-Teacher")]
     [Authorize(Roles = AppRoles.Admin)]
     public async Task<IActionResult> RegisterTeacher([FromBody] RegisterModelDto modelDto)
     {
@@ -34,16 +45,23 @@ public class AuthenticateController(IAuthService authService) : ControllerBase
             _ => Ok(),
             error => StatusCode(error.Code, error));
     }
-
     [HttpPost]
-    [Route("register-admin")]
+    [Route("Register-Student")]
     [Authorize(Roles = AppRoles.Admin)]
-    public async Task<IActionResult> RegisterAdmin([FromBody] RegisterModelDto modelDto)
+    public async Task<IActionResult> RegisterStudent([FromBody] RegisterModelDto modelDto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
-        var result = await authService.RegisterAdmin(modelDto);
+        var result = await authService.RegisterTeacher(modelDto);
         return result.Match<IActionResult>(
             _ => Ok(),
             error => StatusCode(error.Code, error));
+    }
+    
+    [HttpGet]
+    [Route("Validate-Token")]
+    [Authorize]
+    public  IActionResult ValidateToken()
+    {
+        return Ok();
     }
 }

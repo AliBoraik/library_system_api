@@ -22,88 +22,6 @@ namespace Library.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Library.Domain.Models.ApplicationUser", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
-
-                    b.Property<int>("AccessFailedCount")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Email")
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
-
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("NormalizedEmail")
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
-
-                    b.Property<string>("NormalizedUserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
-
-                    b.Property<string>("PasswordHash")
-                        .HasColumnType("text");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("text");
-
-                    b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("SecurityStamp")
-                        .HasColumnType("text");
-
-                    b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("UserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedEmail")
-                        .HasDatabaseName("EmailIndex");
-
-                    b.HasIndex("NormalizedUserName")
-                        .IsUnique()
-                        .HasDatabaseName("UserNameIndex");
-
-                    b.ToTable("AspNetUsers", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "eed2d3d3-36a9-4936-a49a-4b397237a248",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "acc22ceb-7348-4cca-be8f-652badbe0605",
-                            Email = "admin@gmail.com",
-                            EmailConfirmed = false,
-                            LockoutEnabled = false,
-                            NormalizedEmail = "ADMIN@GMAIL.COM",
-                            NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "c0fb83eb-5eda-4677-b4cf-f1c261684b82",
-                            TwoFactorEnabled = false,
-                            UserName = "admin"
-                        });
-                });
-
             modelBuilder.Entity("Library.Domain.Models.Book", b =>
                 {
                     b.Property<Guid>("BookId")
@@ -162,13 +80,13 @@ namespace Library.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            DepartmentId = new Guid("c3033bb3-0d1b-46b3-a6b0-687272831a0c"),
+                            DepartmentId = new Guid("6d898e7a-91d9-4cec-85c0-25b0c7ed663f"),
                             Description = "Department of Computer Science",
                             Name = "Computer Science"
                         },
                         new
                         {
-                            DepartmentId = new Guid("c46d55d8-6dbd-4c88-a74a-6f95fbb5ab5c"),
+                            DepartmentId = new Guid("05393d66-609e-4a25-9eec-79913204f842"),
                             Description = "Department of Mathematics",
                             Name = "Mathematics"
                         });
@@ -237,31 +155,122 @@ namespace Library.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            SubjectId = new Guid("cca5e2f3-5f98-4d46-bf38-d8b18130e48a"),
-                            DepartmentId = new Guid("c3033bb3-0d1b-46b3-a6b0-687272831a0c"),
+                            SubjectId = new Guid("e2899c9d-d375-4ec0-a119-4807e55f95c4"),
+                            DepartmentId = new Guid("6d898e7a-91d9-4cec-85c0-25b0c7ed663f"),
                             Description = "Study of algorithms",
                             Name = "Algorithms"
                         },
                         new
                         {
-                            SubjectId = new Guid("879c55bb-253a-4636-bb36-12dbec9357f9"),
-                            DepartmentId = new Guid("c3033bb3-0d1b-46b3-a6b0-687272831a0c"),
+                            SubjectId = new Guid("02e89161-8c83-4ba0-aafd-e457eb803e02"),
+                            DepartmentId = new Guid("6d898e7a-91d9-4cec-85c0-25b0c7ed663f"),
                             Description = "Study of data structures",
                             Name = "Message Structures"
                         },
                         new
                         {
-                            SubjectId = new Guid("56395201-d54c-42d5-97e1-8cbc8a58e6d0"),
-                            DepartmentId = new Guid("c46d55d8-6dbd-4c88-a74a-6f95fbb5ab5c"),
+                            SubjectId = new Guid("f5cdcf9d-e85b-4aac-abd9-6b326a29b540"),
+                            DepartmentId = new Guid("05393d66-609e-4a25-9eec-79913204f842"),
                             Description = "Study of calculus",
                             Name = "Calculus"
                         },
                         new
                         {
-                            SubjectId = new Guid("608f3ccd-de91-4dd9-9c1c-51615cc4818c"),
-                            DepartmentId = new Guid("c46d55d8-6dbd-4c88-a74a-6f95fbb5ab5c"),
+                            SubjectId = new Guid("f0b16dac-091a-43ec-b46a-08554e36b7cb"),
+                            DepartmentId = new Guid("05393d66-609e-4a25-9eec-79913204f842"),
                             Description = "Study of linear algebra",
                             Name = "Linear Algebra"
+                        });
+                });
+
+            modelBuilder.Entity("Library.Domain.Models.User", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("text");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<string>("UserType")
+                        .IsRequired()
+                        .HasMaxLength(8)
+                        .HasColumnType("character varying(8)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex");
+
+                    b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasDiscriminator<string>("UserType").HasValue("Admin");
+
+                    b.UseTphMappingStrategy();
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "225e923d-7429-473a-b7a1-aa9a9d2e351c",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "58adedf0-a1e6-422e-b15b-6b6f5343d8bd",
+                            Email = "admin@gmail.com",
+                            EmailConfirmed = false,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "ADMIN@GMAIL.COM",
+                            NormalizedUserName = "ADMIN",
+                            PasswordHash = "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "0f408d1d-aa5d-4ff6-ac91-07589424991d",
+                            TwoFactorEnabled = false,
+                            UserName = "admin"
                         });
                 });
 
@@ -293,15 +302,21 @@ namespace Library.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "c6decac7-7daa-41a0-8414-7c0b51d60af2",
+                            Id = "1ae95838-243a-420b-9b2f-0d74e8fe698c",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "bea519f6-4c63-4ae8-b215-533d0683095d",
+                            Id = "d1c04a3f-023a-4622-adf4-fe3688098b47",
                             Name = "Teacher",
                             NormalizedName = "TEACHER"
+                        },
+                        new
+                        {
+                            Id = "bc408323-221f-4cfa-873e-ab3b20558779",
+                            Name = "Student",
+                            NormalizedName = "STUDENT"
                         });
                 });
 
@@ -394,8 +409,18 @@ namespace Library.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "eed2d3d3-36a9-4936-a49a-4b397237a248",
-                            RoleId = "c6decac7-7daa-41a0-8414-7c0b51d60af2"
+                            UserId = "225e923d-7429-473a-b7a1-aa9a9d2e351c",
+                            RoleId = "1ae95838-243a-420b-9b2f-0d74e8fe698c"
+                        },
+                        new
+                        {
+                            UserId = "0f975772-3330-4968-9531-ca42f423dd7c",
+                            RoleId = "d1c04a3f-023a-4622-adf4-fe3688098b47"
+                        },
+                        new
+                        {
+                            UserId = "62714dec-79fb-4b2b-9d7d-82a0e0b29a64",
+                            RoleId = "bc408323-221f-4cfa-873e-ab3b20558779"
                         });
                 });
 
@@ -418,6 +443,56 @@ namespace Library.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Library.Domain.Models.Student", b =>
+                {
+                    b.HasBaseType("Library.Domain.Models.User");
+
+                    b.HasDiscriminator().HasValue("Student");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "62714dec-79fb-4b2b-9d7d-82a0e0b29a64",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "892430c7-dedd-46e2-bc57-432bb82a5033",
+                            Email = "student@gmail.com",
+                            EmailConfirmed = false,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "STUDENT@GMAIL.COM",
+                            NormalizedUserName = "STUDENT",
+                            PasswordHash = "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "fe5230b1-6b27-40f7-b6c4-48bc99ff87b3",
+                            TwoFactorEnabled = false,
+                            UserName = "student"
+                        });
+                });
+
+            modelBuilder.Entity("Library.Domain.Models.Teacher", b =>
+                {
+                    b.HasBaseType("Library.Domain.Models.User");
+
+                    b.HasDiscriminator().HasValue("Teacher");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "0f975772-3330-4968-9531-ca42f423dd7c",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "6640b955-7ef6-4144-bc04-1b5fb49d05b4",
+                            Email = "teacher@gmail.com",
+                            EmailConfirmed = false,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "TEACHER@GMAIL.COM",
+                            NormalizedUserName = "TEACHER",
+                            PasswordHash = "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "60adde13-bbd6-4fa6-8203-c8f9b5c782d1",
+                            TwoFactorEnabled = false,
+                            UserName = "teacher"
+                        });
+                });
+
             modelBuilder.Entity("Library.Domain.Models.Book", b =>
                 {
                     b.HasOne("Library.Domain.Models.Subject", "Subject")
@@ -426,7 +501,7 @@ namespace Library.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Library.Domain.Models.ApplicationUser", "User")
+                    b.HasOne("Library.Domain.Models.Teacher", "Teacher")
                         .WithMany("Books")
                         .HasForeignKey("UploadedBy")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -434,7 +509,7 @@ namespace Library.Infrastructure.Migrations
 
                     b.Navigation("Subject");
 
-                    b.Navigation("User");
+                    b.Navigation("Teacher");
                 });
 
             modelBuilder.Entity("Library.Domain.Models.Lecture", b =>
@@ -445,7 +520,7 @@ namespace Library.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Library.Domain.Models.ApplicationUser", "User")
+                    b.HasOne("Library.Domain.Models.Teacher", "Teacher")
                         .WithMany("Lectures")
                         .HasForeignKey("UploadedBy")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -453,7 +528,7 @@ namespace Library.Infrastructure.Migrations
 
                     b.Navigation("Subject");
 
-                    b.Navigation("User");
+                    b.Navigation("Teacher");
                 });
 
             modelBuilder.Entity("Library.Domain.Models.Subject", b =>
@@ -478,7 +553,7 @@ namespace Library.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("Library.Domain.Models.ApplicationUser", null)
+                    b.HasOne("Library.Domain.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -487,7 +562,7 @@ namespace Library.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("Library.Domain.Models.ApplicationUser", null)
+                    b.HasOne("Library.Domain.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -502,7 +577,7 @@ namespace Library.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Library.Domain.Models.ApplicationUser", null)
+                    b.HasOne("Library.Domain.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -511,18 +586,11 @@ namespace Library.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("Library.Domain.Models.ApplicationUser", null)
+                    b.HasOne("Library.Domain.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Library.Domain.Models.ApplicationUser", b =>
-                {
-                    b.Navigation("Books");
-
-                    b.Navigation("Lectures");
                 });
 
             modelBuilder.Entity("Library.Domain.Models.Department", b =>
@@ -531,6 +599,13 @@ namespace Library.Infrastructure.Migrations
                 });
 
             modelBuilder.Entity("Library.Domain.Models.Subject", b =>
+                {
+                    b.Navigation("Books");
+
+                    b.Navigation("Lectures");
+                });
+
+            modelBuilder.Entity("Library.Domain.Models.Teacher", b =>
                 {
                     b.Navigation("Books");
 

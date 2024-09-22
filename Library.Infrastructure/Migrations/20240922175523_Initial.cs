@@ -33,6 +33,7 @@ namespace Library.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "text", nullable: false),
+                    UserType = table.Column<string>(type: "character varying(8)", maxLength: 8, nullable: false),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -255,38 +256,49 @@ namespace Library.Infrastructure.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "bea519f6-4c63-4ae8-b215-533d0683095d", null, "Teacher", "TEACHER" },
-                    { "c6decac7-7daa-41a0-8414-7c0b51d60af2", null, "Admin", "ADMIN" }
+                    { "1ae95838-243a-420b-9b2f-0d74e8fe698c", null, "Admin", "ADMIN" },
+                    { "bc408323-221f-4cfa-873e-ab3b20558779", null, "Student", "STUDENT" },
+                    { "d1c04a3f-023a-4622-adf4-fe3688098b47", null, "Teacher", "TEACHER" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
-                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "eed2d3d3-36a9-4936-a49a-4b397237a248", 0, "acc22ceb-7348-4cca-be8f-652badbe0605", "admin@gmail.com", false, false, null, "ADMIN@GMAIL.COM", "ADMIN", "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q==", null, false, "c0fb83eb-5eda-4677-b4cf-f1c261684b82", false, "admin" });
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName", "UserType" },
+                values: new object[,]
+                {
+                    { "0f975772-3330-4968-9531-ca42f423dd7c", 0, "6640b955-7ef6-4144-bc04-1b5fb49d05b4", "teacher@gmail.com", false, false, null, "TEACHER@GMAIL.COM", "TEACHER", "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q==", null, false, "60adde13-bbd6-4fa6-8203-c8f9b5c782d1", false, "teacher", "Teacher" },
+                    { "225e923d-7429-473a-b7a1-aa9a9d2e351c", 0, "58adedf0-a1e6-422e-b15b-6b6f5343d8bd", "admin@gmail.com", false, false, null, "ADMIN@GMAIL.COM", "ADMIN", "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q==", null, false, "0f408d1d-aa5d-4ff6-ac91-07589424991d", false, "admin", "Admin" },
+                    { "62714dec-79fb-4b2b-9d7d-82a0e0b29a64", 0, "892430c7-dedd-46e2-bc57-432bb82a5033", "student@gmail.com", false, false, null, "STUDENT@GMAIL.COM", "STUDENT", "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q==", null, false, "fe5230b1-6b27-40f7-b6c4-48bc99ff87b3", false, "student", "Student" }
+                });
 
             migrationBuilder.InsertData(
                 table: "Departments",
                 columns: new[] { "DepartmentId", "Description", "Name" },
                 values: new object[,]
                 {
-                    { new Guid("c3033bb3-0d1b-46b3-a6b0-687272831a0c"), "Department of Computer Science", "Computer Science" },
-                    { new Guid("c46d55d8-6dbd-4c88-a74a-6f95fbb5ab5c"), "Department of Mathematics", "Mathematics" }
+                    { new Guid("05393d66-609e-4a25-9eec-79913204f842"), "Department of Mathematics", "Mathematics" },
+                    { new Guid("6d898e7a-91d9-4cec-85c0-25b0c7ed663f"), "Department of Computer Science", "Computer Science" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
                 columns: new[] { "RoleId", "UserId" },
-                values: new object[] { "c6decac7-7daa-41a0-8414-7c0b51d60af2", "eed2d3d3-36a9-4936-a49a-4b397237a248" });
+                values: new object[,]
+                {
+                    { "d1c04a3f-023a-4622-adf4-fe3688098b47", "0f975772-3330-4968-9531-ca42f423dd7c" },
+                    { "1ae95838-243a-420b-9b2f-0d74e8fe698c", "225e923d-7429-473a-b7a1-aa9a9d2e351c" },
+                    { "bc408323-221f-4cfa-873e-ab3b20558779", "62714dec-79fb-4b2b-9d7d-82a0e0b29a64" }
+                });
 
             migrationBuilder.InsertData(
                 table: "Subjects",
                 columns: new[] { "SubjectId", "DepartmentId", "Description", "Name" },
                 values: new object[,]
                 {
-                    { new Guid("56395201-d54c-42d5-97e1-8cbc8a58e6d0"), new Guid("c46d55d8-6dbd-4c88-a74a-6f95fbb5ab5c"), "Study of calculus", "Calculus" },
-                    { new Guid("608f3ccd-de91-4dd9-9c1c-51615cc4818c"), new Guid("c46d55d8-6dbd-4c88-a74a-6f95fbb5ab5c"), "Study of linear algebra", "Linear Algebra" },
-                    { new Guid("879c55bb-253a-4636-bb36-12dbec9357f9"), new Guid("c3033bb3-0d1b-46b3-a6b0-687272831a0c"), "Study of data structures", "Message Structures" },
-                    { new Guid("cca5e2f3-5f98-4d46-bf38-d8b18130e48a"), new Guid("c3033bb3-0d1b-46b3-a6b0-687272831a0c"), "Study of algorithms", "Algorithms" }
+                    { new Guid("02e89161-8c83-4ba0-aafd-e457eb803e02"), new Guid("6d898e7a-91d9-4cec-85c0-25b0c7ed663f"), "Study of data structures", "Message Structures" },
+                    { new Guid("e2899c9d-d375-4ec0-a119-4807e55f95c4"), new Guid("6d898e7a-91d9-4cec-85c0-25b0c7ed663f"), "Study of algorithms", "Algorithms" },
+                    { new Guid("f0b16dac-091a-43ec-b46a-08554e36b7cb"), new Guid("05393d66-609e-4a25-9eec-79913204f842"), "Study of linear algebra", "Linear Algebra" },
+                    { new Guid("f5cdcf9d-e85b-4aac-abd9-6b326a29b540"), new Guid("05393d66-609e-4a25-9eec-79913204f842"), "Study of calculus", "Calculus" }
                 });
 
             migrationBuilder.CreateIndex(

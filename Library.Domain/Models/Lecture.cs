@@ -11,5 +11,6 @@ public class Lecture
     public DateTime UploadedAt { get; set; } = DateTime.UtcNow;
 
     public Subject Subject { get; set; }
-    public ApplicationUser User { get; set; }
+    
+    public Teacher Teacher { get; set; }
 }

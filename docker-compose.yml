@@ -33,3 +33,5 @@ volumes:
   db_data:
   redis_data:
     driver: local
+  
+  #docker exec -it redis redis-cli

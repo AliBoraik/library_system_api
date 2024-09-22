@@ -1,6 +1,8 @@
+using Library.Application.CachePolicies;
 using Library.Domain.Constants;
 using Library.Domain.DTOs.Department;
 using Library.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 
@@ -8,11 +10,12 @@ namespace Library.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
 public class DepartmentsController(IDepartmentService departmentService , IOutputCacheStore cacheStore) : ControllerBase
 {
     // GET: api/Department
     [HttpGet]
-    [OutputCache(Tags = [OutputCacheTags.Departments])]
+    [OutputCache(Tags = [OutputCacheTags.Departments] , PolicyName = nameof(AuthCachePolicy))]
     public async Task<ActionResult<IEnumerable<DepartmentDto>>> GetDepartments()
     {
         var result = await departmentService.GetAllDepartmentsAsync();
@@ -23,7 +26,7 @@ public class DepartmentsController(IDepartmentService departmentService , IOutpu
 
     // GET: api/Department/5
     [HttpGet("{id:guid}")]
-    [OutputCache(Tags = [OutputCacheTags.Departments])]
+    [OutputCache(Tags = [OutputCacheTags.Departments] , PolicyName = nameof(AuthCachePolicy))]
     public async Task<ActionResult<DepartmentDetailsDto>> GetDepartment(Guid id)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -35,6 +38,7 @@ public class DepartmentsController(IDepartmentService departmentService , IOutpu
 
     // POST: api/Department
     [HttpPost]
+    [Authorize(Roles = $"{AppRoles.Admin},{AppRoles.Teacher}")]
     public async Task<ActionResult> PostDepartment([FromBody] CreateDepartmentDto createDepartmentDto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -47,6 +51,7 @@ public class DepartmentsController(IDepartmentService departmentService , IOutpu
 
     // PUT: api/Department/5
     [HttpPut]
+    [Authorize(Roles = $"{AppRoles.Admin},{AppRoles.Teacher}")]
     public async Task<IActionResult> PutDepartment([FromBody] DepartmentDto departmentDto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -58,6 +63,7 @@ public class DepartmentsController(IDepartmentService departmentService , IOutpu
 
     // DELETE: api/Department/5
     [HttpDelete("{id:guid}")]
+    [Authorize(Roles = $"{AppRoles.Admin},{AppRoles.Teacher}")]
     public async Task<IActionResult> DeleteDepartment(Guid id)
     {
         var result = await departmentService.DeleteDepartmentAsync(id);

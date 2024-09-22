@@ -21,7 +21,7 @@ public static class ConfigureServices
             options.UseNpgsql(dockerEnv ?? configuration.GetConnectionString("LibraryDB"));
         });
         // For Identity
-        services.AddIdentity<ApplicationUser, IdentityRole>()
+        services.AddIdentity<User, IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
         services.AddScoped<IDepartmentRepository, DepartmentRepository>();
