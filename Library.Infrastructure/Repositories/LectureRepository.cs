@@ -19,6 +19,7 @@ public class LectureRepository(ApplicationDbContext context) : ILectureRepositor
         return await context.Lectures
             .AsNoTracking()
             .Where(l => l.LectureId == id)
+            .Include(l => l.Subject)
             .FirstOrDefaultAsync();
     }
 

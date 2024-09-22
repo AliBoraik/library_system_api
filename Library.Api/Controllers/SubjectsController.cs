@@ -1,6 +1,8 @@
+using Library.Application.CachePolicies;
 using Library.Domain.Constants;
 using Library.Domain.DTOs.Subject;
 using Library.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 
@@ -8,22 +10,23 @@ namespace Library.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
 public class SubjectsController(ISubjectService subjectService, IOutputCacheStore cacheStore)  : ControllerBase
 {
     // GET: api/Subjects
     [HttpGet]
-    [OutputCache(Tags = [OutputCacheTags.Subjects])]
+    [OutputCache(Tags = [OutputCacheTags.Subjects], PolicyName = nameof(AuthCachePolicy))]
     public async Task<IEnumerable<SubjectDto>> GetSubjects()
     {
         return await subjectService.GetAllSubjectsAsync();
     }
 
     // GET: api/Subjects/5
-    [HttpGet("{id:guid}")]
-    [OutputCache(Tags = [OutputCacheTags.Subjects])]
-    public async Task<ActionResult<SubjectDetailsDto>> GetSubject(Guid id)
+    [HttpGet("{subjectId:guid}")]
+    [OutputCache(Tags = [OutputCacheTags.Subjects], PolicyName = nameof(AuthCachePolicy))]
+    public async Task<ActionResult<SubjectDetailsDto>> GetSubject(Guid subjectId)
     {
-        var result = await subjectService.GetSubjectByIdAsync(id);
+        var result = await subjectService.GetSubjectByIdAsync(subjectId);
         return result.Match<ActionResult<SubjectDetailsDto>>(
             dto => Ok(dto),
             error => StatusCode(error.Code, error));
@@ -31,6 +34,7 @@ public class SubjectsController(ISubjectService subjectService, IOutputCacheStor
 
     // POST: api/Subjects
     [HttpPost]
+    [Authorize(Roles = AppRoles.Admin)]
     public async Task<ActionResult> PostSubject([FromBody] CreateSubjectDto createSubjectDto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -38,12 +42,13 @@ public class SubjectsController(ISubjectService subjectService, IOutputCacheStor
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Subjects,CancellationToken.None);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Departments,CancellationToken.None);
-        var id = result.Value;
-        return CreatedAtAction("GetSubject", new { id }, new { id });
+        var subjectId = result.Value;
+        return CreatedAtAction("GetSubject", new { subjectId }, new { subjectId });
     }
 
     // PUT: api/Subjects/5
     [HttpPut]
+    [Authorize(Roles = AppRoles.Admin)]
     public async Task<IActionResult> PutSubject([FromBody] SubjectDto subjectDto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -55,10 +60,11 @@ public class SubjectsController(ISubjectService subjectService, IOutputCacheStor
     }
 
     // DELETE: api/Subjects/5
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteSubject(Guid id)
+    [HttpDelete("{subjectId:guid}")]
+    [Authorize(Roles = AppRoles.Admin)]
+    public async Task<IActionResult> DeleteSubject(Guid subjectId)
     {
-        var result = await subjectService.DeleteSubjectAsync(id);
+        var result = await subjectService.DeleteSubjectAsync(subjectId);
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Subjects,CancellationToken.None);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Departments,CancellationToken.None);

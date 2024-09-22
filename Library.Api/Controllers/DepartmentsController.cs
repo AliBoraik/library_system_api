@@ -25,12 +25,12 @@ public class DepartmentsController(IDepartmentService departmentService , IOutpu
     }
 
     // GET: api/Department/5
-    [HttpGet("{id:guid}")]
+    [HttpGet("{departmentId:guid}")]
     [OutputCache(Tags = [OutputCacheTags.Departments] , PolicyName = nameof(AuthCachePolicy))]
-    public async Task<ActionResult<DepartmentDetailsDto>> GetDepartment(Guid id)
+    public async Task<ActionResult<DepartmentDetailsDto>> GetDepartment(Guid departmentId)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
-        var result = await departmentService.GetDepartmentByIdAsync(id);
+        var result = await departmentService.GetDepartmentByIdAsync(departmentId);
         return result.Match<ActionResult<DepartmentDetailsDto>>(
             dto => Ok(dto),
             error => StatusCode(error.Code, error));
@@ -38,20 +38,20 @@ public class DepartmentsController(IDepartmentService departmentService , IOutpu
 
     // POST: api/Department
     [HttpPost]
-    [Authorize(Roles = $"{AppRoles.Admin},{AppRoles.Teacher}")]
+    [Authorize(Roles = AppRoles.Admin)]
     public async Task<ActionResult> PostDepartment([FromBody] CreateDepartmentDto createDepartmentDto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
         var result = await departmentService.AddDepartmentAsync(createDepartmentDto);
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Departments,CancellationToken.None);
-        var id = result.Value;
-        return CreatedAtAction("GetDepartment", new { id }, new { id });
+        var departmentId = result.Value;
+        return CreatedAtAction("GetDepartment", new { departmentId }, new { departmentId });
     }
 
     // PUT: api/Department/5
     [HttpPut]
-    [Authorize(Roles = $"{AppRoles.Admin},{AppRoles.Teacher}")]
+    [Authorize(Roles = AppRoles.Admin)]
     public async Task<IActionResult> PutDepartment([FromBody] DepartmentDto departmentDto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -62,11 +62,11 @@ public class DepartmentsController(IDepartmentService departmentService , IOutpu
     }
 
     // DELETE: api/Department/5
-    [HttpDelete("{id:guid}")]
-    [Authorize(Roles = $"{AppRoles.Admin},{AppRoles.Teacher}")]
-    public async Task<IActionResult> DeleteDepartment(Guid id)
+    [HttpDelete("{departmentId:guid}")]
+    [Authorize(Roles = AppRoles.Admin)]
+    public async Task<IActionResult> DeleteDepartment(Guid departmentId)
     {
-        var result = await departmentService.DeleteDepartmentAsync(id);
+        var result = await departmentService.DeleteDepartmentAsync(departmentId);
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Departments,CancellationToken.None);
         return Ok();

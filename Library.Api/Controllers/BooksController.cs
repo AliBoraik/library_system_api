@@ -1,7 +1,10 @@
+using System.Security.Claims;
+using Library.Application.CachePolicies;
 using Library.Domain.Constants;
 using Library.Domain.DTOs;
 using Library.Domain.DTOs.Book;
 using Library.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 
@@ -10,45 +13,56 @@ namespace Library.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
 public class BooksController(IBookService bookService, IOutputCacheStore cacheStore) : ControllerBase
 {
     // GET: api/Books
     [HttpGet]
-    [OutputCache(Tags = [OutputCacheTags.Books])]
-    public async Task<ActionResult<IEnumerable<BookDto>>> GetBooks()
+    [OutputCache(Tags = [OutputCacheTags.Books] , PolicyName = nameof(AuthCachePolicy))]
+    public async Task<ActionResult<IEnumerable<BookResponseDto>>> GetBooks()
     {
         var lectures = await bookService.GetAllBooksAsync();
         return Ok(lectures);
     }
     
     // GET: api/Books/5
-    [HttpGet("{id}")]
-    [OutputCache(Tags = [OutputCacheTags.Books])]
-    public async Task<ActionResult<BookDto>> GetBook(Guid id)
+    [HttpGet("{bookId:guid}")]
+    [OutputCache(Tags = [OutputCacheTags.Books] , PolicyName = nameof(AuthCachePolicy))]
+    public async Task<ActionResult<BookResponseDto>> GetBook(Guid bookId)
     {
-        var result = await bookService.GetBookByIdAsync(id);
-        return result.Match<ActionResult<BookDto>>(
+        var result = await bookService.GetBookByIdAsync(bookId);
+        return result.Match<ActionResult<BookResponseDto>>(
             dto => Ok(dto),
             error => StatusCode(error.Code, error));
     }
     // POST: api/Books
     [HttpPost]
-    public async Task<ActionResult<BookDto>> PostGetBook([FromForm] CreateBookDto createLectureDto,
-        FileUploadDto fileUploadDto)
+    [Authorize(Roles = $"{AppRoles.Admin},{AppRoles.Teacher}")]
+    public async Task<ActionResult<BookResponseDto>> PostBook([FromForm] CreateBookDto createLectureDto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
-        var result = await bookService.AddBookAsync(createLectureDto, fileUploadDto.File);
+        // Get the current user's ID
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userId == null)
+        {
+            return Unauthorized(StringConstants.UserIdMissing);
+        }
+        var result = await bookService.AddBookAsync(createLectureDto, userId);
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Books,CancellationToken.None);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Subjects,CancellationToken.None);
-        var id = result.Value;
-        return CreatedAtAction("GetBook", new { id }, new { id });
+        var bookId = result.Value;
+        return CreatedAtAction("GetBook", new { bookId }, new { bookId });
     }
     // DELETE: api/Books/5
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteBook(Guid id)
+    [HttpDelete("{bookId:guid}")]
+    [Authorize(Roles = $"{AppRoles.Admin},{AppRoles.Teacher}")]
+    public async Task<IActionResult> DeleteBook(Guid bookId)
     {
-        var result = await bookService.DeleteBookAsync(id);
+        // Get the current user's ID
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userId == null) return Unauthorized(StringConstants.UserIdMissing);
+        var result = await bookService.DeleteBookAsync(bookId,userId);
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Books, CancellationToken.None);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Subjects,CancellationToken.None);
@@ -56,11 +70,11 @@ public class BooksController(IBookService bookService, IOutputCacheStore cacheSt
     }
 
     // GET: api/Books/download/5
-    [HttpGet("Download/{id}")]
+    [HttpGet("Download/{bookId:guid}")]
     [OutputCache(Tags = [OutputCacheTags.Books])]
-    public async Task<IActionResult> DownloadBook(Guid id)
+    public async Task<IActionResult> DownloadBook(Guid bookId)
     {
-        var result = await bookService.GetBookFilePathByIdAsync(id);
+        var result = await bookService.GetBookFilePathByIdAsync(bookId);
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
         var path = result.Value;
         var fileBytes = await System.IO.File.ReadAllBytesAsync(path);

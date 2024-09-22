@@ -37,16 +37,11 @@ public class ApplicationDbContext : IdentityDbContext<User>
             .HasMany(s => s.Books)
             .WithOne(b => b.Subject)
             .HasForeignKey(b => b.SubjectId);
-
-        modelBuilder.Entity<Lecture>()
-            .HasOne(l => l.Teacher)
-            .WithMany(u => u.Lectures)
-            .HasForeignKey(l => l.UploadedBy);
-
-        modelBuilder.Entity<Book>()
-            .HasOne(b => b.Teacher)
-            .WithMany(u => u.Books)
-            .HasForeignKey(b => b.UploadedBy);
+        
+        modelBuilder.Entity<Teacher>()
+            .HasMany(t => t.Subjects)
+            .WithOne(s => s.Teacher)
+            .HasForeignKey(s => s.TeacherId);
         
         modelBuilder.Entity<User>()
             .HasDiscriminator<string>("UserType")
@@ -102,7 +97,6 @@ public class ApplicationDbContext : IdentityDbContext<User>
                 NormalizedUserName = "ADMIN",
                 PasswordHash = "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q=="
             });
-        
         modelBuilder.Entity<Teacher>()
             .HasData(new Teacher
             {
@@ -112,8 +106,10 @@ public class ApplicationDbContext : IdentityDbContext<User>
                 SecurityStamp = Guid.NewGuid().ToString(),
                 UserName = "teacher",
                 NormalizedUserName = "TEACHER",
-                PasswordHash = "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q=="
+                PasswordHash = "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q==",
+                
             });
+        
         modelBuilder.Entity<Student>()
             .HasData(new Student
             {
@@ -164,29 +160,9 @@ public class ApplicationDbContext : IdentityDbContext<User>
             {
                 SubjectId = Guid.NewGuid(),
                 DepartmentId = department1.DepartmentId,
-                Name = "Algorithms",
-                Description = "Study of algorithms"
-            },
-            new Subject
-            {
-                SubjectId = Guid.NewGuid(),
-                DepartmentId = department1.DepartmentId,
                 Name = "Message Structures",
-                Description = "Study of data structures"
-            },
-            new Subject
-            {
-                SubjectId = Guid.NewGuid(),
-                DepartmentId = department2.DepartmentId,
-                Name = "Calculus",
-                Description = "Study of calculus"
-            },
-            new Subject
-            {
-                SubjectId = Guid.NewGuid(),
-                DepartmentId = department2.DepartmentId,
-                Name = "Linear Algebra",
-                Description = "Study of linear algebra"
+                Description = "Study of data structures",
+                TeacherId = teacherId
             }
         );
     }

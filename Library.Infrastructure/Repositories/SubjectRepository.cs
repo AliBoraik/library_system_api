@@ -1,7 +1,9 @@
 using Library.Domain.Models;
 using Library.Infrastructure.DataContext;
 using Library.Interfaces.Repositories;
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.EntityFrameworkCore;
+using StackExchange.Redis;
 
 namespace Library.Infrastructure.Repositories;
 
@@ -14,7 +16,7 @@ public class SubjectRepository(ApplicationDbContext context) : ISubjectRepositor
             .ToListAsync();
     }
 
-    public async Task<Subject?> FindSubjectByIdAsync(Guid id)
+    public async Task<Subject?> FindSubjectDetailsByIdAsync(Guid id)
     {
         return await context.Subjects
             .AsNoTracking()
@@ -23,6 +25,15 @@ public class SubjectRepository(ApplicationDbContext context) : ISubjectRepositor
             .Include(s => s.Books)
             .AsSplitQuery()
             .FirstOrDefaultAsync();
+    }
+
+    public async Task<Subject?> FindSubjectByIdAsync(Guid id)
+    {
+        return await context.Subjects
+            .AsNoTracking()
+            .Where(s => s.SubjectId == id)
+            .FirstOrDefaultAsync();
+            
     }
 
     public async Task<bool> SubjectExistsAsync(Guid id)

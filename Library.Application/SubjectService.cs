@@ -22,7 +22,7 @@ public class SubjectService(
 
     public async Task<Result<SubjectDetailsDto, Error>> GetSubjectByIdAsync(Guid id)
     {
-        var subject = await subjectRepository.FindSubjectByIdAsync(id);
+        var subject = await subjectRepository.FindSubjectDetailsByIdAsync(id);
         if (subject == null)
             return new Error(StatusCodes.Status404NotFound, $"Not found subject with id = {id}");
         return mapper.Map<SubjectDetailsDto>(subject);

@@ -5,6 +5,7 @@ namespace Library.Interfaces.Repositories;
 public interface ISubjectRepository
 {
     Task<IEnumerable<Subject>> FindAllSubjectsInfoAsync();
+    Task<Subject?> FindSubjectDetailsByIdAsync(Guid id);
     Task<Subject?> FindSubjectByIdAsync(Guid id);
     Task<bool> SubjectExistsAsync(Guid id);
     Task AddSubjectAsync(Subject subject);

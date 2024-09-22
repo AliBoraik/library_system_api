@@ -21,10 +21,10 @@ public class AutoMapperProfile : Profile
         CreateMap<Subject, CreateSubjectDto>().ReverseMap();
         CreateMap<Subject, SubjectDetailsDto>().ReverseMap();
         // Lecture
-        CreateMap<Lecture, LectureDto>().ReverseMap();
+        CreateMap<Lecture, LectureResponseDto>().ReverseMap();
         CreateMap<Lecture, CreateLectureDto>().ReverseMap();
         // Book
-        CreateMap<Book, BookDto>().ReverseMap();
+        CreateMap<Book, BookResponseDto>().ReverseMap();
         CreateMap<Book, CreateBookDto>().ReverseMap();
     }
 }

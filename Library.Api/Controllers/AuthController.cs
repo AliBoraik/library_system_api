@@ -6,7 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Library.Api.Controllers;
 // {"username": "admin","email": "admin@gmail.com","password": "Adminadmin@123"}
-// {"username": "teacher","email": "teacher@example.com","password": "Teacherteacher@123"}
+// {"username": "teacher","email": "teacher@example.com","password": "Adminadmin@123"}
+// {"username": "student","email": "student@example.com","password": "Adminadmin@123"}
 
 [Route("api/[controller]")]
 [ApiController]

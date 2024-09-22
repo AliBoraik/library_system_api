@@ -6,9 +6,9 @@ namespace Library.Interfaces.Services;
 
 public interface ILectureService
 {
-    Task<IEnumerable<LectureDto>> GetAllLecturesAsync();
-    Task<Result<LectureDto, Error>> GetLectureByIdAsync(Guid id);
-    Task<Result<Guid, Error>> AddLectureAsync(CreateLectureDto lectureDto, IFormFile file);
+    Task<IEnumerable<LectureResponseDto>> GetAllLecturesAsync();
+    Task<Result<LectureResponseDto, Error>> GetLectureByIdAsync(Guid id);
+    Task<Result<Guid, Error>> AddLectureAsync(CreateLectureDto lectureDto, string userId);
+    Task<Result<Ok, Error>> DeleteLectureAsync(Guid lectureId, string userId);
     Task<Result<string, Error>> GetLectureFilePathByIdAsync(Guid id);
-    Task<Result<Ok, Error>> DeleteLectureAsync(Guid id);
 }

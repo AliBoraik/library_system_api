@@ -9,6 +9,7 @@ using Library.Interfaces.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.VisualBasic;
 
 namespace Library.Application;
 
@@ -25,6 +26,8 @@ public class AuthService(UserManager<User> userManager , JwtOptions jwtOptions )
         var authClaims = new List<Claim>
         {
             new(ClaimTypes.Name, user.UserName!),
+            new(ClaimTypes.Email , user.Email!),
+            new(ClaimTypes.NameIdentifier,user.Id),
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
         authClaims.AddRange(userRoles.Select(userRole => new Claim(ClaimTypes.Role, userRole)));

