@@ -8,8 +8,8 @@ using Library.Domain.Models;
 using Library.Interfaces.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.VisualBasic;
 
 namespace Library.Application;
 
@@ -25,13 +25,14 @@ public class AuthService(UserManager<User> userManager , JwtOptions jwtOptions )
         var userRoles = await userManager.GetRolesAsync(user);
         var authClaims = new List<Claim>
         {
-            new(ClaimTypes.Name, user.UserName!),
-            new(ClaimTypes.Email , user.Email!),
-            new(ClaimTypes.NameIdentifier,user.Id),
+            new(AppClaimTypes.Name, user.UserName!),
+            new(AppClaimTypes.Email , user.Email!),
+            new(AppClaimTypes.Id,user.Id),
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
-        authClaims.AddRange(userRoles.Select(userRole => new Claim(ClaimTypes.Role, userRole)));
+        authClaims.AddRange(userRoles.Select(userRole => new Claim(AppClaimTypes.Role, userRole)));
         var accessToken = GetToken(authClaims);
+        Console.WriteLine();
        
         return new AuthDataResponse
         {

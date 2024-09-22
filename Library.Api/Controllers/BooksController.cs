@@ -1,7 +1,5 @@
-using System.Security.Claims;
 using Library.Application.CachePolicies;
 using Library.Domain.Constants;
-using Library.Domain.DTOs;
 using Library.Domain.DTOs.Book;
 using Library.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -42,7 +40,7 @@ public class BooksController(IBookService bookService, IOutputCacheStore cacheSt
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
         // Get the current user's ID
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = User.FindFirst(AppClaimTypes.Id)?.Value;
         if (userId == null)
         {
             return Unauthorized(StringConstants.UserIdMissing);
@@ -60,7 +58,7 @@ public class BooksController(IBookService bookService, IOutputCacheStore cacheSt
     public async Task<IActionResult> DeleteBook(Guid bookId)
     {
         // Get the current user's ID
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = User.FindFirst(AppClaimTypes.Id)?.Value;
         if (userId == null) return Unauthorized(StringConstants.UserIdMissing);
         var result = await bookService.DeleteBookAsync(bookId,userId);
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);

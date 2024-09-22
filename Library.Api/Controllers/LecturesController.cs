@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using Library.Application.CachePolicies;
 using Library.Domain.Constants;
 using Library.Domain.DTOs.Lecture;
@@ -41,7 +40,7 @@ public class LecturesController(ILectureService lectureService , IOutputCacheSto
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
         // Get the current user's ID
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = User.FindFirst(AppClaimTypes.Id)?.Value;
         if (userId == null)
         {
             return Unauthorized(StringConstants.UserIdMissing);
@@ -60,7 +59,7 @@ public class LecturesController(ILectureService lectureService , IOutputCacheSto
     public async Task<IActionResult> DeleteLecture(Guid lectureId)
     {
         // Get the current user's ID
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = User.FindFirst(AppClaimTypes.Id)?.Value;
         if (userId == null) return Unauthorized(StringConstants.UserIdMissing);
         var result = await lectureService.DeleteLectureAsync(lectureId , userId);
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
