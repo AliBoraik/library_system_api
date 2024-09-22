@@ -56,7 +56,7 @@ public class BooksController(IBookService bookService, IOutputCacheStore cacheSt
     }
 
     // GET: api/Books/download/5
-    [HttpGet("download/{id}")]
+    [HttpGet("Download/{id}")]
     [OutputCache(Tags = [OutputCacheTags.Books])]
     public async Task<IActionResult> DownloadBook(Guid id)
     {

@@ -57,7 +57,7 @@ public class LecturesController(ILectureService lectureService , IOutputCacheSto
     }
 
     // GET: api/Lectures/download/5
-    [HttpGet("download/{id}")]
+    [HttpGet("Download/{id}")]
     [OutputCache(Tags = [OutputCacheTags.Lectures])]
     public async Task<IActionResult> DownloadLecture(Guid id)
     {
