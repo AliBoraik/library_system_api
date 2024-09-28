@@ -11,5 +11,5 @@ public class Book
     public DateTime UploadedAt { get; set; } = DateTime.UtcNow;
 
     public Subject Subject { get; set; }
-    public Teacher Teacher { get; set; }
+    
 }

@@ -9,4 +9,5 @@ public class CreateSubjectDto
     [Required] public string Description { get; init; } = null!;
 
     [Required] public Guid DepartmentId { get; init; }
+    [Required] public Guid TeacherId { get; init; }
 }

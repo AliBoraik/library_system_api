@@ -44,12 +44,10 @@ public class ApplicationDbContext : IdentityDbContext<User>
             .HasForeignKey(s => s.TeacherId);
         
         modelBuilder.Entity<User>()
-            .HasDiscriminator<string>("UserType")
-            .HasValue<User>("Admin")
-            .HasValue<Teacher>("Teacher")
-            .HasValue<Student>("Student");
-        
-        
+            .HasDiscriminator<UserType>("UserType")
+            .HasValue<User>(UserType.Admin)
+            .HasValue<Teacher>(UserType.Teacher)
+            .HasValue<Student>(UserType.Student);
 
         // roles ids
         var adminRoleId = Guid.NewGuid().ToString();
