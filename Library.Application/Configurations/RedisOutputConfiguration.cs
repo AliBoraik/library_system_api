@@ -16,10 +16,10 @@ public static class RedisOutputConfiguration
         });
         services.AddOutputCache(options =>
         {
-            options.AddPolicy(nameof(AuthCachePolicy) , AuthCachePolicy.Instance);
+            options.AddPolicy(nameof(AuthCachePolicy), AuthCachePolicy.Instance);
             options.DefaultExpirationTimeSpan = TimeSpan.FromDays(1);
         });
-        
+
         /*services.AddOutputCache(options =>
         {
             options.DefaultExpirationTimeSpan = TimeSpan.FromSeconds(10);
@@ -27,9 +27,9 @@ public static class RedisOutputConfiguration
             {
                 builder.AddPolicy<AuthCachePolicy>();
             }, true);
-        
+
         });*/
-        
+
         return services;
     }
 }

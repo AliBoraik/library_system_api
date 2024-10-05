@@ -22,7 +22,7 @@ public class BookRepository(ApplicationDbContext context) : IBookRepository
             .FirstOrDefaultAsync();
     }
 
-    public async Task<Book?> FindBookByNameAsync(string name , Guid subjectId)
+    public async Task<Book?> FindBookByNameAsync(string name, Guid subjectId)
     {
         return await context.Books
             .AsNoTracking()
@@ -41,7 +41,7 @@ public class BookRepository(ApplicationDbContext context) : IBookRepository
 
     public async Task AddBookAsync(Book book)
     {
-        await context.Books.AddAsync(book); 
+        await context.Books.AddAsync(book);
         await Save();
     }
 
@@ -50,6 +50,7 @@ public class BookRepository(ApplicationDbContext context) : IBookRepository
         context.Books.Remove(book);
         await Save();
     }
+
     private async Task Save()
     {
         await context.SaveChangesAsync();

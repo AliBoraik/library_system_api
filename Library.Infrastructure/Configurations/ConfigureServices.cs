@@ -21,13 +21,15 @@ public static class ConfigureServices
             options.UseNpgsql(dockerEnv ?? configuration.GetConnectionString("LibraryDB"));
         });
         // For Identity
-        services.AddIdentity<User, IdentityRole>()
+        services.AddIdentity<User, IdentityRole<Guid>>()
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
         services.AddScoped<IDepartmentRepository, DepartmentRepository>();
         services.AddScoped<ILectureRepository, LectureRepository>();
         services.AddScoped<ISubjectRepository, SubjectRepository>();
         services.AddScoped<IBookRepository, BookRepository>();
+        services.AddScoped<IStudentRepository, StudentRepository>();
+        services.AddScoped<ITeacherRepository, TeacherRepository>();
         return services;
     }
 }

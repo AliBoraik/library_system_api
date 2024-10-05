@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.OutputCaching;
 
 namespace Library.Api.Controllers;
 
-
 [Route("api/[controller]")]
 [ApiController]
 [Authorize]
@@ -16,16 +15,16 @@ public class BooksController(IBookService bookService, IOutputCacheStore cacheSt
 {
     // GET: api/Books
     [HttpGet]
-    [OutputCache(Tags = [OutputCacheTags.Books] , PolicyName = nameof(AuthCachePolicy))]
+    [OutputCache(Tags = [OutputCacheTags.Books], PolicyName = nameof(AuthCachePolicy))]
     public async Task<ActionResult<IEnumerable<BookResponseDto>>> GetBooks()
     {
         var lectures = await bookService.GetAllBooksAsync();
         return Ok(lectures);
     }
-    
+
     // GET: api/Books/5
     [HttpGet("{bookId:guid}")]
-    [OutputCache(Tags = [OutputCacheTags.Books] , PolicyName = nameof(AuthCachePolicy))]
+    [OutputCache(Tags = [OutputCacheTags.Books], PolicyName = nameof(AuthCachePolicy))]
     public async Task<ActionResult<BookResponseDto>> GetBook(Guid bookId)
     {
         var result = await bookService.GetBookByIdAsync(bookId);
@@ -33,6 +32,7 @@ public class BooksController(IBookService bookService, IOutputCacheStore cacheSt
             dto => Ok(dto),
             error => StatusCode(error.Code, error));
     }
+
     // POST: api/Books
     [HttpPost]
     [Authorize(Roles = $"{AppRoles.Admin},{AppRoles.Teacher}")]
@@ -41,17 +41,15 @@ public class BooksController(IBookService bookService, IOutputCacheStore cacheSt
         if (!ModelState.IsValid) return BadRequest(ModelState);
         // Get the current user's ID
         var userId = User.FindFirst(AppClaimTypes.Id)?.Value;
-        if (userId == null)
-        {
-            return Unauthorized(StringConstants.UserIdMissing);
-        }
-        var result = await bookService.AddBookAsync(createLectureDto, userId);
+        if (userId == null) return Unauthorized(StringConstants.UserIdMissing);
+        var result = await bookService.AddBookAsync(createLectureDto, Guid.Parse(userId));
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
-        await cacheStore.EvictByTagAsync(OutputCacheTags.Books,CancellationToken.None);
-        await cacheStore.EvictByTagAsync(OutputCacheTags.Subjects,CancellationToken.None);
+        await cacheStore.EvictByTagAsync(OutputCacheTags.Books, CancellationToken.None);
+        await cacheStore.EvictByTagAsync(OutputCacheTags.Subjects, CancellationToken.None);
         var bookId = result.Value;
         return CreatedAtAction("GetBook", new { bookId }, new { bookId });
     }
+
     // DELETE: api/Books/5
     [HttpDelete("{bookId:guid}")]
     [Authorize(Roles = $"{AppRoles.Admin},{AppRoles.Teacher}")]
@@ -60,10 +58,10 @@ public class BooksController(IBookService bookService, IOutputCacheStore cacheSt
         // Get the current user's ID
         var userId = User.FindFirst(AppClaimTypes.Id)?.Value;
         if (userId == null) return Unauthorized(StringConstants.UserIdMissing);
-        var result = await bookService.DeleteBookAsync(bookId,userId);
+        var result = await bookService.DeleteBookAsync(bookId, Guid.Parse(userId));
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Books, CancellationToken.None);
-        await cacheStore.EvictByTagAsync(OutputCacheTags.Subjects,CancellationToken.None);
+        await cacheStore.EvictByTagAsync(OutputCacheTags.Subjects, CancellationToken.None);
         return Ok();
     }
 
@@ -78,5 +76,4 @@ public class BooksController(IBookService bookService, IOutputCacheStore cacheSt
         var fileBytes = await System.IO.File.ReadAllBytesAsync(path);
         return File(fileBytes, "application/octet-stream", Path.GetFileName(path));
     }
-    
 }

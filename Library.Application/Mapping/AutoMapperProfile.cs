@@ -1,9 +1,10 @@
 using AutoMapper;
-using Library.Domain.DTOs;
 using Library.Domain.DTOs.Book;
 using Library.Domain.DTOs.Department;
 using Library.Domain.DTOs.Lecture;
 using Library.Domain.DTOs.Subject;
+using Library.Domain.DTOs.Users.Student;
+using Library.Domain.DTOs.Users.Teacher;
 using Library.Domain.Models;
 
 namespace Library.Application.Mapping;
@@ -26,5 +27,25 @@ public class AutoMapperProfile : Profile
         // Book
         CreateMap<Book, BookResponseDto>().ReverseMap();
         CreateMap<Book, CreateBookDto>().ReverseMap();
+        // Student
+        CreateMap<User, StudentDto>()
+            .IncludeMembers(s => s.Student);
+        CreateMap<User, CreateStudent>()
+            .IncludeMembers(s => s.Student);
+        CreateMap<Student, StudentDto>()
+            .IncludeMembers(s => s.User);
+        CreateMap<Student, CreateStudent>()
+            .IncludeMembers(s => s.User);
+        // Teacher
+        CreateMap<User, TeacherDto>()
+            .IncludeMembers(s => s.Teacher);
+        CreateMap<User, CreateTeacher>()
+            .IncludeMembers(s => s.Teacher);
+        CreateMap<Teacher, TeacherDto>()
+            .IncludeMembers(s => s.User)
+            .ReverseMap();
+        CreateMap<Teacher, CreateTeacher>()
+            .IncludeMembers(s => s.User)
+            .ReverseMap();
     }
 }

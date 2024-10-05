@@ -11,11 +11,11 @@ namespace Library.Api.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 [Authorize]
-public class DepartmentsController(IDepartmentService departmentService , IOutputCacheStore cacheStore) : ControllerBase
+public class DepartmentsController(IDepartmentService departmentService, IOutputCacheStore cacheStore) : ControllerBase
 {
     // GET: api/Department
     [HttpGet]
-    [OutputCache(Tags = [OutputCacheTags.Departments] , PolicyName = nameof(AuthCachePolicy))]
+    [OutputCache(Tags = [OutputCacheTags.Departments], PolicyName = nameof(AuthCachePolicy))]
     public async Task<ActionResult<IEnumerable<DepartmentDto>>> GetDepartments()
     {
         var result = await departmentService.GetAllDepartmentsAsync();
@@ -26,7 +26,7 @@ public class DepartmentsController(IDepartmentService departmentService , IOutpu
 
     // GET: api/Department/5
     [HttpGet("{departmentId:guid}")]
-    [OutputCache(Tags = [OutputCacheTags.Departments] , PolicyName = nameof(AuthCachePolicy))]
+    [OutputCache(Tags = [OutputCacheTags.Departments], PolicyName = nameof(AuthCachePolicy))]
     public async Task<ActionResult<DepartmentDetailsDto>> GetDepartment(Guid departmentId)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -44,7 +44,7 @@ public class DepartmentsController(IDepartmentService departmentService , IOutpu
         if (!ModelState.IsValid) return BadRequest(ModelState);
         var result = await departmentService.AddDepartmentAsync(createDepartmentDto);
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
-        await cacheStore.EvictByTagAsync(OutputCacheTags.Departments,CancellationToken.None);
+        await cacheStore.EvictByTagAsync(OutputCacheTags.Departments, CancellationToken.None);
         var departmentId = result.Value;
         return CreatedAtAction("GetDepartment", new { departmentId }, new { departmentId });
     }
@@ -57,7 +57,7 @@ public class DepartmentsController(IDepartmentService departmentService , IOutpu
         if (!ModelState.IsValid) return BadRequest(ModelState);
         var result = await departmentService.UpdateDepartmentAsync(departmentDto);
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
-        await cacheStore.EvictByTagAsync(OutputCacheTags.Departments,CancellationToken.None);
+        await cacheStore.EvictByTagAsync(OutputCacheTags.Departments, CancellationToken.None);
         return Ok();
     }
 
@@ -68,7 +68,7 @@ public class DepartmentsController(IDepartmentService departmentService , IOutpu
     {
         var result = await departmentService.DeleteDepartmentAsync(departmentId);
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
-        await cacheStore.EvictByTagAsync(OutputCacheTags.Departments,CancellationToken.None);
+        await cacheStore.EvictByTagAsync(OutputCacheTags.Departments, CancellationToken.None);
         return Ok();
     }
 }

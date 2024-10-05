@@ -8,7 +8,11 @@ using Microsoft.AspNetCore.Http;
 
 namespace Library.Application;
 
-public class LectureService(ILectureRepository lectureRepository,ISubjectRepository subjectRepository, IMapper mapper, IUploadsService uploadsService)
+public class LectureService(
+    ILectureRepository lectureRepository,
+    ISubjectRepository subjectRepository,
+    IMapper mapper,
+    IUploadsService uploadsService)
     : ILectureService
 {
     public async Task<IEnumerable<LectureResponseDto>> GetAllLecturesAsync()
@@ -25,22 +29,22 @@ public class LectureService(ILectureRepository lectureRepository,ISubjectReposit
         return mapper.Map<LectureResponseDto>(lecture);
     }
 
-    public async Task<Result<Guid, Error>> AddLectureAsync(CreateLectureDto lectureDto, string userId)
+    public async Task<Result<Guid, Error>> AddLectureAsync(CreateLectureDto lectureDto, Guid userId)
     {
-        
-        var lectureExists = await lectureRepository.FindLectureByNameAsync(lectureDto.Title , lectureDto.SubjectId);
+        var lectureExists = await lectureRepository.FindLectureByNameAsync(lectureDto.Title, lectureDto.SubjectId);
         if (lectureExists != null)
             return new Error(StatusCodes.Status409Conflict, $"Lecture with title = {lectureDto.Title} already exists");
         // check SubjectId 
         var subject = await subjectRepository.FindSubjectByIdAsync(lectureDto.SubjectId);
-        if (subject == null) 
+        if (subject == null)
             return new Error(StatusCodes.Status404NotFound, $"Subject with Id = {lectureDto.SubjectId} not found");
-        if (subject.TeacherId != userId) 
-            return new Error(StatusCodes.Status403Forbidden, $"You don't have access");
+        if (subject.TeacherId != userId)
+            return new Error(StatusCodes.Status403Forbidden, "You don't have access");
         // file info
         var lectureId = Guid.NewGuid();
         var fullDirectoryPath = Path.Combine("Uploads", lectureDto.SubjectId.ToString());
-        var fullFilePath = Path.Combine(fullDirectoryPath, lectureId.ToString()) + Path.GetExtension(lectureDto.File.FileName);
+        var fullFilePath = Path.Combine(fullDirectoryPath, lectureId.ToString()) +
+                           Path.GetExtension(lectureDto.File.FileName);
         // save in database
         var lecture = mapper.Map<Lecture>(lectureDto);
         lecture.FilePath = fullFilePath;
@@ -53,11 +57,13 @@ public class LectureService(ILectureRepository lectureRepository,ISubjectReposit
         await lectureRepository.DeleteLectureAsync(lecture);
         return uploadResult.Error;
     }
-    public async Task<Result<Ok, Error>> DeleteLectureAsync(Guid id , string teacherId)
+
+    public async Task<Result<Ok, Error>> DeleteLectureAsync(Guid id, Guid teacherId)
     {
         var lecture = await lectureRepository.FindLectureByIdAsync(id);
         if (lecture == null) return new Error(StatusCodes.Status404NotFound, $"Can't found Lecture with ID = {id}");
-        if (lecture.Subject.TeacherId != teacherId) return new Error(StatusCodes.Status403Forbidden , "Unauthorized to delete");
+        if (lecture.Subject.TeacherId != teacherId)
+            return new Error(StatusCodes.Status403Forbidden, "Unauthorized to delete");
         await lectureRepository.DeleteLectureAsync(lecture);
         var uploadResult = uploadsService.DeleteFile(lecture.FilePath);
         if (!uploadResult.IsOk)

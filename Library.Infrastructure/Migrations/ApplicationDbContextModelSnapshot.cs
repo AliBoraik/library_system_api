@@ -46,9 +46,8 @@ namespace Library.Infrastructure.Migrations
                     b.Property<DateTime>("UploadedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("UploadedBy")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<Guid>("UploadedBy")
+                        .HasColumnType("uuid");
 
                     b.HasKey("BookId");
 
@@ -78,13 +77,13 @@ namespace Library.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            DepartmentId = new Guid("ef34f466-d0c8-4957-913d-c0a5994b880d"),
+                            DepartmentId = new Guid("4e5c599e-4dde-4706-955f-c4deb05f5296"),
                             Description = "Department of Computer Science",
                             Name = "Computer Science"
                         },
                         new
                         {
-                            DepartmentId = new Guid("79b5020d-b530-4240-b598-3541fe4dc0f2"),
+                            DepartmentId = new Guid("ce2b8e16-314c-4bce-bd98-f7d13f067a8c"),
                             Description = "Department of Mathematics",
                             Name = "Mathematics"
                         });
@@ -114,15 +113,24 @@ namespace Library.Infrastructure.Migrations
                     b.Property<DateTime>("UploadedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("UploadedBy")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<Guid>("UploadedBy")
+                        .HasColumnType("uuid");
 
                     b.HasKey("LectureId");
 
                     b.HasIndex("SubjectId");
 
                     b.ToTable("Lectures");
+                });
+
+            modelBuilder.Entity("Library.Domain.Models.Student", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Students");
                 });
 
             modelBuilder.Entity("Library.Domain.Models.Subject", b =>
@@ -142,9 +150,8 @@ namespace Library.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("TeacherId")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<Guid>("TeacherId")
+                        .HasColumnType("uuid");
 
                     b.HasKey("SubjectId");
 
@@ -153,22 +160,23 @@ namespace Library.Infrastructure.Migrations
                     b.HasIndex("TeacherId");
 
                     b.ToTable("Subjects");
+                });
 
-                    b.HasData(
-                        new
-                        {
-                            SubjectId = new Guid("e1c564a5-d037-4eee-8a70-16fe0a8878ff"),
-                            DepartmentId = new Guid("ef34f466-d0c8-4957-913d-c0a5994b880d"),
-                            Description = "Study of data structures",
-                            Name = "Message Structures",
-                            TeacherId = "21ba8f73-01c7-4db9-87eb-cbabfd9682f9"
-                        });
+            modelBuilder.Entity("Library.Domain.Models.Teacher", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Teachers");
                 });
 
             modelBuilder.Entity("Library.Domain.Models.User", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("integer");
@@ -217,9 +225,6 @@ namespace Library.Infrastructure.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
-                    b.Property<int>("UserType")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedEmail")
@@ -231,16 +236,12 @@ namespace Library.Infrastructure.Migrations
 
                     b.ToTable("AspNetUsers", (string)null);
 
-                    b.HasDiscriminator<int>("UserType").HasValue(2);
-
-                    b.UseTphMappingStrategy();
-
                     b.HasData(
                         new
                         {
-                            Id = "abdc99ec-a5fe-408c-b6c0-4766936deac9",
+                            Id = new Guid("42135f1e-5753-4fb8-8a25-fe2d9c16532b"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "8cb3dda8-22ee-4cc7-9de2-2eb2bb19e70e",
+                            ConcurrencyStamp = "231fc133-467d-415f-8074-ddd6b5e51ce8",
                             Email = "admin@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
@@ -248,17 +249,17 @@ namespace Library.Infrastructure.Migrations
                             NormalizedUserName = "ADMIN",
                             PasswordHash = "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "db852c34-c6b4-4613-8cc0-e906f7ea5aad",
+                            SecurityStamp = "2c41f558-daf7-4b02-ab13-f1730830885b",
                             TwoFactorEnabled = false,
-                            UserName = "admin",
-                            UserType = 0
+                            UserName = "admin"
                         });
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -283,25 +284,25 @@ namespace Library.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "c060be5c-1b9e-4fd4-865b-594643c8b5fd",
+                            Id = new Guid("e98afa4b-08de-4a49-97a2-dd998117da20"),
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "9779390c-4015-4343-9995-d0b3e180a5e5",
+                            Id = new Guid("8da23d0e-9227-49ad-84c0-2d566c199bbc"),
                             Name = "Teacher",
                             NormalizedName = "TEACHER"
                         },
                         new
                         {
-                            Id = "1b6d8c89-11bc-4239-b683-8d2f0730c3a5",
+                            Id = new Guid("b2719f6c-b2f6-442a-b249-4b88caa4c1c0"),
                             Name = "Student",
                             NormalizedName = "STUDENT"
                         });
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -315,9 +316,8 @@ namespace Library.Infrastructure.Migrations
                     b.Property<string>("ClaimValue")
                         .HasColumnType("text");
 
-                    b.Property<string>("RoleId")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
@@ -326,7 +326,7 @@ namespace Library.Infrastructure.Migrations
                     b.ToTable("AspNetRoleClaims", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -340,9 +340,8 @@ namespace Library.Infrastructure.Migrations
                     b.Property<string>("ClaimValue")
                         .HasColumnType("text");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
@@ -351,7 +350,7 @@ namespace Library.Infrastructure.Migrations
                     b.ToTable("AspNetUserClaims", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
                 {
                     b.Property<string>("LoginProvider")
                         .HasColumnType("text");
@@ -362,9 +361,8 @@ namespace Library.Infrastructure.Migrations
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("text");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
 
                     b.HasKey("LoginProvider", "ProviderKey");
 
@@ -373,13 +371,13 @@ namespace Library.Infrastructure.Migrations
                     b.ToTable("AspNetUserLogins", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
                 {
-                    b.Property<string>("UserId")
-                        .HasColumnType("text");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
 
-                    b.Property<string>("RoleId")
-                        .HasColumnType("text");
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uuid");
 
                     b.HasKey("UserId", "RoleId");
 
@@ -390,25 +388,15 @@ namespace Library.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "abdc99ec-a5fe-408c-b6c0-4766936deac9",
-                            RoleId = "c060be5c-1b9e-4fd4-865b-594643c8b5fd"
-                        },
-                        new
-                        {
-                            UserId = "21ba8f73-01c7-4db9-87eb-cbabfd9682f9",
-                            RoleId = "9779390c-4015-4343-9995-d0b3e180a5e5"
-                        },
-                        new
-                        {
-                            UserId = "f5c06634-a23d-4935-ada5-5d93891ffd24",
-                            RoleId = "1b6d8c89-11bc-4239-b683-8d2f0730c3a5"
+                            UserId = new Guid("42135f1e-5753-4fb8-8a25-fe2d9c16532b"),
+                            RoleId = new Guid("e98afa4b-08de-4a49-97a2-dd998117da20")
                         });
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
                 {
-                    b.Property<string>("UserId")
-                        .HasColumnType("text");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("LoginProvider")
                         .HasColumnType("text");
@@ -422,58 +410,6 @@ namespace Library.Infrastructure.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
-                });
-
-            modelBuilder.Entity("Library.Domain.Models.Student", b =>
-                {
-                    b.HasBaseType("Library.Domain.Models.User");
-
-                    b.HasDiscriminator().HasValue(1);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "f5c06634-a23d-4935-ada5-5d93891ffd24",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "32cf7a72-b629-4891-84b2-4097b6f0fd3d",
-                            Email = "student@gmail.com",
-                            EmailConfirmed = false,
-                            LockoutEnabled = false,
-                            NormalizedEmail = "STUDENT@GMAIL.COM",
-                            NormalizedUserName = "STUDENT",
-                            PasswordHash = "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "d5c65aa7-c593-4894-b1f4-3aad3e41cf42",
-                            TwoFactorEnabled = false,
-                            UserName = "student",
-                            UserType = 0
-                        });
-                });
-
-            modelBuilder.Entity("Library.Domain.Models.Teacher", b =>
-                {
-                    b.HasBaseType("Library.Domain.Models.User");
-
-                    b.HasDiscriminator().HasValue(0);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "21ba8f73-01c7-4db9-87eb-cbabfd9682f9",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "c8aed0c9-33cd-45bf-acef-77287358af17",
-                            Email = "teacher@gmail.com",
-                            EmailConfirmed = false,
-                            LockoutEnabled = false,
-                            NormalizedEmail = "TEACHER@GMAIL.COM",
-                            NormalizedUserName = "TEACHER",
-                            PasswordHash = "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "bdcc981d-f8c9-416d-bfb6-c8418f45f65c",
-                            TwoFactorEnabled = false,
-                            UserName = "teacher",
-                            UserType = 0
-                        });
                 });
 
             modelBuilder.Entity("Library.Domain.Models.Book", b =>
@@ -498,6 +434,17 @@ namespace Library.Infrastructure.Migrations
                     b.Navigation("Subject");
                 });
 
+            modelBuilder.Entity("Library.Domain.Models.Student", b =>
+                {
+                    b.HasOne("Library.Domain.Models.User", "User")
+                        .WithOne("Student")
+                        .HasForeignKey("Library.Domain.Models.Student", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Library.Domain.Models.Subject", b =>
                 {
                     b.HasOne("Library.Domain.Models.Department", "Department")
@@ -517,16 +464,27 @@ namespace Library.Infrastructure.Migrations
                     b.Navigation("Teacher");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+            modelBuilder.Entity("Library.Domain.Models.Teacher", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                    b.HasOne("Library.Domain.Models.User", "User")
+                        .WithOne("Teacher")
+                        .HasForeignKey("Library.Domain.Models.Teacher", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
                 {
                     b.HasOne("Library.Domain.Models.User", null)
                         .WithMany()
@@ -535,7 +493,7 @@ namespace Library.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
                 {
                     b.HasOne("Library.Domain.Models.User", null)
                         .WithMany()
@@ -544,9 +502,9 @@ namespace Library.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -559,7 +517,7 @@ namespace Library.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
                 {
                     b.HasOne("Library.Domain.Models.User", null)
                         .WithMany()
@@ -583,6 +541,15 @@ namespace Library.Infrastructure.Migrations
             modelBuilder.Entity("Library.Domain.Models.Teacher", b =>
                 {
                     b.Navigation("Subjects");
+                });
+
+            modelBuilder.Entity("Library.Domain.Models.User", b =>
+                {
+                    b.Navigation("Student")
+                        .IsRequired();
+
+                    b.Navigation("Teacher")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

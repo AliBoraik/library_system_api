@@ -12,12 +12,11 @@ public class CreateLectureDto
     [Required] public string Title { get; set; } = null!;
 
     [Required] public string Description { get; set; } = null!;
-    
+
     [Required(ErrorMessage = "Please select a file.")]
     [DataType(DataType.Upload)]
     [MaxFileSize(25 * 1024 * 1024)]
     [NotMapped]
     // [AllowedExtensions([".jpg", ".png"])]
     public IFormFile File { get; set; } = null!;
-    
 }

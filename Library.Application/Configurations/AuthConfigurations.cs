@@ -1,7 +1,6 @@
 using System.Text;
 using Library.Domain.Auth;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -27,9 +26,9 @@ public static class AuthConfigurations
             .AddJwtBearer(options =>
             {
                 //convert the string signing key to byte array
-                byte[] signingKeyBytes = Encoding.UTF8
+                var signingKeyBytes = Encoding.UTF8
                     .GetBytes(jwtOptions.SigningKey);
-                
+
                 options.SaveToken = true;
                 options.RequireHttpsMetadata = false;
                 options.TokenValidationParameters = new TokenValidationParameters

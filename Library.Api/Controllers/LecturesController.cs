@@ -11,11 +11,11 @@ namespace Library.Api.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 [Authorize]
-public class LecturesController(ILectureService lectureService , IOutputCacheStore cacheStore) : ControllerBase
+public class LecturesController(ILectureService lectureService, IOutputCacheStore cacheStore) : ControllerBase
 {
     // GET: api/Lectures
     [HttpGet]
-    [OutputCache(Tags = [OutputCacheTags.Lectures] , PolicyName = nameof(AuthCachePolicy))]
+    [OutputCache(Tags = [OutputCacheTags.Lectures], PolicyName = nameof(AuthCachePolicy))]
     public async Task<ActionResult<IEnumerable<LectureResponseDto>>> GetLectures()
     {
         var lectures = await lectureService.GetAllLecturesAsync();
@@ -24,7 +24,7 @@ public class LecturesController(ILectureService lectureService , IOutputCacheSto
 
     // GET: api/Lectures/5
     [HttpGet("{lectureId:guid}")]
-    [OutputCache(Tags = [OutputCacheTags.Lectures] , PolicyName = nameof(AuthCachePolicy))]
+    [OutputCache(Tags = [OutputCacheTags.Lectures], PolicyName = nameof(AuthCachePolicy))]
     public async Task<ActionResult<LectureResponseDto>> GetLecture(Guid lectureId)
     {
         var result = await lectureService.GetLectureByIdAsync(lectureId);
@@ -41,14 +41,11 @@ public class LecturesController(ILectureService lectureService , IOutputCacheSto
         if (!ModelState.IsValid) return BadRequest(ModelState);
         // Get the current user's ID
         var userId = User.FindFirst(AppClaimTypes.Id)?.Value;
-        if (userId == null)
-        {
-            return Unauthorized(StringConstants.UserIdMissing);
-        }
-        var result = await lectureService.AddLectureAsync(createLectureDto, userId);
+        if (userId == null) return Unauthorized(StringConstants.UserIdMissing);
+        var result = await lectureService.AddLectureAsync(createLectureDto, Guid.Parse(userId));
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
-        await cacheStore.EvictByTagAsync(OutputCacheTags.Lectures,CancellationToken.None);
-        await cacheStore.EvictByTagAsync(OutputCacheTags.Subjects,CancellationToken.None);
+        await cacheStore.EvictByTagAsync(OutputCacheTags.Lectures, CancellationToken.None);
+        await cacheStore.EvictByTagAsync(OutputCacheTags.Subjects, CancellationToken.None);
         var lectureId = result.Value;
         return CreatedAtAction("GetLecture", new { lectureId }, new { lectureId });
     }
@@ -61,10 +58,10 @@ public class LecturesController(ILectureService lectureService , IOutputCacheSto
         // Get the current user's ID
         var userId = User.FindFirst(AppClaimTypes.Id)?.Value;
         if (userId == null) return Unauthorized(StringConstants.UserIdMissing);
-        var result = await lectureService.DeleteLectureAsync(lectureId , userId);
+        var result = await lectureService.DeleteLectureAsync(lectureId, Guid.Parse(userId));
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
-        await cacheStore.EvictByTagAsync(OutputCacheTags.Lectures,CancellationToken.None);
-        await cacheStore.EvictByTagAsync(OutputCacheTags.Subjects,CancellationToken.None);
+        await cacheStore.EvictByTagAsync(OutputCacheTags.Lectures, CancellationToken.None);
+        await cacheStore.EvictByTagAsync(OutputCacheTags.Subjects, CancellationToken.None);
         return Ok();
     }
 

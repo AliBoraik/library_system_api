@@ -8,12 +8,11 @@ using Library.Domain.Models;
 using Library.Interfaces.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Library.Application;
 
-public class AuthService(UserManager<User> userManager , JwtOptions jwtOptions )
+public class AuthService(UserManager<User> userManager, JwtOptions jwtOptions)
     : IAuthService
 {
     public async Task<Result<AuthDataResponse, Error>> Login(LoginModelDto loginModelDto)
@@ -26,14 +25,14 @@ public class AuthService(UserManager<User> userManager , JwtOptions jwtOptions )
         var authClaims = new List<Claim>
         {
             new(AppClaimTypes.Name, user.UserName!),
-            new(AppClaimTypes.Email , user.Email!),
-            new(AppClaimTypes.Id,user.Id),
+            new(AppClaimTypes.Email, user.Email!),
+            new(AppClaimTypes.Id, user.Id.ToString()),
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
         authClaims.AddRange(userRoles.Select(userRole => new Claim(AppClaimTypes.Role, userRole)));
         var accessToken = GetToken(authClaims);
         Console.WriteLine();
-       
+
         return new AuthDataResponse
         {
             AccessToken = new JwtSecurityTokenHandler().WriteToken(accessToken),
@@ -46,12 +45,15 @@ public class AuthService(UserManager<User> userManager , JwtOptions jwtOptions )
         var userExists = await userManager.FindByEmailAsync(modelDto.Email);
         if (userExists != null)
             return new Error(StatusCodes.Status409Conflict, StringConstants.UserAlreadyExists);
-        var user = new Teacher
+
+        var user = new User
         {
             Email = modelDto.Email,
             SecurityStamp = Guid.NewGuid().ToString(),
-            UserName = modelDto.Username
+            UserName = modelDto.Username,
+            Teacher = new Teacher()
         };
+
         var result = await userManager.CreateAsync(user, modelDto.Password);
         if (!result.Succeeded)
             return new Error(StatusCodes.Status500InternalServerError, result.Errors.First().Description);
@@ -64,11 +66,12 @@ public class AuthService(UserManager<User> userManager , JwtOptions jwtOptions )
         var userExists = await userManager.FindByEmailAsync(modelDto.Email);
         if (userExists != null)
             return new Error(StatusCodes.Status409Conflict, StringConstants.UserAlreadyExists);
-        var user = new Student
+        var user = new User
         {
             Email = modelDto.Email,
             SecurityStamp = Guid.NewGuid().ToString(),
-            UserName = modelDto.Username
+            UserName = modelDto.Username,
+            Student = new Student()
         };
         var result = await userManager.CreateAsync(user, modelDto.Password);
         if (!result.Succeeded)

@@ -11,7 +11,7 @@ namespace Library.Api.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 [Authorize]
-public class SubjectsController(ISubjectService subjectService, IOutputCacheStore cacheStore)  : ControllerBase
+public class SubjectsController(ISubjectService subjectService, IOutputCacheStore cacheStore) : ControllerBase
 {
     // GET: api/Subjects
     [HttpGet]
@@ -40,8 +40,8 @@ public class SubjectsController(ISubjectService subjectService, IOutputCacheStor
         if (!ModelState.IsValid) return BadRequest(ModelState);
         var result = await subjectService.AddSubjectAsync(createSubjectDto);
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
-        await cacheStore.EvictByTagAsync(OutputCacheTags.Subjects,CancellationToken.None);
-        await cacheStore.EvictByTagAsync(OutputCacheTags.Departments,CancellationToken.None);
+        await cacheStore.EvictByTagAsync(OutputCacheTags.Subjects, CancellationToken.None);
+        await cacheStore.EvictByTagAsync(OutputCacheTags.Departments, CancellationToken.None);
         var subjectId = result.Value;
         return CreatedAtAction("GetSubject", new { subjectId }, new { subjectId });
     }
@@ -54,8 +54,8 @@ public class SubjectsController(ISubjectService subjectService, IOutputCacheStor
         if (!ModelState.IsValid) return BadRequest(ModelState);
         var result = await subjectService.UpdateSubjectAsync(subjectDto);
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
-        await cacheStore.EvictByTagAsync(OutputCacheTags.Subjects,CancellationToken.None);
-        await cacheStore.EvictByTagAsync(OutputCacheTags.Departments,CancellationToken.None);
+        await cacheStore.EvictByTagAsync(OutputCacheTags.Subjects, CancellationToken.None);
+        await cacheStore.EvictByTagAsync(OutputCacheTags.Departments, CancellationToken.None);
         return Ok();
     }
 
@@ -66,8 +66,8 @@ public class SubjectsController(ISubjectService subjectService, IOutputCacheStor
     {
         var result = await subjectService.DeleteSubjectAsync(subjectId);
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
-        await cacheStore.EvictByTagAsync(OutputCacheTags.Subjects,CancellationToken.None);
-        await cacheStore.EvictByTagAsync(OutputCacheTags.Departments,CancellationToken.None);
+        await cacheStore.EvictByTagAsync(OutputCacheTags.Subjects, CancellationToken.None);
+        await cacheStore.EvictByTagAsync(OutputCacheTags.Departments, CancellationToken.None);
         return Ok();
     }
 }

@@ -23,7 +23,7 @@ public class LectureRepository(ApplicationDbContext context) : ILectureRepositor
             .FirstOrDefaultAsync();
     }
 
-    public async Task<Lecture?> FindLectureByNameAsync(string name , Guid subjectId)
+    public async Task<Lecture?> FindLectureByNameAsync(string name, Guid subjectId)
     {
         return await context.Lectures
             .AsNoTracking()
@@ -42,7 +42,7 @@ public class LectureRepository(ApplicationDbContext context) : ILectureRepositor
 
     public async Task AddLectureAsync(Lecture lecture)
     {
-        await context.Lectures.AddAsync(lecture); 
+        await context.Lectures.AddAsync(lecture);
         await Save();
     }
 
@@ -52,6 +52,7 @@ public class LectureRepository(ApplicationDbContext context) : ILectureRepositor
         context.Lectures.Remove(lecture);
         await Save();
     }
+
     private async Task Save()
     {
         await context.SaveChangesAsync();

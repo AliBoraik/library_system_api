@@ -3,6 +3,7 @@ using Library.Domain.Constants;
 using Library.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 
 namespace Library.Api.Controllers;
 // {"username": "admin","email": "admin@gmail.com","password": "Adminadmin@123"}
@@ -11,7 +12,7 @@ namespace Library.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class AuthController(IAuthService authService) : ControllerBase
+public class AuthController(IAuthService authService, IOutputCacheStore cacheStore) : ControllerBase
 {
     [HttpPost]
     [Route("Login")]
@@ -35,6 +36,7 @@ public class AuthController(IAuthService authService) : ControllerBase
             _ => Ok(),
             error => StatusCode(error.Code, error));
     }
+
     [HttpPost]
     [Route("Register-Teacher")]
     [Authorize(Roles = AppRoles.Admin)]
@@ -42,26 +44,27 @@ public class AuthController(IAuthService authService) : ControllerBase
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
         var result = await authService.RegisterTeacher(modelDto);
-        return result.Match<IActionResult>(
-            _ => Ok(),
-            error => StatusCode(error.Code, error));
+        if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
+        await cacheStore.EvictByTagAsync(OutputCacheTags.Teachers, CancellationToken.None);
+        return Ok();
     }
+
     [HttpPost]
     [Route("Register-Student")]
     [Authorize(Roles = AppRoles.Admin)]
     public async Task<IActionResult> RegisterStudent([FromBody] RegisterModelDto modelDto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
-        var result = await authService.RegisterTeacher(modelDto);
-        return result.Match<IActionResult>(
-            _ => Ok(),
-            error => StatusCode(error.Code, error));
+        var result = await authService.RegisterStudent(modelDto);
+        if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
+        await cacheStore.EvictByTagAsync(OutputCacheTags.Students, CancellationToken.None);
+        return Ok();
     }
-    
+
     [HttpGet]
     [Route("Validate-Token")]
     [Authorize]
-    public  IActionResult ValidateToken()
+    public IActionResult ValidateToken()
     {
         return Ok();
     }

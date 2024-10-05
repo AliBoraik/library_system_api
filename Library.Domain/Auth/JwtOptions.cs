@@ -1,6 +1,6 @@
 namespace Library.Domain.Auth;
 
-public record  JwtOptions(
+public record JwtOptions(
     string Issuer,
     string Audience,
     string SigningKey,

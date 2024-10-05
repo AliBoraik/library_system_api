@@ -1,9 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 using Library.Domain.Constants;
 
-namespace Library.Domain.Auth;
+namespace Library.Domain.DTOs.Users.Teacher;
 
-public class RegisterModelDto
+public class CreateTeacher
 {
     [EmailAddress]
     [Required(ErrorMessage = "Email is required")]

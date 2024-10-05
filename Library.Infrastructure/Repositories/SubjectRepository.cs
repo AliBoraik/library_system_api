@@ -1,9 +1,7 @@
 using Library.Domain.Models;
 using Library.Infrastructure.DataContext;
 using Library.Interfaces.Repositories;
-using Microsoft.AspNetCore.Components.Web;
 using Microsoft.EntityFrameworkCore;
-using StackExchange.Redis;
 
 namespace Library.Infrastructure.Repositories;
 
@@ -33,7 +31,6 @@ public class SubjectRepository(ApplicationDbContext context) : ISubjectRepositor
             .AsNoTracking()
             .Where(s => s.SubjectId == id)
             .FirstOrDefaultAsync();
-            
     }
 
     public async Task<bool> SubjectExistsAsync(Guid id)
@@ -58,6 +55,7 @@ public class SubjectRepository(ApplicationDbContext context) : ISubjectRepositor
         context.Subjects.Remove(subject);
         await Save();
     }
+
     private async Task Save()
     {
         await context.SaveChangesAsync();

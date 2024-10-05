@@ -1,16 +1,16 @@
 using System.ComponentModel.DataAnnotations;
 using Library.Domain.Constants;
 
-namespace Library.Domain.Auth;
+namespace Library.Domain.DTOs.Users.Student;
 
-public class RegisterModelDto
+public class CreateStudent
 {
     [EmailAddress]
     [Required(ErrorMessage = "Email is required")]
     public string Email { get; set; } = null!;
 
     [Required(ErrorMessage = "User Name is required")]
-    public string Username { get; set; } = null!;
+    public string UserName { get; set; } = null!;
 
 
     [Required(ErrorMessage = "Password is required")]
