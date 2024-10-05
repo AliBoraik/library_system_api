@@ -10,7 +10,7 @@ namespace Library.Api.Controllers;
 // {"username": "teacher","email": "teacher@example.com","password": "Adminadmin@123"}
 // {"username": "student","email": "student@example.com","password": "Adminadmin@123"}
 
-[Route("api/[controller]")]
+[Route("Api/[controller]")]
 [ApiController]
 public class AuthController(IAuthService authService, IOutputCacheStore cacheStore) : ControllerBase
 {

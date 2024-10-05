@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.OutputCaching;
 namespace Library.Api.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("Api/[controller]")]
 [Authorize(Roles = AppRoles.Admin)]
 public class TeachersController(ITeacherService teacherService, IOutputCacheStore cacheStore) : ControllerBase
 {

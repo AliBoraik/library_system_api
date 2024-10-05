@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.OutputCaching;
 
 namespace Library.Api.Controllers;
 
-[Route("api/[controller]")]
+[Route("Api/[controller]")]
 [ApiController]
 [Authorize]
 public class SubjectsController(ISubjectService subjectService, IOutputCacheStore cacheStore) : ControllerBase
