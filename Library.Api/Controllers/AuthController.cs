@@ -66,6 +66,11 @@ public class AuthController(IAuthService authService, IOutputCacheStore cacheSto
     [Authorize]
     public IActionResult ValidateToken()
     {
-        return Ok();
+        var authClaims = new Dictionary<string, string>
+        {
+            { User.FindFirst(AppClaimTypes.Role)!.Type, User.FindFirst(AppClaimTypes.Role)!.Value},
+            { User.FindFirst(AppClaimTypes.Id)!.Type, User.FindFirst(AppClaimTypes.Id)!.Value}
+        };
+        return Ok(authClaims);
     }
 }

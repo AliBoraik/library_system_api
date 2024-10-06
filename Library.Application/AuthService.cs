@@ -31,8 +31,6 @@ public class AuthService(UserManager<User> userManager, JwtOptions jwtOptions)
         };
         authClaims.AddRange(userRoles.Select(userRole => new Claim(AppClaimTypes.Role, userRole)));
         var accessToken = GetToken(authClaims);
-        Console.WriteLine();
-
         return new AuthDataResponse
         {
             AccessToken = new JwtSecurityTokenHandler().WriteToken(accessToken),
