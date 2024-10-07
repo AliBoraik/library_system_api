@@ -28,7 +28,7 @@ public static class AuthConfigurations
                 //convert the string signing key to byte array
                 var signingKeyBytes = Encoding.UTF8
                     .GetBytes(jwtOptions.SigningKey);
-                
+
                 options.MapInboundClaims = false;
                 options.SaveToken = true;
                 options.RequireHttpsMetadata = false;
