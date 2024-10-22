@@ -103,14 +103,62 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<Guid>, 
                 NormalizedUserName = "ADMIN",
                 PasswordHash = "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q=="
             });
-
-
+        
+        modelBuilder.Entity<User>()
+            .HasData(new User
+            {
+                Id = teacherId,
+                Email = "teacher@gmail.com",
+                NormalizedEmail = "TEACHER@GMAIL.COM",
+                SecurityStamp = Guid.NewGuid().ToString(),
+                UserName = "teacher",
+                NormalizedUserName = "TEACHER",
+                PasswordHash = "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q==",
+            });
+        modelBuilder.Entity<Teacher>()
+            .HasData(new Teacher
+            {
+                Id = teacherId,
+            });
+        
+        modelBuilder.Entity<User>()
+            .HasData(new User
+            {
+                Id = studentId,
+                Email = "student@gmail.com",
+                NormalizedEmail = "STUDENT@GMAIL.COM",
+                SecurityStamp = Guid.NewGuid().ToString(),
+                UserName = "student",
+                NormalizedUserName = "STUDENT",
+                PasswordHash = "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q==",
+            });
+        
+        modelBuilder.Entity<Student>()
+            .HasData(new Student
+            {
+                Id = studentId,
+            });
+        
         modelBuilder.Entity<IdentityUserRole<Guid>>().HasData(
             new IdentityUserRole<Guid>
             {
                 RoleId = adminRoleId,
                 UserId = adminId
             });
+        modelBuilder.Entity<IdentityUserRole<Guid>>().HasData(
+            new IdentityUserRole<Guid>
+            {
+                RoleId = teacherRoleId,
+                UserId = teacherId
+            });
+       
+        modelBuilder.Entity<IdentityUserRole<Guid>>().HasData(
+            new IdentityUserRole<Guid>
+            {
+                RoleId = studentRoleId,
+                UserId = studentId
+            });
+
 
         var department1 = new Department
         {

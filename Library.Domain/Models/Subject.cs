@@ -10,6 +10,6 @@ public class Subject
     public ICollection<Lecture> Lectures { get; set; }
     public ICollection<Book> Books { get; set; }
 
-    public Guid TeacherId { get; set; }
-    public Teacher Teacher { get; set; }
+    public Guid? TeacherId { get; set; }
+    public Teacher? Teacher { get; set; }
 }
