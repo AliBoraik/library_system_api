@@ -8,8 +8,8 @@ using Microsoft.AspNetCore.OutputCaching;
 
 namespace Library.Api.Controllers;
 // {"email": "admin@gmail.com","password": "Adminadmin@123"}
-// {"email": "teacher@example.com","password": "Adminadmin@123"}
-// {"email": "student@example.com","password": "Adminadmin@123"}
+// {"email": "teacher@gmail.com","password": "Adminadmin@123"}
+// {"email": "student@gmail.com","password": "Adminadmin@123"}
 
 [Route("Api/[controller]")]
 [ApiController]
@@ -67,8 +67,6 @@ public class AuthController(IAuthService authService, IOutputCacheStore cacheSto
     [Authorize]
     public IActionResult ValidateToken()
     {
-        var r = User.FindFirst(ClaimTypes.Role)?.Value;
-        Console.WriteLine(r);
         var authClaims = new Dictionary<string, string>
         {
             { AppClaimTypes.Id, User.FindFirst(AppClaimTypes.Id)!.Value },

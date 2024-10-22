@@ -10,7 +10,7 @@ public class CreateTeacher
     public string Email { get; set; } = null!;
 
     [Required(ErrorMessage = "User Name is required")]
-    public string Username { get; set; } = null!;
+    public string UserName { get; set; } = null!;
 
 
     [Required(ErrorMessage = "Password is required")]
