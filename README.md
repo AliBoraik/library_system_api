@@ -37,13 +37,12 @@ Before running the application, ensure that you have the following dependencies 
 
 ### Installation
 
-1. Clone the repository:
+1. Clone the repository
 2. Build and run the Docker containers:
 ```docker
 docker-compose up
 ```
 3.  URL http://localhost:5254/swagger/index.html to access swagger for API .
-4.  
 5.  URL http://localhost:5202/swagger/index.html to access swagger for Auth API .
 
 ## Features
