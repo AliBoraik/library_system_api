@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 
-namespace Library.Api.Controllers;
+namespace Library.Auth.Controllers;
 // {"email": "admin@gmail.com","password": "Adminadmin@123"}
 // {"email": "teacher@gmail.com","password": "Adminadmin@123"}
 // {"email": "student@gmail.com","password": "Adminadmin@123"}

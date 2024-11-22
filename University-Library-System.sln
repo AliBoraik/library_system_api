@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Interfaces", "Libra
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Application", "Library.Application\Library.Application.csproj", "{0E52A770-9D4B-4669-8033-721E9AAEB1CB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Auth", "Library.Auth\Library.Auth.csproj", "{CDEFA17A-BB57-4EEE-87A3-C4313F23C112}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,5 +43,9 @@ Global
 		{0E52A770-9D4B-4669-8033-721E9AAEB1CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0E52A770-9D4B-4669-8033-721E9AAEB1CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0E52A770-9D4B-4669-8033-721E9AAEB1CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CDEFA17A-BB57-4EEE-87A3-C4313F23C112}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDEFA17A-BB57-4EEE-87A3-C4313F23C112}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CDEFA17A-BB57-4EEE-87A3-C4313F23C112}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CDEFA17A-BB57-4EEE-87A3-C4313F23C112}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
