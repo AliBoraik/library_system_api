@@ -7,6 +7,10 @@ FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["Library.Api/Library.Api.csproj", "Library.Api/"]
+COPY ["Library.Infrastructure/Library.Infrastructure.csproj", "Library.Infrastructure/"]
+COPY ["Library.Domain/Library.Domain.csproj", "Library.Domain/"]
+COPY ["Library.Application/Library.Application.csproj", "Library.Application/"]
+
 RUN dotnet restore "Library.Api/Library.Api.csproj"
 COPY . .
 WORKDIR "/src/Library.Api"
