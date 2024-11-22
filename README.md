@@ -42,7 +42,7 @@ Before running the application, ensure that you have the following dependencies 
 ```docker
 docker compose up
 ```
-3.  URL http://localhost:5254/swagger/index.html to access swagger for API .
+3.  URL http://localhost:5253/swagger/index.html to access swagger for API .
 5.  URL http://localhost:5202/swagger/index.html to access swagger for Auth API .
 
 ## Features
