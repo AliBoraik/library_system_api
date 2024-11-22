@@ -4,7 +4,8 @@
       dockerfile: Library.Api/Dockerfile
     container_name: "library_api"
     ports:
-      - "5253:80"
+      - "5253:8080"
+      - "5254:8081"
     environment:
       CONNECTION_STRING_DOCKER: "host=db;;Database=LibraryDB;Port=5432;Username=postgres;Password=admin"
       CONNECTION_STRING_REDIS: "redis:6379"
@@ -14,7 +15,8 @@
       dockerfile: Library.Auth/Dockerfile
     container_name: "library_auth"
     ports:
-      - "5253:8080"
+      - "5202:8080"
+      - '5203:8081'
     environment:
       CONNECTION_STRING_DOCKER: "host=db;;Database=LibraryDB;Port=5432;Username=postgres;Password=admin"
       CONNECTION_STRING_REDIS: "redis:6379"
@@ -54,4 +56,3 @@ volumes:
   redis_data:
     driver: local
   
-  #docker exec -it redis redis-cli
