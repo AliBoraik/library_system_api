@@ -17,7 +17,8 @@ public class BookRepository(ApplicationDbContext context) : IBookRepository
     public async Task<Book?> FindBookByIdAsync(Guid id)
     {
         return await context.Books
-            .Where(l => l.BookId == id)
+            .Where(b => b.BookId == id)
+            .Include(b => b.Subject)
             .AsNoTracking()
             .FirstOrDefaultAsync();
     }
