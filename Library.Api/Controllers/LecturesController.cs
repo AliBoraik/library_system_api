@@ -18,8 +18,8 @@ public class LecturesController(ILectureService lectureService, IOutputCacheStor
     [OutputCache(Tags = [OutputCacheTags.Lectures], PolicyName = nameof(AuthCachePolicy))]
     public async Task<ActionResult<IEnumerable<LectureResponseDto>>> GetLectures()
     {
-        var lectures = await lectureService.GetAllLecturesAsync();
-        return Ok(lectures);
+        var lecturesAsyncDto = await lectureService.GetAllLecturesAsync();
+        return Ok(lecturesAsyncDto);
     }
 
     // GET: api/Lectures/5

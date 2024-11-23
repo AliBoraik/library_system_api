@@ -17,8 +17,8 @@ public class StudentsController(IStudentService studentService, IOutputCacheStor
     [OutputCache(Tags = [OutputCacheTags.Students], PolicyName = nameof(AuthCachePolicy))]
     public async Task<IActionResult> GetAllStudents()
     {
-        var students = await studentService.GetAllStudentsAsync();
-        return Ok(students);
+        var studentsAsyncDto = await studentService.GetAllStudentsAsync();
+        return Ok(studentsAsyncDto);
     }
 
     [HttpGet("{studentId:guid}")]

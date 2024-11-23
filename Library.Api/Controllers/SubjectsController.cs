@@ -16,9 +16,10 @@ public class SubjectsController(ISubjectService subjectService, IOutputCacheStor
     // GET: api/Subjects
     [HttpGet]
     [OutputCache(Tags = [OutputCacheTags.Subjects], PolicyName = nameof(AuthCachePolicy))]
-    public async Task<IEnumerable<SubjectDto>> GetSubjects()
+    public async Task<ActionResult<IEnumerable<SubjectDto>>> GetSubjects()
     {
-        return await subjectService.GetAllSubjectsAsync();
+        var subjectsAsyncDto = await subjectService.GetAllSubjectsAsync();
+        return Ok(subjectsAsyncDto);
     }
 
     // GET: api/Subjects/5

@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using Library.Application.CachePolicies;
 using Library.Domain.Constants;
 using Library.Domain.DTOs.Book;
@@ -19,8 +18,8 @@ public class BooksController(IBookService bookService, IOutputCacheStore cacheSt
     [OutputCache(Tags = [OutputCacheTags.Books], PolicyName = nameof(AuthCachePolicy))]
     public async Task<ActionResult<IEnumerable<BookResponseDto>>> GetBooks()
     {
-        var lectures = await bookService.GetAllBooksAsync();
-        return Ok(lectures);
+        var booksAsyncDto = await bookService.GetAllBooksAsync();
+        return Ok(booksAsyncDto);
     }
 
     // GET: api/Books/5
