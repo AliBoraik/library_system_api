@@ -7,12 +7,14 @@ on:
     branches: [ "main" ]
 
 jobs:
-
-  build:
-
+  docker:
+    timeout-minutes: 10
     runs-on: ubuntu-latest
 
     steps:
-    - name: Docker Compose Run Action
-      uses: adrielcodeco/docker-compose-run-action@v1
+    - name: Checkout
+      uses: actions/checkout@v1
+
+    - name: Start containers
+      run: docker-compose -f "docker-compose.yml" up -d --build
           
