@@ -32,7 +32,7 @@ jobs:
     # Step 4: Build and start services using docker-compose
     - name: Build and Start Services
       run: |
-        docker-compose -f docker-compose.yml up --build -d
+        docker compose -f docker compose.yml up --build -d
 
     # Step 6: Stop and remove containers
     - name: Shut Down Services
