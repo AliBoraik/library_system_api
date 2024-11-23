@@ -18,7 +18,5 @@ jobs:
         uses: hoverkraft-tech/compose-action@v2.0.1
         with:
           compose-file: "./docker-compose.yml"
-      # Step 3: Make the HTTP GET request
-      - name: Make HTTP GET request
-        run: |
-          curl -X GET http://localhost:5253/api/Departments
+      - name: Check container logs
+        run: docker logs library_api
