@@ -1,6 +1,7 @@
 using Library.Api.Middleware;
 using Library.Application.Configurations;
 using Library.Infrastructure.Configurations;
+using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
@@ -25,12 +26,11 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-/*if (app.Environment.IsDevelopment())
+app.UseForwardedHeaders(new ForwardedHeadersOptions
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}*/
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
+
 app.UseSwagger();
 app.UseSwaggerUI();
 
@@ -46,6 +46,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 app.UseOutputCache();
-app.MapGet("_health", () => Results.Ok()).ShortCircuit();
+app.MapGet("_health", () => Results.Ok("Ok")).ShortCircuit();
 
 app.Run();
