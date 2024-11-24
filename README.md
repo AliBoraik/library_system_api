@@ -23,6 +23,7 @@ The solution is divided into the following microservices and layers:
 - **PostgreSQL**: Relational database for persisting data.
 - **Redis**: Used for output caching.
 - **Swagger**: API documentation and testing.
+- **Nginx**: Open-source web server software used for reverse proxy.
 - **JWT**: Used for secure authentication and authorization.
 
 ---
@@ -42,8 +43,16 @@ Before running the application, ensure that you have the following dependencies 
 ```docker
 docker compose up
 ```
-3.  URL http://localhost:5253/swagger/index.html to access swagger for API .
-5.  URL http://localhost:5202/swagger/index.html to access swagger for Auth API .
+3. URL http://localhost/apiService to access for API .
+5. URL http://localhost/authService to access for Auth API .
+
+## API Documentation
+
+You can access the Swagger UI for the APIs using the following links:
+
+- **API Documentation**: [Access Swagger for API](http://localhost:5253/swagger/index.html)
+- **Authentication API Documentation**: [Access Swagger for Auth API](http://localhost:5202/swagger/index.html)
+
 
 ## Features
 
