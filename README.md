@@ -56,14 +56,16 @@ You can access the Swagger UI for the APIs using the following links:
 
 ## Features
 
-### Library API Endpoints
+### Authentication API Endpoints
 
-#### Books
-- **GET** `/Api/Books` - Retrieve all books.  
-- **POST** `/Api/Books` - Add a new book.  
-- **GET** `/Api/Books/{bookId}` - Get details of a specific book by ID.  
-- **DELETE** `/Api/Books/{bookId}` - Delete a specific book by ID.  
-- **GET** `/Api/Books/Download/{bookId}` - Download a specific book by ID.  
+#### Auth
+- **POST** `/Api/Auth/Login` - User login.  
+- **POST** `/Api/Auth/Register-Admin` - Register a new admin.  
+- **POST** `/Api/Auth/Register-Teacher` - Register a new teacher.  
+- **POST** `/Api/Auth/Register-Student` - Register a new student.  
+- **GET** `/Api/Auth/Validate-Token` - Validate user authentication token.
+
+### Library API Endpoints
 
 #### Departments
 - **GET** `/Api/Departments` - Retrieve all departments.  
@@ -71,6 +73,13 @@ You can access the Swagger UI for the APIs using the following links:
 - **PUT** `/Api/Departments` - Update a department.  
 - **GET** `/Api/Departments/{departmentId}` - Get a specific department by ID.  
 - **DELETE** `/Api/Departments/{departmentId}` - Delete a specific department by ID.  
+
+#### Books
+- **GET** `/Api/Books` - Retrieve all books.  
+- **POST** `/Api/Books` - Add a new book.  
+- **GET** `/Api/Books/{bookId}` - Get details of a specific book by ID.  
+- **DELETE** `/Api/Books/{bookId}` - Delete a specific book by ID.  
+- **GET** `/Api/Books/Download/{bookId}` - Download a specific book by ID.  
 
 #### Lectures
 - **GET** `/Api/Lectures` - Retrieve all lectures.  
@@ -95,14 +104,5 @@ You can access the Swagger UI for the APIs using the following links:
 - **GET** `/Api/Teachers` - Retrieve all teachers.  
 - **GET** `/Api/Teachers/{teacherId}` - Get details of a specific teacher by ID.  
 - **DELETE** `/Api/Teachers/{teacherId}` - Delete a specific teacher by ID.  
-
-### Authentication API Endpoints
-
-#### Auth
-- **POST** `/Api/Auth/Login` - User login.  
-- **POST** `/Api/Auth/Register-Admin` - Register a new admin.  
-- **POST** `/Api/Auth/Register-Teacher` - Register a new teacher.  
-- **POST** `/Api/Auth/Register-Student` - Register a new student.  
-- **GET** `/Api/Auth/Validate-Token` - Validate user authentication token.
 
 ---
