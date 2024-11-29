@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+package notification;
+
+import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
+
+service NotificationService {
+  rpc SendNotification (SendNotificationRequest) returns (SendNotificationResponse) {
+    option (google.api.http) = {
+      post: "/api/notifications/send"
+      body: "*"
+    };
+  }
+
+  rpc GetNotifications (GetNotificationsRequest) returns (GetNotificationsResponse) {
+    option (google.api.http) = {
+      get: "/api/notifications"
+    };
+  }
+
+  rpc MarkNotificationRead (MarkNotificationReadRequest) returns (MarkNotificationReadResponse) {
+    option (google.api.http) = {
+      patch: "/api/notifications/{notificationId}/read"
+    };
+  }
+}
+
+message SendNotificationRequest {
+  string recipientUserId = 1;
+  string message = 2;
+}
+
+message SendNotificationResponse {
+  bool success = 1;
+  string notificationId = 2;
+}
+
+message GetNotificationsRequest {
+  string userId = 1;
+}
+
+message GetNotificationsResponse {
+  repeated NotificationDto notifications = 1;
+}
+
+message NotificationDto {
+  string id = 1;
+  string message = 2;
+  google.protobuf.Timestamp sentAt = 3;
+  bool isRead = 4;
+}
+
+message MarkNotificationReadRequest {
+  string notificationId = 1;
+}
+
+message MarkNotificationReadResponse {
+  bool success = 1;
+}
