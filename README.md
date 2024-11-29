@@ -8,7 +8,7 @@ The solution is divided into the following microservices and layers:
 
 ### Microservices and Layers
 
-- **Library.Api**: Handles API endpoints and controllers for the library system.
+- **Library.Api**: Handles API endpoints and controllers for the library system . 
 - **Library.Application**: Contains business logic and application-level services.
 - **Library.Auth**: Handles authentication and user management using JWT (JSON Web Token).
 - **Library.Domain**: Represents the domain entities and core business rules.
