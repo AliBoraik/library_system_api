@@ -11,7 +11,6 @@ public static class ConfigureServices
     {
         services.AddAuth(configuration);
         // Service 
-        services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<ILectureService, LectureService>();
         services.AddScoped<IDepartmentService, DepartmentService>();
         services.AddScoped<ISubjectService, SubjectService>();

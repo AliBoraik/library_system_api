@@ -1,6 +1,8 @@
 using Library.Application.Configurations;
 using Library.Auth.Middleware;
+using Library.Auth.Service;
 using Library.Infrastructure.Configurations;
+using Library.Interfaces.Services;
 using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,15 +10,16 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddControllers();
-builder.Services.AddInfrastructure(builder.Configuration);
-builder.Services.AddApplication(builder.Configuration);
+builder.Services.AddDatabaseConfiguration(builder.Configuration);
+builder.Services.AddAuth(builder.Configuration);
+builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddSwaggerConfiguration();
 // Redis OutputCache
 builder.Services.RedisOutputCache(builder.Configuration);
 //Cors
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("ClientPermission", policy =>
+    options.AddDefaultPolicy( policy =>
     {
         policy.AllowAnyHeader()
             .AllowAnyMethod()
@@ -36,7 +39,7 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
 app.UseSwagger();
 app.UseSwaggerUI();
 
-app.UseCors("ClientPermission");
+app.UseCors();
 
 // Global error handler
 app.UseMiddleware<ExceptionMiddleware>();
@@ -47,5 +50,4 @@ app.UseAuthorization();
 app.MapControllers();
 app.UseOutputCache();
 app.MapGet("_health", () => Results.Ok("Ok")).ShortCircuit();
-
 app.Run();
