@@ -1,13 +1,17 @@
+using Library.Application.Configurations;
 using Library.Infrastructure.Configurations;
 using Library.Notification.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddAuth(builder.Configuration);
+builder.Services.AddSwaggerConfiguration();
 builder.Services.AddGrpc().AddJsonTranscoding(o =>
 {
     o.JsonSettings.WriteIndented = true;
 });
+
 
 builder.Services.AddGrpcSwagger();
 builder.Services.AddSwaggerGen();

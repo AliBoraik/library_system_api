@@ -1,12 +1,15 @@
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
+using Library.Domain.Constants;
 using Library.Domain.Models;
+using Microsoft.AspNetCore.Authorization;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Notification;
 
 namespace Library.Notification.Services;
 
+[Authorize]
 public class NotificationServiceImpl(IMongoDatabase database) : NotificationService.NotificationServiceBase
 {
     private readonly IMongoCollection<NotificationModel> _notificationsCollection = database.GetCollection<NotificationModel>("Notifications");
@@ -27,10 +30,13 @@ public class NotificationServiceImpl(IMongoDatabase database) : NotificationServ
         return new SendNotificationResponse { Success = true, NotificationId = notification.Id.ToString() };
     }
 
-    public override async Task<GetNotificationsResponse> GetNotifications(GetNotificationsRequest request, ServerCallContext context)
+    public override async Task<GetNotificationsResponse> GetNotifications(EmptyRequest  request, ServerCallContext context)
     {
+        // Get the current user's ID form token
+        var userId = context.GetHttpContext().User.FindFirst(AppClaimTypes.Id)?.Value;
+        
         var notifications = await _notificationsCollection
-            .Find(n => n.RecipientUserId == request.UserId)
+            .Find(n => n.RecipientUserId == userId)
             .SortByDescending(n => n.SentAt)
             .ToListAsync();
 

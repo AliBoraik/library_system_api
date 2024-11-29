@@ -13,7 +13,7 @@ service NotificationService {
     };
   }
 
-  rpc GetNotifications (GetNotificationsRequest) returns (GetNotificationsResponse) {
+  rpc GetNotifications (EmptyRequest) returns (GetNotificationsResponse) {
     option (google.api.http) = {
       get: "/api/notifications"
     };
@@ -36,8 +36,7 @@ message SendNotificationResponse {
   string notificationId = 2;
 }
 
-message GetNotificationsRequest {
-  string userId = 1;
+message EmptyRequest {
 }
 
 message GetNotificationsResponse {
