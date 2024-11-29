@@ -1,16 +1,12 @@
-name: Docker Compose CI/CD
+name: Docker Image CI
 on:
   push:
-    branches:
-      - main
+    branches: [ "main" ]
   pull_request:
-    branches:
-      - main
+    branches: [ "main" ]
 jobs:
-  integration-tests:
-    runs-on: ubuntu-latest    
+  build:
+    runs-on: ubuntu-latest
     steps:
-      # Шаг 1: собираем сервисы в режиме тестирования
-      - uses: actions/checkout@v2
-      - name: Build the stack
-        run: docker-compose -f docker-compose..yml up -d --build
+    - name: Docker Compose Run Action
+      uses: adrielcodeco/docker-compose-run-action@v1
