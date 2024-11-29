@@ -14,7 +14,7 @@ builder.Services.RedisOutputCache(builder.Configuration);
 //Cors
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("ClientPermission", policy =>
+    options.AddDefaultPolicy(policy =>
     {
         policy.AllowAnyHeader()
             .AllowAnyMethod()
@@ -34,7 +34,7 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
 app.UseSwagger();
 app.UseSwaggerUI();
 
-app.UseCors("ClientPermission");
+app.UseCors();
 
 // Global error handler
 app.UseMiddleware<ExceptionMiddleware>();

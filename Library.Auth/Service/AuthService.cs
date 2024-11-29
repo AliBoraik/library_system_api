@@ -6,11 +6,10 @@ using Library.Domain.Auth;
 using Library.Domain.Constants;
 using Library.Domain.Models;
 using Library.Interfaces.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Library.Application;
+namespace Library.Auth.Service;
 
 public class AuthService(UserManager<User> userManager, JwtOptions jwtOptions)
     : IAuthService
