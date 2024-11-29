@@ -1,6 +1,6 @@
+using Library.Application;
 using Library.Application.Configurations;
 using Library.Auth.Middleware;
-using Library.Auth.Service;
 using Library.Infrastructure.Configurations;
 using Library.Interfaces.Services;
 using Microsoft.AspNetCore.HttpOverrides;
