@@ -4,7 +4,7 @@ This repository contains the **Library System API**, designed with a microservic
 
 ## Project Structure
 
-The solution is divided into the following microservices and layers:
+The solution is divided into the following microservices and layers: 
 
 ### Microservices and Layers
 
