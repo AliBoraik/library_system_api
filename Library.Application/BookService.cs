@@ -33,7 +33,7 @@ public class BookService(
         var bookExists = await bookRepository.FindBookByNameAsync(bookDto.Title, bookDto.SubjectId);
         if (bookExists != null)
             return new Error(StatusCodes.Status409Conflict, $"Book with title = {bookDto.Title} already exists");
-        // check SubjectId 
+        // check Id 
         var subject = await subjectRepository.FindSubjectByIdAsync(bookDto.SubjectId);
         if (subject == null)
             return new Error(StatusCodes.Status404NotFound, $"Subject with Id = {bookDto.SubjectId} not found");

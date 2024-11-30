@@ -9,7 +9,8 @@ namespace Library.Infrastructure.Configurations;
 
 public static class DatabaseConfiguration
 {
-    public static IServiceCollection AddDatabaseConfiguration(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddDatabaseConfiguration(this IServiceCollection services,
+        IConfiguration configuration)
     {
         services.AddDbContext<ApplicationDbContext>(options =>
         {

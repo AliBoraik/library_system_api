@@ -17,14 +17,14 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Content Include="..\.dockerignore">
-        <Link>.dockerignore</Link>
-      </Content>
+        <Content Include="..\.dockerignore">
+            <Link>.dockerignore</Link>
+        </Content>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Library.Auth\Library.Auth.csproj" />
-      <ProjectReference Include="..\Library.Interfaces\Library.Interfaces.csproj" />
+        <ProjectReference Include="..\Library.Auth\Library.Auth.csproj"/>
+        <ProjectReference Include="..\Library.Interfaces\Library.Interfaces.csproj"/>
     </ItemGroup>
 
 </Project>

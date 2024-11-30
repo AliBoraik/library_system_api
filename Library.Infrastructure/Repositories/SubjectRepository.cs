@@ -18,7 +18,7 @@ public class SubjectRepository(ApplicationDbContext context) : ISubjectRepositor
     {
         return await context.Subjects
             .AsNoTracking()
-            .Where(s => s.SubjectId == id)
+            .Where(s => s.Id == id)
             .Include(s => s.Lectures)
             .Include(s => s.Books)
             .AsSplitQuery()
@@ -29,13 +29,26 @@ public class SubjectRepository(ApplicationDbContext context) : ISubjectRepositor
     {
         return await context.Subjects
             .AsNoTracking()
-            .Where(s => s.SubjectId == id)
+            .Where(s => s.Id == id)
             .FirstOrDefaultAsync();
+    }
+
+    public async Task AddStudentToSubjectAsync(Guid studentId, Guid subjectId)
+    {
+        var student = await context.Students.FindAsync(studentId);
+        var subject = await context.Subjects.FindAsync(subjectId);
+
+        if (student != null && subject != null)
+        {
+            // Ensure the Students collection is initialized
+            subject.Students.Add(student);
+            await Save();
+        }
     }
 
     public async Task<bool> SubjectExistsAsync(Guid id)
     {
-        return await context.Subjects.AnyAsync(d => d.SubjectId == id);
+        return await context.Subjects.AnyAsync(d => d.Id == id);
     }
 
     public async Task AddSubjectAsync(Subject subject)

@@ -36,7 +36,16 @@ public class SubjectService(
                 $"Not found department with id = {createSubjectDto.DepartmentId}");
         var subject = mapper.Map<Subject>(createSubjectDto);
         await subjectRepository.AddSubjectAsync(subject);
-        return subject.SubjectId;
+        return subject.Id;
+    }
+
+    public async Task<Result<Ok, Error>> AddStudentToSubjectAsync(Guid studentId, Guid subjectId)
+    {
+        var subject = await subjectRepository.FindSubjectDetailsByIdAsync(subjectId);
+        if (subject == null)
+            return new Error(StatusCodes.Status404NotFound, $"Not found subject with id = {subjectId}");
+        await subjectRepository.AddStudentToSubjectAsync(studentId, subjectId);
+        return new Ok();
     }
 
     public async Task<Result<Ok, Error>> UpdateSubjectAsync(SubjectDto subjectDto)

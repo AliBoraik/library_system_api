@@ -9,31 +9,33 @@ using Notification;
 namespace Library.Notification.Services;
 
 [Authorize]
-public class NotificationServiceImpl(INotificationRepository notificationRepository) : NotificationService.NotificationServiceBase
+public class NotificationServiceImpl(INotificationRepository notificationRepository)
+    : NotificationService.NotificationServiceBase
 {
-      public override async Task<SendNotificationResponse> SendNotification(SendNotificationRequest request, ServerCallContext context)
+    public override async Task<SendNotificationResponse> SendNotification(SendNotificationRequest request,
+        ServerCallContext context)
     {
         if (!Guid.TryParse(request.RecipientUserId, out var recipientId))
-        {
             throw new RpcException(new Status(StatusCode.InvalidArgument, StringConstants.UserIdNotCorrect));
-        }
         var notification = new NotificationModel
         {
             RecipientUserId = recipientId,
             Title = request.Title,
             Message = request.Message,
             SentAt = DateTime.UtcNow,
-            IsRead = false,
+            IsRead = false
         };
         var notificationId = await notificationRepository.AddNotificationAsync(notification);
         return new SendNotificationResponse { Success = true, NotificationId = notificationId.ToString() };
     }
 
-    public override async Task<GetNotificationsResponse> GetNotifications(EmptyRequest  request, ServerCallContext context)
+    public override async Task<GetNotificationsResponse> GetNotifications(EmptyRequest request,
+        ServerCallContext context)
     {
         // Get the current user's ID form token
         var userId = context.GetHttpContext().User.FindFirst(AppClaimTypes.Id)?.Value;
-        if (userId == null) throw new RpcException(new Status(StatusCode.Unauthenticated, StringConstants.UserIdMissing));
+        if (userId == null)
+            throw new RpcException(new Status(StatusCode.Unauthenticated, StringConstants.UserIdMissing));
         var notifications = await notificationRepository.FindUserNotificationAsync(Guid.Parse(userId));
         var response = new GetNotificationsResponse();
         response.Notifications.AddRange(notifications.Select(n => new NotificationDto
@@ -47,7 +49,8 @@ public class NotificationServiceImpl(INotificationRepository notificationReposit
         return response;
     }
 
-    public override async Task<MarkNotificationReadResponse> MarkNotificationRead(MarkNotificationReadRequest request, ServerCallContext context)
+    public override async Task<MarkNotificationReadResponse> MarkNotificationRead(MarkNotificationReadRequest request,
+        ServerCallContext context)
     {
         var result = await notificationRepository.MarkNotificationReadAsync(request.NotificationId);
         return new MarkNotificationReadResponse { Success = result };

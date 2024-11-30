@@ -41,4 +41,16 @@ public class StudentsController(IStudentService studentService, IOutputCacheStor
         await cacheStore.EvictByTagAsync(OutputCacheTags.Students, CancellationToken.None);
         return Ok();
     }
+
+    // GET api/students/subject/{subjectId}
+    [HttpGet("Subject/{subjectId}")]
+    [OutputCache(Tags = [OutputCacheTags.Students], PolicyName = nameof(AuthCachePolicy))]
+    public async Task<ActionResult<List<StudentDto>>> GetStudentsBySubjectId(Guid subjectId)
+    {
+        if (!ModelState.IsValid) return BadRequest(ModelState);
+        var result = await studentService.GetStudentsBySubjectAsync(subjectId);
+        return result.Match<ActionResult<List<StudentDto>>>(
+            dto => Ok(dto),
+            error => StatusCode(error.Code, error));
+    }
 }

@@ -7,7 +7,8 @@ namespace Library.Infrastructure.Repositories;
 
 public class NotificationRepository(IMongoDatabase database) : INotificationRepository
 {
-    private readonly IMongoCollection<NotificationModel> _notificationsCollection = database.GetCollection<NotificationModel>("Notifications");
+    private readonly IMongoCollection<NotificationModel> _notificationsCollection =
+        database.GetCollection<NotificationModel>("Notifications");
 
 
     public async Task<List<NotificationModel>> FindUserNotificationAsync(Guid userId)
