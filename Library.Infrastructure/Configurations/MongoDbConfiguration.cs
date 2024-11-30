@@ -1,3 +1,5 @@
+using Library.Infrastructure.Repositories;
+using Library.Interfaces.Repositories;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
@@ -12,6 +14,7 @@ public static class MongoDbConfiguration
         var mongoClient = new MongoClient(dockerEnv ?? configuration.GetConnectionString("MongoDB"));
         var database = mongoClient.GetDatabase("NotificationDB");
         services.AddSingleton(database);
+        services.AddSingleton<INotificationRepository, NotificationRepository>();
         return services;
     }
 }

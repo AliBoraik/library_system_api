@@ -2,63 +2,54 @@ using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using Library.Domain.Constants;
 using Library.Domain.Models;
+using Library.Interfaces.Repositories;
 using Microsoft.AspNetCore.Authorization;
-using MongoDB.Bson;
-using MongoDB.Driver;
 using Notification;
 
 namespace Library.Notification.Services;
 
 [Authorize]
-public class NotificationServiceImpl(IMongoDatabase database) : NotificationService.NotificationServiceBase
+public class NotificationServiceImpl(INotificationRepository notificationRepository) : NotificationService.NotificationServiceBase
 {
-    private readonly IMongoCollection<NotificationModel> _notificationsCollection = database.GetCollection<NotificationModel>("Notifications");
-
-    // Send Notification
       public override async Task<SendNotificationResponse> SendNotification(SendNotificationRequest request, ServerCallContext context)
     {
+        if (!Guid.TryParse(request.RecipientUserId, out var recipientId))
+        {
+            throw new RpcException(new Status(StatusCode.InvalidArgument, StringConstants.UserIdNotCorrect));
+        }
         var notification = new NotificationModel
         {
-            RecipientUserId = request.RecipientUserId,
+            RecipientUserId = recipientId,
+            Title = request.Title,
             Message = request.Message,
             SentAt = DateTime.UtcNow,
             IsRead = false,
         };
-
-        await _notificationsCollection.InsertOneAsync(notification);
-
-        return new SendNotificationResponse { Success = true, NotificationId = notification.Id.ToString() };
+        var notificationId = await notificationRepository.AddNotificationAsync(notification);
+        return new SendNotificationResponse { Success = true, NotificationId = notificationId.ToString() };
     }
 
     public override async Task<GetNotificationsResponse> GetNotifications(EmptyRequest  request, ServerCallContext context)
     {
         // Get the current user's ID form token
         var userId = context.GetHttpContext().User.FindFirst(AppClaimTypes.Id)?.Value;
-        
-        var notifications = await _notificationsCollection
-            .Find(n => n.RecipientUserId == userId)
-            .SortByDescending(n => n.SentAt)
-            .ToListAsync();
-
+        if (userId == null) throw new RpcException(new Status(StatusCode.Unauthenticated, StringConstants.UserIdMissing));
+        var notifications = await notificationRepository.FindUserNotificationAsync(Guid.Parse(userId));
         var response = new GetNotificationsResponse();
         response.Notifications.AddRange(notifications.Select(n => new NotificationDto
         {
             Id = n.Id.ToString(),
             Message = n.Message,
+            Title = n.Title,
             SentAt = Timestamp.FromDateTime(n.SentAt.ToUniversalTime()),
             IsRead = n.IsRead
         }));
-
         return response;
     }
 
     public override async Task<MarkNotificationReadResponse> MarkNotificationRead(MarkNotificationReadRequest request, ServerCallContext context)
     {
-        var filter = Builders<NotificationModel>.Filter.Eq(n => n.Id, new ObjectId(request.NotificationId));
-        var update = Builders<NotificationModel>.Update.Set(n => n.IsRead, true);
-
-        var result = await _notificationsCollection.UpdateOneAsync(filter, update);
-
-        return new MarkNotificationReadResponse { Success = result.ModifiedCount > 0 };
+        var result = await notificationRepository.MarkNotificationReadAsync(request.NotificationId);
+        return new MarkNotificationReadResponse { Success = result };
     }
 }

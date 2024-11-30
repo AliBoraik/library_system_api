@@ -1,4 +1,5 @@
 using Library.Domain;
+using Library.Domain.Constants;
 
 namespace Library.Api.Middleware;
 
@@ -18,7 +19,7 @@ public class ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddlewa
             await context.Response.WriteAsJsonAsync(new Error
             (
                 StatusCodes.Status500InternalServerError,
-                "Internal server error. Please retry later."
+                StringConstants.InternalServerError
             ));
         }
     }

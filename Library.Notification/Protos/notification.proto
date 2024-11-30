@@ -28,7 +28,8 @@ service NotificationService {
 
 message SendNotificationRequest {
   string recipientUserId = 1;
-  string message = 2;
+  string title= 2;
+  string message = 3;
 }
 
 message SendNotificationResponse {
@@ -46,8 +47,9 @@ message GetNotificationsResponse {
 message NotificationDto {
   string id = 1;
   string message = 2;
-  google.protobuf.Timestamp sentAt = 3;
-  bool isRead = 4;
+  string title= 3;
+  google.protobuf.Timestamp sentAt = 4;
+  bool isRead = 5;
 }
 
 message MarkNotificationReadRequest {

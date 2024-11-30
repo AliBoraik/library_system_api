@@ -1,5 +1,7 @@
 using Library.Application.Configurations;
 using Library.Infrastructure.Configurations;
+using Library.Interfaces.Repositories;
+using Library.Notification.Interceptors;
 using Library.Notification.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,10 +9,11 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddAuth(builder.Configuration);
 builder.Services.AddSwaggerConfiguration();
-builder.Services.AddGrpc().AddJsonTranscoding(o =>
-{
-    o.JsonSettings.WriteIndented = true;
-});
+builder.Services.AddGrpc(options =>
+    {
+        options.Interceptors.Add<ExceptionInterceptor>(); // Register custom ExceptionInterceptor interceptor
+    })
+    .AddJsonTranscoding(o => { o.JsonSettings.WriteIndented = true; });
 
 
 builder.Services.AddGrpcSwagger();
