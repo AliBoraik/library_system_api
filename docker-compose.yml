@@ -21,6 +21,16 @@
       CONNECTION_STRING_DOCKER: "host=db;;Database=LibraryDB;Port=5432;Username=postgres;Password=admin"
       CONNECTION_STRING_REDIS: "redis:6379"
       ASPNETCORE_ENVIRONMENT: "Development"
+  library_notification:
+    build:
+      dockerfile: Library.Notification/Dockerfile
+    container_name: "library_notification"
+    ports:
+      - "5124:8080"
+      - '7115:8081'
+    environment:
+      MongoDB: "mongodb://mongodb:27017"
+      ASPNETCORE_ENVIRONMENT: "Development"
   db:
     image: postgres:latest
     container_name: "library_db"
@@ -52,12 +62,13 @@
           memory: 256M
   mongodb:
     image: mongo:latest
+    container_name: "library_mongodb"
     ports:
       - "27017:27017"
   
   nginx:
     image: nginx:alpine
-    container_name: "nginx"
+    container_name: "library_nginx"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
     ports:
