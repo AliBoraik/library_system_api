@@ -8,6 +8,6 @@ public interface IBookRepository
     Task<Book?> FindBookByIdAsync(Guid id);
     Task<Book?> FindBookByNameAsync(string name, Guid subjectId);
     Task<string?> FindBookFilePathByIdAsync(Guid id);
-    Task AddBookAsync(Book lecture);
+    Task AddBookAsync(Book book);
     Task DeleteBookAsync(Book book);
 }

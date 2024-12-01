@@ -19,7 +19,7 @@ builder.Services.RedisOutputCache(builder.Configuration);
 //Cors
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy( policy =>
+    options.AddDefaultPolicy(policy =>
     {
         policy.AllowAnyHeader()
             .AllowAnyMethod()

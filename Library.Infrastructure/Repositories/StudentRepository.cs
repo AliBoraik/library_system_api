@@ -32,6 +32,15 @@ public class StudentRepository(ApplicationDbContext context) : IStudentRepositor
             .FirstOrDefaultAsync();
     }
 
+    public async Task<List<Student>> FindStudentsBySubjectAsync(Guid subjectId)
+    {
+        var studentsWithSubjectsAndUser = await context.Students
+            .Where(s => s.Subjects.Any(sub => sub.Id == subjectId)) // Filter students by subject ID
+            .Include(s => s.User)
+            .ToListAsync();
+        return studentsWithSubjectsAndUser;
+    }
+
     public async Task DeleteStudentAsync(Student student)
     {
         context.Students.Remove(student);

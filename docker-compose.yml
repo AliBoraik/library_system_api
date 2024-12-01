@@ -50,6 +50,11 @@
         reservations:
           cpus: '0.25'
           memory: 256M
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+  
   nginx:
     image: nginx:alpine
     container_name: "nginx"

@@ -34,7 +34,7 @@ public class LectureService(
         var lectureExists = await lectureRepository.FindLectureByNameAsync(lectureDto.Title, lectureDto.SubjectId);
         if (lectureExists != null)
             return new Error(StatusCodes.Status409Conflict, $"Lecture with title = {lectureDto.Title} already exists");
-        // check SubjectId 
+        // check Id 
         var subject = await subjectRepository.FindSubjectByIdAsync(lectureDto.SubjectId);
         if (subject == null)
             return new Error(StatusCodes.Status404NotFound, $"Subject with Id = {lectureDto.SubjectId} not found");

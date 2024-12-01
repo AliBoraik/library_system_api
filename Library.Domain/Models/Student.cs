@@ -7,4 +7,5 @@ public class Student
     [Key] public Guid Id { get; set; }
 
     public virtual User User { get; set; }
+    public List<Subject> Subjects { get; } = [];
 }
