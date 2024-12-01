@@ -8,6 +8,10 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["Library.Notification/Library.Notification.csproj", "Library.Notification/"]
+COPY ["Library.Infrastructure/Library.Infrastructure.csproj", "Library.Infrastructure/"]
+COPY ["Library.Domain/Library.Domain.csproj", "Library.Domain/"]
+COPY ["Library.Application/Library.Application.csproj", "Library.Application/"]
+
 RUN dotnet restore "Library.Notification/Library.Notification.csproj"
 COPY . .
 WORKDIR "/src/Library.Notification"
