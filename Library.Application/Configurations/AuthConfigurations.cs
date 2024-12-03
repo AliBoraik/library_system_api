@@ -1,5 +1,6 @@
 using System.Text;
 using Library.Domain.Auth;
+using Library.Interfaces.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,6 +16,7 @@ public static class AuthConfigurations
             .GetSection("JwtOptions")
             .Get<JwtOptions>()!;
         services.AddSingleton(jwtOptions);
+        services.AddSingleton<ITokenService , TokenService>();
         // Adding Auth
         services.AddAuthentication(options =>
             {

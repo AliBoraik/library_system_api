@@ -48,6 +48,5 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-app.UseOutputCache();
 app.MapGet("_health", () => Results.Ok("Ok")).ShortCircuit();
 app.Run();

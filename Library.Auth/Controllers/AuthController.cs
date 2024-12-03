@@ -17,10 +17,10 @@ public class AuthController(IAuthService authService, IOutputCacheStore cacheSto
 {
     [HttpPost]
     [Route("Login")]
-    public async Task<ActionResult<AuthDataResponse>> Login([FromBody] LoginModelDto modelDto)
+    public async Task<ActionResult<AuthDataResponse>> Login([FromBody] LoginDto loginDto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
-        var result = await authService.Login(modelDto);
+        var result = await authService.LoginAsync(loginDto);
         return result.Match<ActionResult<AuthDataResponse>>(
             authData => Ok(authData),
             error => StatusCode(error.Code, error));
@@ -29,10 +29,10 @@ public class AuthController(IAuthService authService, IOutputCacheStore cacheSto
     [HttpPost]
     [Route("Register-Admin")]
     [Authorize(Roles = AppRoles.Admin)]
-    public async Task<IActionResult> RegisterAdmin([FromBody] RegisterModelDto modelDto)
+    public async Task<IActionResult> RegisterAdmin([FromBody] RegisterDto registerDto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
-        var result = await authService.RegisterAdmin(modelDto);
+        var result = await authService.RegisterAdmin(registerDto);
         return result.Match<IActionResult>(
             _ => Ok(),
             error => StatusCode(error.Code, error));
@@ -41,10 +41,10 @@ public class AuthController(IAuthService authService, IOutputCacheStore cacheSto
     [HttpPost]
     [Route("Register-Teacher")]
     [Authorize(Roles = AppRoles.Admin)]
-    public async Task<IActionResult> RegisterTeacher([FromBody] RegisterModelDto modelDto)
+    public async Task<IActionResult> RegisterTeacher([FromBody] RegisterDto registerDto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
-        var result = await authService.RegisterTeacher(modelDto);
+        var result = await authService.RegisterTeacher(registerDto);
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Teachers, CancellationToken.None);
         return Ok();
@@ -53,13 +53,24 @@ public class AuthController(IAuthService authService, IOutputCacheStore cacheSto
     [HttpPost]
     [Route("Register-Student")]
     [Authorize(Roles = AppRoles.Admin)]
-    public async Task<IActionResult> RegisterStudent([FromBody] RegisterModelDto modelDto)
+    public async Task<IActionResult> RegisterStudent([FromBody] RegisterDto registerDto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
-        var result = await authService.RegisterStudent(modelDto);
+        var result = await authService.RegisterStudent(registerDto);
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Students, CancellationToken.None);
         return Ok();
+    }
+    
+    [HttpPost]
+    [Route("Refresh-token")]
+    public async Task<ActionResult<AuthDataResponse>> RefreshToken(RefreshTokenDto refreshTokenDto)
+    {
+        if (!ModelState.IsValid) return BadRequest(ModelState);
+        var result = await authService.RefreshTokenAsync(refreshTokenDto);
+        return result.Match<ActionResult<AuthDataResponse>>(
+            authData => Ok(authData),
+            error => StatusCode(error.Code, error));
     }
 
     [HttpGet]

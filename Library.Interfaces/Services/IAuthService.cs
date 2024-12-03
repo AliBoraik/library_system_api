@@ -5,8 +5,9 @@ namespace Library.Interfaces.Services;
 
 public interface IAuthService
 {
-    Task<Result<AuthDataResponse, Error>> Login(LoginModelDto loginModelDto);
-    Task<Result<Ok, Error>> RegisterTeacher(RegisterModelDto modelDto);
-    Task<Result<Ok, Error>> RegisterStudent(RegisterModelDto modelDto);
-    Task<Result<Ok, Error>> RegisterAdmin(RegisterModelDto modelDto);
+    Task<Result<AuthDataResponse, Error>> LoginAsync(LoginDto loginDto);
+    Task<Result<AuthDataResponse, Error>> RefreshTokenAsync(RefreshTokenDto refreshTokenDto);
+    Task<Result<Ok, Error>> RegisterTeacher(RegisterDto dto);
+    Task<Result<Ok, Error>> RegisterStudent(RegisterDto dto);
+    Task<Result<Ok, Error>> RegisterAdmin(RegisterDto dto);
 }
