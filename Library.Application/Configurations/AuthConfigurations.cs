@@ -29,7 +29,7 @@ public static class AuthConfigurations
             {
                 //convert the string signing key to byte array
                 var signingKeyBytes = Encoding.UTF8
-                    .GetBytes(jwtOptions.SigningKey);
+                    .GetBytes(jwtOptions.AccessSigningKey);
 
                 options.SaveToken = true;
                 options.RequireHttpsMetadata = false;
@@ -42,7 +42,7 @@ public static class AuthConfigurations
                     IssuerSigningKey = new SymmetricSecurityKey(signingKeyBytes),
                     ValidateLifetime = true,
                     RequireExpirationTime = true,
-                    LifetimeValidator = CustomLifetimeValidator
+                    LifetimeValidator = CustomLifetimeValidator,
                 };
             });
 

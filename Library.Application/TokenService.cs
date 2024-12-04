@@ -4,12 +4,14 @@ using System.Text;
 using Library.Domain.Auth;
 using Library.Interfaces.Services;
 using Microsoft.IdentityModel.Tokens;
+using MongoDB.Driver.Linq;
 
 namespace Library.Application;
 
 public class TokenService(JwtOptions jwtOptions) : ITokenService
 {
-    private readonly  SymmetricSecurityKey _symmetricSecurityKey = new(Encoding.UTF8.GetBytes(jwtOptions.SigningKey));
+    private readonly  SymmetricSecurityKey _accessSymmetricSecurityKey = new(Encoding.UTF8.GetBytes(jwtOptions.AccessSigningKey));
+    private readonly  SymmetricSecurityKey _refreshSymmetricSecurityKey = new(Encoding.UTF8.GetBytes(jwtOptions.RefreshSigningKey));
     
     public GeneratedAccessToken CreateAccessToken(List<Claim> accessAuthClaims)
     {
@@ -18,7 +20,7 @@ public class TokenService(JwtOptions jwtOptions) : ITokenService
             jwtOptions.Audience,
             expires: DateTime.Now.AddMinutes(jwtOptions.TokenValidityInMinutes),
             claims: accessAuthClaims,
-            signingCredentials: new SigningCredentials(_symmetricSecurityKey, SecurityAlgorithms.HmacSha256)
+            signingCredentials: new SigningCredentials(_accessSymmetricSecurityKey, SecurityAlgorithms.HmacSha256)
         );
         return new GeneratedAccessToken
         {
@@ -32,9 +34,10 @@ public class TokenService(JwtOptions jwtOptions) : ITokenService
     {
         var token = new JwtSecurityToken(
             jwtOptions.Issuer,
-            expires: DateTime.Now.AddMinutes(jwtOptions.RefreshTokenValidityInDays),
+            jwtOptions.Audience,
+            expires: DateTime.Now.AddDays(jwtOptions.RefreshTokenValidityInDays),
             claims: authClaims,
-            signingCredentials: new SigningCredentials(_symmetricSecurityKey, SecurityAlgorithms.HmacSha256)
+            signingCredentials: new SigningCredentials(_refreshSymmetricSecurityKey, SecurityAlgorithms.HmacSha256)
         );
         return WriteTokenToString(token);
     }
@@ -47,7 +50,7 @@ public class TokenService(JwtOptions jwtOptions) : ITokenService
             ValidateAudience = true,
             ValidAudience = jwtOptions.Audience,
             ValidIssuer = jwtOptions.Issuer,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.SigningKey)),
+            IssuerSigningKey = _accessSymmetricSecurityKey,
             ValidateLifetime = false
         };
         
@@ -60,11 +63,12 @@ public class TokenService(JwtOptions jwtOptions) : ITokenService
         var tokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
-            ValidateAudience = false,
-            ValidateLifetime = false,
-            ValidateIssuerSigningKey = true,
+            ValidateAudience = true,
+            ValidAudience = jwtOptions.Audience,
             ValidIssuer = jwtOptions.Issuer,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.SigningKey)),
+            IssuerSigningKey = _refreshSymmetricSecurityKey,
+            ValidateLifetime = false,
+            LifetimeValidator = (_, expires, _, _) =>  expires != null && expires > DateTime.UtcNow
         };
         
         var tokenHandler = new JwtSecurityTokenHandler();

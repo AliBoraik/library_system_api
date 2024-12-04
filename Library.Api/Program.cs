@@ -10,7 +10,7 @@ builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication(builder.Configuration);
 builder.Services.AddSwaggerConfiguration();
 // Redis OutputCache
-builder.Services.RedisOutputCache(builder.Configuration);
+builder.Services.AddRedisOutputCache(builder.Configuration);
 //Cors
 builder.Services.AddCors(options =>
 {

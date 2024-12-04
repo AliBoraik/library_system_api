@@ -6,7 +6,7 @@ namespace Library.Application.Configurations;
 
 public static class RedisOutputConfiguration
 {
-    public static IServiceCollection RedisOutputCache(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddRedisOutputCache(this IServiceCollection services, IConfiguration configuration)
     {
         var dockerEnv = Environment.GetEnvironmentVariable("CONNECTION_STRING_REDIS");
         services.AddStackExchangeRedisOutputCache(options =>

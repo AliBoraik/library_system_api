@@ -10,12 +10,15 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddControllers();
+// Add Database connect Configuration
 builder.Services.AddDatabaseConfiguration(builder.Configuration);
+// Add Redis connect for OutputCache
+builder.Services.AddRedisOutputCache(builder.Configuration);
 builder.Services.AddAuth(builder.Configuration);
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddSwaggerConfiguration();
 // Redis OutputCache
-builder.Services.RedisOutputCache(builder.Configuration);
+builder.Services.AddRedisOutputCache(builder.Configuration);
 //Cors
 builder.Services.AddCors(options =>
 {
@@ -48,5 +51,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+// Output cache  
+app.UseOutputCache();
 app.MapGet("_health", () => Results.Ok("Ok")).ShortCircuit();
 app.Run();

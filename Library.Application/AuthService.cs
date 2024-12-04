@@ -31,7 +31,8 @@ public class AuthService(UserManager<User> userManager, ITokenService tokenServi
         
         var refreshAuthClaims = new List<Claim>
         {
-            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()) 
+            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()), 
+            new(AppClaimTypes.Id, user.Id.ToString()),
         };
         
         var generatedAccessToken = tokenService.CreateAccessToken(accessAuthClaims);
@@ -124,62 +125,4 @@ public class AuthService(UserManager<User> userManager, ITokenService tokenServi
         await userManager.AddToRoleAsync(user, AppRoles.Admin);
         return new Ok();
     }
-    
-    /*private async Task<TokenValidationResult> AccessTokenValidationResult(string? token)
-    {
-        var tokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidAudience = jwtOptions.Audience,
-            ValidIssuer = jwtOptions.Issuer,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.SigningKey)),
-            ValidateLifetime = false
-        };
-        
-        var tokenHandler = new JwtSecurityTokenHandler();
-        return await tokenHandler.ValidateTokenAsync(token, tokenValidationParameters);
-    }
-    
-    private async Task< TokenValidationResult> RefreshTokenValidationResult(string? refreshToken)
-    {
-        var tokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = false,
-            ValidateLifetime = false,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = jwtOptions.Issuer,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.SigningKey)),
-        };
-        
-        var tokenHandler = new JwtSecurityTokenHandler();
-        return await tokenHandler.ValidateTokenAsync(refreshToken, tokenValidationParameters);
-
-    }
-    private JwtSecurityToken CreateAccessToken(List<Claim> authClaims)
-    {
-        var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.SigningKey));
-        var token = new JwtSecurityToken(
-            jwtOptions.Issuer,
-            jwtOptions.Audience,
-            expires: DateTime.Now.AddMinutes(jwtOptions.TokenValidityInMinutes),
-            claims: authClaims,
-            signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
-        );
-        return token;
-    }
-    
-    private JwtSecurityToken CreateRefreshToken(List<Claim> authClaims)
-    {
-        
-        var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.SigningKey));
-        var token = new JwtSecurityToken(
-            jwtOptions.Issuer,
-            expires: DateTime.Now.AddMinutes(jwtOptions.RefreshTokenValidityInDays),
-            claims: authClaims,
-            signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
-        );
-        return token;
-    }*/
 }
