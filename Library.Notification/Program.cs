@@ -1,5 +1,6 @@
 using Library.Application.Configurations;
 using Library.Notification.Configurations;
+using Library.Notification.Consumers;
 using Library.Notification.Middleware;
 using Microsoft.AspNetCore.HttpOverrides;
 
@@ -9,8 +10,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // add auth service Collections
 builder.Services.AddNotificationApplication(builder.Configuration);
+// Add Consumer Configuration
+builder.Services.AddConsumerConfig(builder.Configuration);
 // Add Swagger Configuration
 builder.Services.AddSwaggerConfiguration();
+// add background services 
+builder.Services.AddHostedService<NotificationSubscriberBackground>();
 // add cors
 builder.Services.AddCors(options =>
 {

@@ -19,6 +19,6 @@ public static class ConfigureServices
         services.AddAutoMapper(typeof(NotificationAutoMapperProfile));
         
         // register services 
-        services.AddScoped<INotificationService, NotificationService>();
+        services.AddSingleton<INotificationService, NotificationService>();
     }
 }

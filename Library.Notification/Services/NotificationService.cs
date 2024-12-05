@@ -16,14 +16,14 @@ public class NotificationService(INotificationRepository notificationRepository,
         return mapper.Map<List<NotificationDto>>(notifications);
     }
     
-    public async Task<Result<SendNotificationResponse, Error>> SendNotificationAsync(SendNotificationRequest request , string userId)
+    public async Task<Result<SendNotificationResponse, Error>> SendNotificationAsync(NotificationRequest request)
     {
         var notification = new NotificationModel
         {
             RecipientUserId = request.RecipientUserId,
             Title = request.Title,
             Message = request.Message,
-            SenderId = new Guid(userId),
+            SenderId = request.SenderId,
             SentAt = DateTime.UtcNow,
             IsRead = false
         };

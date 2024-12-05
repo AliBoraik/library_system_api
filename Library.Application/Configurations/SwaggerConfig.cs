@@ -3,7 +3,7 @@ using Microsoft.OpenApi.Models;
 
 namespace Library.Application.Configurations;
 
-public static class SwaggerConfiguration
+public static class SwaggerConfig
 {
     public static void AddSwaggerConfiguration(this IServiceCollection services)
     {

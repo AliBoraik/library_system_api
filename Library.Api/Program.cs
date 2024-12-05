@@ -8,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApiApplication(builder.Configuration);
+builder.Services.AddKafkaProducerConfig(builder.Configuration);
 builder.Services.AddSwaggerConfiguration();
 // Redis OutputCache
 builder.Services.AddRedisOutputCache(builder.Configuration);

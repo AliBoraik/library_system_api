@@ -1,7 +1,6 @@
 using Library.Domain.Constants;
 using Library.Domain.DTOs.Notification;
 using Library.Interfaces.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Library.Notification.Controllers;
@@ -30,11 +29,11 @@ public class NotificationController(INotificationService notificationService) : 
     /// Sends a notification to a user.
     /// </summary>
     [HttpPost("Send")]
-    public async Task<ActionResult<SendNotificationResponse>> SendNotification([FromBody] SendNotificationRequest request)
+    public async Task<ActionResult<SendNotificationResponse>> SendNotification([FromBody] NotificationRequest request)
     {
         var userId = User.FindFirst(AppClaimTypes.Id)?.Value;
         if (userId == null) return Unauthorized(StringConstants.UserIdMissing);
-        var result = await notificationService.SendNotificationAsync(request , userId);
+        var result = await notificationService.SendNotificationAsync(request);
         return result.Match<ActionResult<SendNotificationResponse>>(
             dto => Ok(dto),
             error => StatusCode(error.Code, error));

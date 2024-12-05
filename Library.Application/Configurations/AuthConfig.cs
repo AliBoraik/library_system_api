@@ -7,7 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Library.Application.Configurations;
 
-public static class AuthConfigurations
+public static class AuthConfig
 {
     public static void AddAuthBuilder(this IServiceCollection services, IConfiguration configuration)
     {

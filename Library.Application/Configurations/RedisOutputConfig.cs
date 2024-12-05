@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Library.Application.Configurations;
 
-public static class RedisOutputConfiguration
+public static class RedisOutputConfig
 {
     public static IServiceCollection AddRedisOutputCache(this IServiceCollection services, IConfiguration configuration)
     {

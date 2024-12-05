@@ -5,7 +5,7 @@ namespace Library.Interfaces.Services;
 
 public interface INotificationService
 {
-    Task<Result<SendNotificationResponse, Error>> SendNotificationAsync(SendNotificationRequest request, string userId);
+    Task<Result<SendNotificationResponse, Error>> SendNotificationAsync(NotificationRequest request);
     Task<Result<IEnumerable<NotificationDto>, Error>> GetNotificationsAsync(string userId);
     Task<Result<Ok, Error>> MarkNotificationReadAsync(string notificationId);
 }
