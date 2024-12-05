@@ -14,9 +14,7 @@ public static class DatabaseConfiguration
     {
         services.AddDbContext<AppDbContext>(options =>
         {
-            var dockerEnv = Environment.GetEnvironmentVariable("CONNECTION_STRING_DOCKER");
-
-            options.UseNpgsql(dockerEnv ?? configuration.GetConnectionString("LibraryDB"));
+            options.UseNpgsql(configuration.GetConnectionString("LibraryDB"));
         });
         // For Identity
         services.AddIdentity<User, IdentityRole<Guid>>()
