@@ -1,4 +1,5 @@
 using Library.Domain.Models;
+using Library.Domain.Models.MongoDbModels;
 using MongoDB.Bson;
 
 namespace Library.Interfaces.Repositories;

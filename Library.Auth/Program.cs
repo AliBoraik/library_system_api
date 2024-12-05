@@ -1,25 +1,17 @@
-using Library.Application;
 using Library.Application.Configurations;
+using Library.Auth.Configurations;
 using Library.Auth.Middleware;
-using Library.Infrastructure.Configurations;
-using Library.Interfaces.Services;
 using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddControllers();
-// Add Database connect Configuration
-builder.Services.AddDatabaseConfiguration(builder.Configuration);
-// Add Redis connect for OutputCache
-builder.Services.AddRedisOutputCache(builder.Configuration);
-builder.Services.AddAuth(builder.Configuration);
-builder.Services.AddScoped<IAuthService, AuthService>();
+// add auth service Collections
+builder.Services.AddAuthApplication(builder.Configuration);
+// Add Swagger Configuration
 builder.Services.AddSwaggerConfiguration();
-// Redis OutputCache
-builder.Services.AddRedisOutputCache(builder.Configuration);
-//Cors
+// add cors
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>

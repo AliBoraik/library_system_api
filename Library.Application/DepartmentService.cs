@@ -12,7 +12,6 @@ public class DepartmentService(IDepartmentRepository departmentRepository, IMapp
 {
     public async Task<Result<IEnumerable<DepartmentDto>, Error>> GetAllDepartmentsAsync()
     {
-        Console.WriteLine("GetAllDepartmentsAsync");
         var subjects = await departmentRepository.FindAllDepartmentsInfoAsync();
         if (!subjects.Any()) return new Error(StatusCodes.Status404NotFound, "Not found any departments");
         var dto = mapper.Map<IEnumerable<DepartmentDto>>(subjects);

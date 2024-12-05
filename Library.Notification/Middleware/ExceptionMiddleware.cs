@@ -1,7 +1,7 @@
 using Library.Domain;
 using Library.Domain.Constants;
 
-namespace Library.Auth.Middleware;
+namespace Library.Notification.Middleware;
 
 public class ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger)
 {

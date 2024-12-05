@@ -1,7 +1,7 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace Library.Domain.Models;
+namespace Library.Domain.Models.MongoDbModels;
 
 public class NotificationModel
 {
@@ -11,6 +11,9 @@ public class NotificationModel
 
     [BsonGuidRepresentation(GuidRepresentation.Standard)]
     public Guid RecipientUserId { get; set; } // Who will receive the notification
+    
+    [BsonGuidRepresentation(GuidRepresentation.Standard)]
+    public Guid SenderId { get; set; } // Who will send the notification
 
     public required string Message { get; init; } // The message content
     public DateTime SentAt { get; init; } // When the notification was sent

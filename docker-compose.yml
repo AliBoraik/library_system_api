@@ -7,9 +7,10 @@
       - "5253:8080"
       - "5254:8081"
     environment:
-      CONNECTION_STRING_DOCKER: "host=db;;Database=LibraryDB;Port=5432;Username=postgres;Password=admin"
+      CONNECTION_STRING_DOCKER: "host=library_db;;Database=LibraryDB;Port=5432;Username=postgres;Password=admin"
       CONNECTION_STRING_REDIS: "redis:6379"
       ASPNETCORE_ENVIRONMENT: "Development"
+      KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
   library_auth:
     build:
       dockerfile: Library.Auth/Dockerfile
@@ -18,7 +19,7 @@
       - "5202:8080"
       - '5203:8081'
     environment:
-      CONNECTION_STRING_DOCKER: "host=db;;Database=LibraryDB;Port=5432;Username=postgres;Password=admin"
+      CONNECTION_STRING_DOCKER: "host=library_db;;Database=LibraryDB;Port=5432;Username=postgres;Password=admin"
       CONNECTION_STRING_REDIS: "redis:6379"
       ASPNETCORE_ENVIRONMENT: "Development"
   library_notification:
@@ -29,8 +30,9 @@
       - "5124:8080"
       - '7115:8081'
     environment:
-      MongoDB: "mongodb://mongodb:27017"
+      MongoDB: "mongodb://library_mongodb:27017"
       ASPNETCORE_ENVIRONMENT: "Development"
+      KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
   library_db:
     image: postgres:latest
     container_name: "library_db"
@@ -60,12 +62,55 @@
         reservations:
           cpus: '0.25'
           memory: 256M
-  mongodb:
+  library_mongodb:
     image: mongo:latest
     container_name: "library_mongodb"
     ports:
       - "27017:27017"
-  
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    container_name: kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    expose:
+      - '29092'
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT      
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+  init-kafka:
+    image: confluentinc/cp-kafka:latest
+    depends_on:
+      - kafka
+    entrypoint: [ '/bin/sh', '-c' ]
+    command: |
+      "
+      # blocks until kafka is reachable
+      kafka-topics --bootstrap-server kafka:29092 --list
+
+      echo -e 'Creating kafka topics'
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic notificationTopic --replication-factor 1 --partitions 1
+
+      echo -e 'Successfully created the following topics:'
+      kafka-topics --bootstrap-server kafka:29092 --list
+      "
+      
   nginx:
     image: nginx:alpine
     container_name: "library_nginx"
@@ -78,4 +123,7 @@ volumes:
   db_data:
   redis_data:
     driver: local
+    
+    
+#  docker exec kafka kafka-topics --bootstrap-server kafka:9092   --create --topic notificationTopic
   

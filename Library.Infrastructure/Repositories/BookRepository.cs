@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Library.Infrastructure.Repositories;
 
-public class BookRepository(ApplicationDbContext context) : IBookRepository
+public class BookRepository(AppDbContext context) : IBookRepository
 {
     public async Task<IEnumerable<Book>> FindAllBooksAsync()
     {

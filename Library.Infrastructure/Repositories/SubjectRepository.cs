@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Library.Infrastructure.Repositories;
 
-public class SubjectRepository(ApplicationDbContext context) : ISubjectRepository
+public class SubjectRepository(AppDbContext context) : ISubjectRepository
 {
     public async Task<IEnumerable<Subject>> FindAllSubjectsInfoAsync()
     {

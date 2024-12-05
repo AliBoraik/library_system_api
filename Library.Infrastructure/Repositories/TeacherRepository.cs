@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Library.Infrastructure.Repositories;
 
-public class TeacherRepository(ApplicationDbContext context) : ITeacherRepository
+public class TeacherRepository(AppDbContext context) : ITeacherRepository
 {
     public async Task<IEnumerable<Teacher>> FindTeachersAsync()
     {
@@ -19,7 +19,7 @@ public class TeacherRepository(ApplicationDbContext context) : ITeacherRepositor
     {
         return await context.Teachers
             .AsNoTracking()
-            .Where(s => s.Id == id)
+            .Where(s => s.TeacherId == id)
             .Include(t => t.User)
             .FirstOrDefaultAsync();
     }

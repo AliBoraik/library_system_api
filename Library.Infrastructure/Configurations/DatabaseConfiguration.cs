@@ -12,7 +12,7 @@ public static class DatabaseConfiguration
     public static IServiceCollection AddDatabaseConfiguration(this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.AddDbContext<ApplicationDbContext>(options =>
+        services.AddDbContext<AppDbContext>(options =>
         {
             var dockerEnv = Environment.GetEnvironmentVariable("CONNECTION_STRING_DOCKER");
 
@@ -20,7 +20,7 @@ public static class DatabaseConfiguration
         });
         // For Identity
         services.AddIdentity<User, IdentityRole<Guid>>()
-            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddEntityFrameworkStores<AppDbContext>()
             .AddDefaultTokenProviders();
         return services;
     }
