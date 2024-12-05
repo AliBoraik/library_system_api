@@ -8,9 +8,10 @@ public static class KafkaProducerConfig
 {
     public static void AddKafkaProducerConfig(this IServiceCollection services, IConfiguration configuration)
     {
+        var dockerEnv = Environment.GetEnvironmentVariable("KAFKA_BOOTSTRAP_SERVERS");
         var producerConfig = new ProducerConfig
         {
-            BootstrapServers = "localhost:9092"
+            BootstrapServers =  dockerEnv ??"localhost:9092"
         };
         services.AddSingleton(producerConfig);
         services.AddSingleton<ProducerService>();

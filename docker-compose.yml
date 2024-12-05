@@ -7,9 +7,10 @@
       - "5253:8080"
       - "5254:8081"
     environment:
-      CONNECTION_STRING_DOCKER: "host=db;;Database=LibraryDB;Port=5432;Username=postgres;Password=admin"
+      CONNECTION_STRING_DOCKER: "host=library_db;;Database=LibraryDB;Port=5432;Username=postgres;Password=admin"
       CONNECTION_STRING_REDIS: "redis:6379"
       ASPNETCORE_ENVIRONMENT: "Development"
+      KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
   library_auth:
     build:
       dockerfile: Library.Auth/Dockerfile
@@ -18,7 +19,7 @@
       - "5202:8080"
       - '5203:8081'
     environment:
-      CONNECTION_STRING_DOCKER: "host=db;;Database=LibraryDB;Port=5432;Username=postgres;Password=admin"
+      CONNECTION_STRING_DOCKER: "host=library_db;;Database=LibraryDB;Port=5432;Username=postgres;Password=admin"
       CONNECTION_STRING_REDIS: "redis:6379"
       ASPNETCORE_ENVIRONMENT: "Development"
   library_notification:
@@ -29,8 +30,9 @@
       - "5124:8080"
       - '7115:8081'
     environment:
-      MongoDB: "mongodb://mongodb:27017"
+      MongoDB: "mongodb://library_mongodb:27017"
       ASPNETCORE_ENVIRONMENT: "Development"
+      KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
   library_db:
     image: postgres:latest
     container_name: "library_db"
