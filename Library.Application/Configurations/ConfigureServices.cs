@@ -7,16 +7,16 @@ namespace Library.Application.Configurations;
 
 public static class ConfigureServices
 {
-    public static void AddApplication(this IServiceCollection services, IConfiguration configuration)
+    public static void AddApiApplication(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddAuth(configuration);
+        services.AddAuthBuilder(configuration);
         // Service 
         services.AddScoped<ILectureService, LectureService>();
         services.AddScoped<IDepartmentService, DepartmentService>();
         services.AddScoped<ISubjectService, SubjectService>();
         services.AddScoped<IBookService, BookService>();
         services.AddSingleton<IUploadsService, UploadsService>();
-        services.AddAutoMapper(typeof(AutoMapperProfile));
+        services.AddAutoMapper(typeof(ApiAutoMapperProfile));
         services.AddScoped<IStudentService, StudentService>();
         services.AddScoped<ITeacherService, TeacherService>();
     }

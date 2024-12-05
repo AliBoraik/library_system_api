@@ -9,6 +9,7 @@ public class Lecture
     public Guid UploadedBy { get; set; }
     public DateTime UploadedAt { get; set; } = DateTime.UtcNow;
 
-    public Subject Subject { get; set; }
     public Guid SubjectId { get; set; }
+    public Subject Subject { get; set; }
+    
 }

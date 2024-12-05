@@ -52,7 +52,7 @@ public class AuthController(IAuthService authService, IOutputCacheStore cacheSto
 
     [HttpPost]
     [Route("Register-Student")]
-    [Authorize(Roles = AppRoles.Admin)]
+   // [Authorize(Roles = AppRoles.Admin)]
     public async Task<IActionResult> RegisterStudent([FromBody] RegisterDto registerDto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);

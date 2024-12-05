@@ -4,9 +4,8 @@ using System.Text;
 using Library.Domain.Auth;
 using Library.Interfaces.Services;
 using Microsoft.IdentityModel.Tokens;
-using MongoDB.Driver.Linq;
 
-namespace Library.Application;
+namespace Library.Auth.Services;
 
 public class TokenService(JwtOptions jwtOptions) : ITokenService
 {

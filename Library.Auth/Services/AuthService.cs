@@ -5,10 +5,9 @@ using Library.Domain.Auth;
 using Library.Domain.Constants;
 using Library.Domain.Models;
 using Library.Interfaces.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 
-namespace Library.Application;
+namespace Library.Auth.Services;
 
 public class AuthService(UserManager<User> userManager, ITokenService tokenService)
     : IAuthService

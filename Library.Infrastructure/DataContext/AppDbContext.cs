@@ -8,9 +8,9 @@ namespace Library.Infrastructure.DataContext;
 //  dotnet ef --startup-project ../Library.Api/ migrations add Initial
 //  dotnet ef --startup-project ../Library.Api/ database update
 
-public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
+public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
 {
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+    public AppDbContext(DbContextOptions<AppDbContext> options)
         : base(options)
     {
     }
@@ -46,29 +46,16 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<Guid>, 
             .WithOne(s => s.Teacher)
             .HasForeignKey(s => s.TeacherId);
 
-        // Configuring one-to-one relationship 
-        modelBuilder.Entity<Student>()
-            .HasOne(s => s.User)
-            .WithOne(u => u.Student)
-            .HasForeignKey<Student>(s => s.Id); // Define foreign key for Student
-
-
-        modelBuilder.Entity<Teacher>()
-            .HasOne(t => t.User)
-            .WithOne(u => u.Teacher)
-            .HasForeignKey<Teacher>(t => t.Id); // Define foreign key for Teacher
-
-
         // roles ids
         var adminRoleId = Guid.NewGuid();
         var teacherRoleId = Guid.NewGuid();
         var studentRoleId = Guid.NewGuid();
         // admin id 
         var adminId = Guid.NewGuid();
-        // teacher id
-        var teacherId = Guid.NewGuid();
-        // student id
-        var studentId = Guid.NewGuid();
+        // user 1 id
+        var user1Id = Guid.NewGuid();
+        // user 2 id
+        var user2Id = Guid.NewGuid();
 
 
         modelBuilder.Entity<IdentityRole<Guid>>()
@@ -103,62 +90,67 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<Guid>, 
                 NormalizedUserName = "ADMIN",
                 PasswordHash = "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q=="
             });
-
-        modelBuilder.Entity<User>()
-            .HasData(new User
-            {
-                Id = teacherId,
-                Email = "teacher@gmail.com",
-                NormalizedEmail = "TEACHER@GMAIL.COM",
-                SecurityStamp = Guid.NewGuid().ToString(),
-                UserName = "teacher",
-                NormalizedUserName = "TEACHER",
-                PasswordHash = "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q=="
-            });
-        modelBuilder.Entity<Teacher>()
-            .HasData(new Teacher
-            {
-                Id = teacherId
-            });
-
-        modelBuilder.Entity<User>()
-            .HasData(new User
-            {
-                Id = studentId,
-                Email = "student@gmail.com",
-                NormalizedEmail = "STUDENT@GMAIL.COM",
-                SecurityStamp = Guid.NewGuid().ToString(),
-                UserName = "student",
-                NormalizedUserName = "STUDENT",
-                PasswordHash = "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q=="
-            });
-
-        modelBuilder.Entity<Student>()
-            .HasData(new Student
-            {
-                Id = studentId
-            });
-
+        
         modelBuilder.Entity<IdentityUserRole<Guid>>().HasData(
             new IdentityUserRole<Guid>
             {
                 RoleId = adminRoleId,
                 UserId = adminId
             });
+
+        modelBuilder.Entity<User>()
+            .HasData(new User
+            {
+                Id = user1Id,
+                Email = "teacher@gmail.com",
+                NormalizedEmail = "TEACHER@GMAIL.COM",
+                SecurityStamp = Guid.NewGuid().ToString(),
+                UserName = "teacher",
+                NormalizedUserName = "TEACHER",
+                PasswordHash = "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q==",
+            });
+        
+        modelBuilder.Entity<Teacher>()
+            .HasData(new Teacher
+            {
+                TeacherId = Guid.NewGuid(),
+                UserId = user1Id
+            });
+        
+        modelBuilder.Entity<User>()
+            .HasData(new User
+            {
+                Id = user2Id,
+                Email = "student@gmail.com",
+                NormalizedEmail = "STUDENT@GMAIL.COM",
+                SecurityStamp = Guid.NewGuid().ToString(),
+                UserName = "student",
+                NormalizedUserName = "STUDENT",
+                PasswordHash = "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q==",
+            });
+        
+        modelBuilder.Entity<Student>()
+            .HasData(new Student
+            {
+                StudentId = Guid.NewGuid(),
+                UserId = user2Id
+            });
+        
+        
         modelBuilder.Entity<IdentityUserRole<Guid>>().HasData(
             new IdentityUserRole<Guid>
             {
                 RoleId = teacherRoleId,
-                UserId = teacherId
+                UserId = user1Id
             });
 
         modelBuilder.Entity<IdentityUserRole<Guid>>().HasData(
             new IdentityUserRole<Guid>
             {
                 RoleId = studentRoleId,
-                UserId = studentId
+                UserId = user2Id
             });
-
+        
 
         var department1 = new Department
         {

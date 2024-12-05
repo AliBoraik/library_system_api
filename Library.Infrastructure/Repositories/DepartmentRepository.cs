@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Library.Infrastructure.Repositories;
 
-public class DepartmentRepository(ApplicationDbContext context) : IDepartmentRepository
+public class DepartmentRepository(AppDbContext context) : IDepartmentRepository
 {
     public async Task<IEnumerable<Department>> FindAllDepartmentsInfoAsync()
     {

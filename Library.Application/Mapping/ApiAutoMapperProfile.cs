@@ -9,9 +9,9 @@ using Library.Domain.Models;
 
 namespace Library.Application.Mapping;
 
-public class AutoMapperProfile : Profile
+public class ApiAutoMapperProfile : Profile
 {
-    public AutoMapperProfile()
+    public ApiAutoMapperProfile()
     {
         // Department
         CreateMap<Department, DepartmentDto>().ReverseMap();

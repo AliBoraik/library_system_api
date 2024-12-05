@@ -1,4 +1,5 @@
 using Library.Domain.Models;
+using Library.Domain.Models.MongoDbModels;
 using Library.Interfaces.Repositories;
 using MongoDB.Bson;
 using MongoDB.Driver;

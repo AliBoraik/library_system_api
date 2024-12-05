@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Library.Infrastructure.Repositories;
 
-public class LectureRepository(ApplicationDbContext context) : ILectureRepository
+public class LectureRepository(AppDbContext context) : ILectureRepository
 {
     public async Task<IEnumerable<Lecture>> FindAllLecturesAsync()
     {
