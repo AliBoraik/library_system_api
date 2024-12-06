@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Library.Domain.Constants;
 using Library.Domain.DTOs.Notification;
 using Library.Interfaces.Services;
@@ -18,7 +19,7 @@ public class NotificationController(INotificationService notificationService) : 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<NotificationDto>>> GetNotifications()
     {
-        var userId = User.FindFirst(AppClaimTypes.Id)?.Value;
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (userId == null) return Unauthorized(StringConstants.UserIdMissing);
         var result = await notificationService.GetNotificationsAsync(userId);
         return result.Match<ActionResult<IEnumerable<NotificationDto>>>(
@@ -32,7 +33,7 @@ public class NotificationController(INotificationService notificationService) : 
     [HttpPost("Send")]
     public async Task<ActionResult<SendNotificationResponse>> SendNotification([FromBody] NotificationRequest request)
     {
-        var userId = User.FindFirst(AppClaimTypes.Id)?.Value;
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (userId == null) return Unauthorized(StringConstants.UserIdMissing);
         var result = await notificationService.SendNotificationAsync(request);
         return result.Match<ActionResult<SendNotificationResponse>>(

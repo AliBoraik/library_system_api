@@ -1,5 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Principal;
 using System.Text;
 using Library.Domain.Auth;
 using Library.Interfaces.Services;
@@ -19,7 +20,7 @@ public class TokenService(JwtOptions jwtOptions) : ITokenService
             jwtOptions.Audience,
             expires: DateTime.Now.AddMinutes(jwtOptions.TokenValidityInMinutes),
             claims: accessAuthClaims,
-            signingCredentials: new SigningCredentials(_accessSymmetricSecurityKey, SecurityAlgorithms.HmacSha256Signature)
+            signingCredentials: new SigningCredentials(_accessSymmetricSecurityKey, SecurityAlgorithms.HmacSha256)
         );
         return new GeneratedAccessToken
         {
@@ -36,7 +37,7 @@ public class TokenService(JwtOptions jwtOptions) : ITokenService
             jwtOptions.Audience,
             expires: DateTime.Now.AddDays(jwtOptions.RefreshTokenValidityInDays),
             claims: authClaims,
-            signingCredentials: new SigningCredentials(_refreshSymmetricSecurityKey, SecurityAlgorithms.HmacSha256Signature)
+            signingCredentials: new SigningCredentials(_refreshSymmetricSecurityKey, SecurityAlgorithms.HmacSha256)
         );
         return WriteTokenToString(token);
     }
@@ -56,6 +57,7 @@ public class TokenService(JwtOptions jwtOptions) : ITokenService
         };
         
         var tokenHandler = new JwtSecurityTokenHandler();
+        
         return await tokenHandler.ValidateTokenAsync(accessToken, tokenValidationParameters);
     }
 
@@ -70,6 +72,7 @@ public class TokenService(JwtOptions jwtOptions) : ITokenService
             ValidAudience = jwtOptions.Audience,
             ValidIssuer = jwtOptions.Issuer,
             IssuerSigningKey = _refreshSymmetricSecurityKey,
+            LifetimeValidator = (_, expires, _, _) =>  expires != null && expires > DateTime.UtcNow
         };
         
         var tokenHandler = new JwtSecurityTokenHandler();
