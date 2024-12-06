@@ -1,13 +1,14 @@
 using Library.Domain.Constants;
 using Library.Domain.DTOs.Notification;
 using Library.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Library.Notification.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-//[Authorize]
+[Authorize]
 public class NotificationController(INotificationService notificationService) : ControllerBase
 {
     

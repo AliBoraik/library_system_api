@@ -5,11 +5,11 @@ using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
-builder.Services.AddControllers();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApiApplication(builder.Configuration);
 builder.Services.AddKafkaProducerConfig(builder.Configuration);
 builder.Services.AddSwaggerConfiguration();
+builder.Services.AddControllers();
 // Redis OutputCache
 builder.Services.AddRedisOutputCache(builder.Configuration);
 //Cors

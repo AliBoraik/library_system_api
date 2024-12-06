@@ -45,6 +45,8 @@ app.UseCors();
 // Global error handler
 app.UseMiddleware<ExceptionMiddleware>();
 
+app.UseHttpsRedirection();
+// Authentication & Authorization
 app.UseAuthentication();
 app.UseAuthorization();
 

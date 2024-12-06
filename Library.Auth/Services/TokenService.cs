@@ -19,7 +19,7 @@ public class TokenService(JwtOptions jwtOptions) : ITokenService
             jwtOptions.Audience,
             expires: DateTime.Now.AddMinutes(jwtOptions.TokenValidityInMinutes),
             claims: accessAuthClaims,
-            signingCredentials: new SigningCredentials(_accessSymmetricSecurityKey, SecurityAlgorithms.HmacSha256)
+            signingCredentials: new SigningCredentials(_accessSymmetricSecurityKey, SecurityAlgorithms.HmacSha256Signature)
         );
         return new GeneratedAccessToken
         {
@@ -36,21 +36,23 @@ public class TokenService(JwtOptions jwtOptions) : ITokenService
             jwtOptions.Audience,
             expires: DateTime.Now.AddDays(jwtOptions.RefreshTokenValidityInDays),
             claims: authClaims,
-            signingCredentials: new SigningCredentials(_refreshSymmetricSecurityKey, SecurityAlgorithms.HmacSha256)
+            signingCredentials: new SigningCredentials(_refreshSymmetricSecurityKey, SecurityAlgorithms.HmacSha256Signature)
         );
         return WriteTokenToString(token);
     }
 
     public async Task<TokenValidationResult> AccessTokenValidationResult(string accessToken)
     {
+        
         var tokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
             ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
             ValidAudience = jwtOptions.Audience,
             ValidIssuer = jwtOptions.Issuer,
             IssuerSigningKey = _accessSymmetricSecurityKey,
-            ValidateLifetime = false
         };
         
         var tokenHandler = new JwtSecurityTokenHandler();
@@ -63,11 +65,11 @@ public class TokenService(JwtOptions jwtOptions) : ITokenService
         {
             ValidateIssuer = true,
             ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
             ValidAudience = jwtOptions.Audience,
             ValidIssuer = jwtOptions.Issuer,
             IssuerSigningKey = _refreshSymmetricSecurityKey,
-            ValidateLifetime = false,
-            LifetimeValidator = (_, expires, _, _) =>  expires != null && expires > DateTime.UtcNow
         };
         
         var tokenHandler = new JwtSecurityTokenHandler();

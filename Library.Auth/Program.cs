@@ -38,7 +38,6 @@ app.UseCors();
 
 // Global error handler
 app.UseMiddleware<ExceptionMiddleware>();
-
 app.UseAuthentication();
 app.UseAuthorization();
 

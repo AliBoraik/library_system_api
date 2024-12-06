@@ -21,15 +21,18 @@ public class AuthService(UserManager<User> userManager, ITokenService tokenServi
         var userRoles = await userManager.GetRolesAsync(user);
         var accessAuthClaims = new List<Claim>
         {
-            new(AppClaimTypes.Name, user.UserName!),
-            new(AppClaimTypes.Email, user.Email!),
-            new(AppClaimTypes.Id, user.Id.ToString()),
+            new(JwtRegisteredClaimNames.Sub , user.UserName!),
+            new(JwtRegisteredClaimNames.Email , user.Email!),
+            new(JwtRegisteredClaimNames.Sid , user.Id.ToString()),
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
+        
         accessAuthClaims.AddRange(userRoles.Select(userRole => new Claim(AppClaimTypes.Role, userRole)));
         
         var refreshAuthClaims = new List<Claim>
         {
+            new(JwtRegisteredClaimNames.Email , user.Email!),
+            new(JwtRegisteredClaimNames.Sub , user.UserName!),
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()), 
             new(AppClaimTypes.Id, user.Id.ToString()),
         };

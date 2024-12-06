@@ -75,14 +75,14 @@ public class AuthController(IAuthService authService, IOutputCacheStore cacheSto
 
     [HttpGet]
     [Route("Validate-Token")]
-    [Authorize]
+    [Authorize(AuthenticationSchemes = "Bearer")]
     public IActionResult ValidateToken()
     {
-        var authClaims = new Dictionary<string, string>
+        /*var authClaims = new Dictionary<string, string>
         {
             { AppClaimTypes.Id, User.FindFirst(AppClaimTypes.Id)!.Value },
             { AppClaimTypes.Role, User.FindFirst(ClaimTypes.Role)!.Value }
-        };
-        return Ok(authClaims);
+        };*/
+        return Ok();
     }
 }
