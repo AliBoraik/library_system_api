@@ -32,7 +32,7 @@
       - "5124:8080"
       - '7115:8081'
     environment:
-      ConnectionStrings__MongoDB: "mongodb://library_mongodb:27017"
+      ConnectionStrings__LibraryDB: "host=library_db;;Database=LibraryDB;Port=5432;Username=postgres;Password=admin"
       ConnectionStrings__Kafka: "library_kafka:29092"
       ConnectionStrings__Redis: "redis:6379"
       ASPNETCORE_ENVIRONMENT: "Development"
