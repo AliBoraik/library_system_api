@@ -10,5 +10,4 @@ public interface ITokenService
     string CreateRefreshToken(List<Claim> authClaims);
     Task<TokenValidationResult> AccessTokenValidationResult(string accessToken);
     Task<TokenValidationResult> RefreshTokenValidationResult(string refreshToken);
-    
 }

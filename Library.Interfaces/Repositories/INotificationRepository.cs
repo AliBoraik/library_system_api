@@ -1,12 +1,14 @@
 using Library.Domain.Models;
-using Library.Domain.Models.MongoDbModels;
-using MongoDB.Bson;
 
 namespace Library.Interfaces.Repositories;
 
 public interface INotificationRepository
 {
-    Task<List<NotificationModel>> FindUserNotificationAsync(Guid userId);
-    Task<ObjectId> AddNotificationAsync(NotificationModel notification);
-    Task<bool> MarkNotificationReadAsync(string notificationId);
+    Task<IEnumerable<NotificationModel>> FindNotificationsByUserIdAsync(Guid userId);
+    Task<Guid> AddNotificationAsync(NotificationModel notification);
+    Task MarkNotificationReadAsync(Guid notificationId);
+
+    Task<NotificationModel?> FindNotificationByIdAsync(Guid notificationId);
+    Task<IEnumerable<NotificationModel>> FindUnreadNotificationsByUserIdAsync(Guid userId);
+    Task SaveChangesAsync();
 }

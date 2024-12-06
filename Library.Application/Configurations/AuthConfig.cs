@@ -14,19 +14,23 @@ public static class AuthConfig
         var jwtOptions = configuration
             .GetSection("JwtOptions")
             .Get<JwtOptions>()!;
-        
+
         services.AddSingleton(jwtOptions);
         // Adding Auth
-        services.AddAuthentication(options => {
+        services.AddAuthentication(options =>
+            {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;})
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
             .AddJwtBearer(options =>
             {
                 //convert the string signing key to byte array
                 var signingKeyBytes = Encoding.UTF8
                     .GetBytes(jwtOptions.AccessSigningKey);
-                
+
+                options.RequireHttpsMetadata = false;
+                options.SaveToken = true;
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
@@ -36,9 +40,8 @@ public static class AuthConfig
                     ValidAudience = jwtOptions.Audience,
                     ValidIssuer = jwtOptions.Issuer,
                     IssuerSigningKey = new SymmetricSecurityKey(signingKeyBytes),
-                    LifetimeValidator = (_, expires, _, _) =>  expires != null && expires > DateTime.UtcNow
+                    LifetimeValidator = (_, expires, _, _) => expires != null && expires > DateTime.UtcNow
                 };
             });
     }
-    
 }

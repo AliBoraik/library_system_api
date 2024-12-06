@@ -22,19 +22,19 @@ public class AuthService(UserManager<User> userManager, ITokenService tokenServi
         var accessAuthClaims = new List<Claim>
         {
             new(ClaimTypes.Name, user.UserName!),
-            new(ClaimTypes.Email , user.Email!),
-            new(ClaimTypes.NameIdentifier , user.Id.ToString()),
+            new(ClaimTypes.Email, user.Email!),
+            new(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
         accessAuthClaims.AddRange(userRoles.Select(userRole => new Claim(ClaimTypes.Role, userRole)));
-        
+
         var refreshAuthClaims = new List<Claim>
         {
-            new Claim(ClaimTypes.Name, user.UserName!),
-            new(ClaimTypes.NameIdentifier , user.Id.ToString()),
+            new(ClaimTypes.Name, user.UserName!),
+            new(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
-        
+
         var generatedAccessToken = tokenService.CreateAccessToken(accessAuthClaims);
         var refreshToken = tokenService.CreateRefreshToken(refreshAuthClaims);
 
@@ -45,23 +45,23 @@ public class AuthService(UserManager<User> userManager, ITokenService tokenServi
             ExpirationTime = generatedAccessToken.ValidTo
         };
     }
-    
+
     public async Task<Result<AuthDataResponse, Error>> RefreshTokenAsync(RefreshTokenDto refreshTokenDto)
     {
         var tokenValidationResult = await tokenService.RefreshTokenValidationResult(refreshTokenDto.RefreshToken);
-        
+
         if (!tokenValidationResult.IsValid)
             return new Error(StatusCodes.Status401Unauthorized, "Not Validate refresh token");
-        
+
         var accessTokenValidationResult = await tokenService.AccessTokenValidationResult(refreshTokenDto.AccessToken);
-        
+
         if (!accessTokenValidationResult.IsValid)
             return new Error(StatusCodes.Status401Unauthorized, "Not Validate access token");
-        
+
         var accessAuthClaims = accessTokenValidationResult.ClaimsIdentity.Claims.ToList();
-        
+
         var generatedAccessToken = tokenService.CreateAccessToken(accessAuthClaims);
-        
+
         return new AuthDataResponse
         {
             AccessToken = generatedAccessToken.AccessToken,

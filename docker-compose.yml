@@ -11,7 +11,7 @@
       ConnectionStrings__Redis: "redis:6379"
       ConnectionStrings__Kafka: "library_kafka:29092"
       ASPNETCORE_ENVIRONMENT: "Development"
-      
+  
   library_auth:
     build:
       dockerfile: Library.Auth/Dockerfile
@@ -23,7 +23,7 @@
       ConnectionStrings__LibraryDB: "host=library_db;;Database=LibraryDB;Port=5432;Username=postgres;Password=admin"
       ConnectionStrings__Redis: "redis:6379"
       ASPNETCORE_ENVIRONMENT: "Development"
-      
+  
   library_notification:
     build:
       dockerfile: Library.Notification/Dockerfile
@@ -32,11 +32,11 @@
       - "5124:8080"
       - '7115:8081'
     environment:
-      ConnectionStrings__MongoDB: "mongodb://library_mongodb:27017"
+      ConnectionStrings__LibraryDB: "host=library_db;;Database=LibraryDB;Port=5432;Username=postgres;Password=admin"
       ConnectionStrings__Kafka: "library_kafka:29092"
       ConnectionStrings__Redis: "redis:6379"
       ASPNETCORE_ENVIRONMENT: "Development"
-      
+  
   library_db:
     image: postgres:latest
     container_name: "library_db"
@@ -67,7 +67,7 @@
         reservations:
           cpus: '0.25'
           memory: 256M
-          
+  
   library_mongodb:
     image: mongo:latest
     container_name: "library_mongodb"
@@ -95,7 +95,7 @@
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: library_zookeeper:2181
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT      
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://library_kafka:29092,PLAINTEXT_HOST://localhost:9092
 
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
@@ -116,7 +116,7 @@
       echo -e 'Successfully created the following topics:'
       kafka-topics --bootstrap-server library_kafka:29092 --list
       "
-      
+  
   nginx:
     image: nginx:alpine
     container_name: "library_nginx"
@@ -129,7 +129,7 @@ volumes:
   db_data:
   redis_data:
     driver: local
-    
-    
-#  docker exec library_kafka kafka-topics --bootstrap-server library_kafka:9092   --create --topic notificationTopic
+  
+  
+  #  docker exec library_kafka kafka-topics --bootstrap-server library_kafka:9092   --create --topic notificationTopic
   

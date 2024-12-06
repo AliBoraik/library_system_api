@@ -8,7 +8,7 @@ public class RegisterDto
     [EmailAddress]
     [Required(ErrorMessage = "Email is required")]
     public string Email { get; set; } = null!;
-    
+
     [Required]
     [StringLength(100, ErrorMessage = "Name can't be longer than 100 characters.")]
     public string Username { get; set; } = null!;
@@ -18,7 +18,7 @@ public class RegisterDto
     [StringLength(255, ErrorMessage = "Must be between 5 and 255 characters", MinimumLength = 5)]
     [DataType(DataType.Password)]
     public string Password { get; set; } = null!;
-    
+
     [Required(ErrorMessage = "Confirm Password is required")]
     [StringLength(255, ErrorMessage = "Must be between 5 and 255 characters", MinimumLength = 5)]
     [DataType(DataType.Password)]

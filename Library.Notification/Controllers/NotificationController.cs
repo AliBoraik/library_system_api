@@ -12,40 +12,37 @@ namespace Library.Notification.Controllers;
 [Authorize]
 public class NotificationController(INotificationService notificationService) : ControllerBase
 {
-    
     /// <summary>
-    /// Retrieves all notifications.
+    ///     Retrieves all notifications.
     /// </summary>
     [HttpGet]
     public async Task<ActionResult<IEnumerable<NotificationDto>>> GetNotifications()
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (userId == null) return Unauthorized(StringConstants.UserIdMissing);
-        var result = await notificationService.GetNotificationsAsync(userId);
-        return result.Match<ActionResult<IEnumerable<NotificationDto>>>(
-            dto => Ok(dto),
-            error => StatusCode(error.Code, error));
+        var notifications = await notificationService.GetNotificationsAsync(userId);
+        return Ok(notifications);
     }
-    
+
     /// <summary>
-    /// Sends a notification to a user.
+    ///     Sends a notification to a user.
     /// </summary>
     [HttpPost("Send")]
-    public async Task<ActionResult<SendNotificationResponse>> SendNotification([FromBody] NotificationRequest request)
+    public async Task<ActionResult> SendNotification([FromBody] CreateNotificationDto request)
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (userId == null) return Unauthorized(StringConstants.UserIdMissing);
         var result = await notificationService.SendNotificationAsync(request);
-        return result.Match<ActionResult<SendNotificationResponse>>(
-            dto => Ok(dto),
+        return result.Match<ActionResult>(
+            Ok,
             error => StatusCode(error.Code, error));
     }
 
     /// <summary>
-    /// Marks a notification as read.
+    ///     Marks a notification as read.
     /// </summary>
     [HttpPatch("{notificationId}/Read")]
-    public async Task<IActionResult> MarkNotificationRead([FromRoute] string notificationId)
+    public async Task<IActionResult> MarkNotificationRead([FromRoute] Guid notificationId)
     {
         var result = await notificationService.MarkNotificationReadAsync(notificationId);
         return result.Match<ActionResult>(

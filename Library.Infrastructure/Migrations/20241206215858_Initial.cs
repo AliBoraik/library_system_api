@@ -173,6 +173,35 @@ namespace Library.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Notifications",
+                columns: table => new
+                {
+                    NotificationId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Title = table.Column<string>(type: "text", nullable: false),
+                    RecipientUserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    SenderId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Message = table.Column<string>(type: "text", nullable: false),
+                    SentAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    IsRead = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Notifications", x => x.NotificationId);
+                    table.ForeignKey(
+                        name: "FK_Notifications_AspNetUsers_RecipientUserId",
+                        column: x => x.RecipientUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Notifications_AspNetUsers_SenderId",
+                        column: x => x.SenderId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Students",
                 columns: table => new
                 {
@@ -309,9 +338,9 @@ namespace Library.Infrastructure.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { new Guid("2d3a58cc-c988-4ff2-901e-7b4d37b43bca"), null, "student", "STUDENT" },
-                    { new Guid("847c8722-8b61-498c-8cac-e2da0d458259"), null, "admin", "ADMIN" },
-                    { new Guid("ba61b43c-4d04-4608-9b43-798f09759e6e"), null, "teacher", "TEACHER" }
+                    { new Guid("339a6c4b-6d1a-405e-98ce-6d54b41af0b0"), null, "admin", "ADMIN" },
+                    { new Guid("b2c0218a-f04b-47cf-8564-528baeaaa465"), null, "student", "STUDENT" },
+                    { new Guid("f2a4f1fc-70e8-4b9a-bd8c-ce330a97128c"), null, "teacher", "TEACHER" }
                 });
 
             migrationBuilder.InsertData(
@@ -319,9 +348,9 @@ namespace Library.Infrastructure.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { new Guid("1a0e854d-9b33-4939-9e18-1ebe968ac7f5"), 0, "1817fdec-7188-47a3-98c6-6e105713d191", "student@gmail.com", false, false, null, "STUDENT@GMAIL.COM", "STUDENT", "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q==", null, false, "245edb8c-f622-4858-bb65-c3bcd1a32f5c", false, "student" },
-                    { new Guid("aba41058-354a-4c8d-9bbd-36f9258c272a"), 0, "7f1cd33c-f647-4ffa-a90e-8c4cb91953e0", "admin@gmail.com", false, false, null, "ADMIN@GMAIL.COM", "ADMIN", "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q==", null, false, "8ad1ee60-f34d-408b-b3df-c2ca2440a9f1", false, "admin" },
-                    { new Guid("ad16930c-aa1f-4f9d-8d38-f1e16bdb4bb7"), 0, "8d701cc1-dd8d-4c68-b3c8-888b959d3e1e", "teacher@gmail.com", false, false, null, "TEACHER@GMAIL.COM", "TEACHER", "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q==", null, false, "d72e706b-3d52-4ea7-ac21-b32311e05425", false, "teacher" }
+                    { new Guid("5dad3994-0944-409c-8e67-f84b04c05d4b"), 0, "b3f68e0a-4457-4fbf-bd31-f582a35e4174", "student@gmail.com", false, false, null, "STUDENT@GMAIL.COM", "STUDENT", "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q==", null, false, "3aedc7b0-1ee1-4774-a612-cf5a7bf8dd6e", false, "student" },
+                    { new Guid("916c0887-96fc-4789-aeec-74f29530f098"), 0, "e9322210-cb9d-4a38-98bf-e2ce2c0bee4e", "teacher@gmail.com", false, false, null, "TEACHER@GMAIL.COM", "TEACHER", "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q==", null, false, "143c53bc-ae07-403c-b2ea-d53f2dad444f", false, "teacher" },
+                    { new Guid("fce4e50f-8a74-4747-9e43-f5f8e0684fd5"), 0, "e1a2a0d0-3be5-4c9f-811c-0f402155b9ab", "admin@gmail.com", false, false, null, "ADMIN@GMAIL.COM", "ADMIN", "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q==", null, false, "40bbc720-20d4-4623-bc2d-f5e9cec4446d", false, "admin" }
                 });
 
             migrationBuilder.InsertData(
@@ -329,8 +358,8 @@ namespace Library.Infrastructure.Migrations
                 columns: new[] { "DepartmentId", "Description", "Name" },
                 values: new object[,]
                 {
-                    { new Guid("8c0521b7-f8e1-4fa8-a7f3-645a8c11f293"), "Department of Mathematics", "Mathematics" },
-                    { new Guid("ed43dc2e-24d3-423c-8236-0310e58b14b1"), "Department of Computer Science", "Computer Science" }
+                    { new Guid("731d0de2-0da9-4ae4-a1f3-64e4804a5483"), "Department of Computer Science", "Computer Science" },
+                    { new Guid("dff29960-cba9-4edc-bb7c-6315c1d194c8"), "Department of Mathematics", "Mathematics" }
                 });
 
             migrationBuilder.InsertData(
@@ -338,20 +367,20 @@ namespace Library.Infrastructure.Migrations
                 columns: new[] { "RoleId", "UserId" },
                 values: new object[,]
                 {
-                    { new Guid("2d3a58cc-c988-4ff2-901e-7b4d37b43bca"), new Guid("1a0e854d-9b33-4939-9e18-1ebe968ac7f5") },
-                    { new Guid("847c8722-8b61-498c-8cac-e2da0d458259"), new Guid("aba41058-354a-4c8d-9bbd-36f9258c272a") },
-                    { new Guid("ba61b43c-4d04-4608-9b43-798f09759e6e"), new Guid("ad16930c-aa1f-4f9d-8d38-f1e16bdb4bb7") }
+                    { new Guid("b2c0218a-f04b-47cf-8564-528baeaaa465"), new Guid("5dad3994-0944-409c-8e67-f84b04c05d4b") },
+                    { new Guid("f2a4f1fc-70e8-4b9a-bd8c-ce330a97128c"), new Guid("916c0887-96fc-4789-aeec-74f29530f098") },
+                    { new Guid("339a6c4b-6d1a-405e-98ce-6d54b41af0b0"), new Guid("fce4e50f-8a74-4747-9e43-f5f8e0684fd5") }
                 });
 
             migrationBuilder.InsertData(
                 table: "Students",
                 columns: new[] { "StudentId", "UserId" },
-                values: new object[] { new Guid("0b386efa-aa94-406e-bee7-03917cdb2724"), new Guid("1a0e854d-9b33-4939-9e18-1ebe968ac7f5") });
+                values: new object[] { new Guid("f44ed9a6-19ac-459a-91d6-ff061724243e"), new Guid("5dad3994-0944-409c-8e67-f84b04c05d4b") });
 
             migrationBuilder.InsertData(
                 table: "Teachers",
                 columns: new[] { "TeacherId", "UserId" },
-                values: new object[] { new Guid("31151e59-feb7-4e34-bc9e-8e1504fb4397"), new Guid("ad16930c-aa1f-4f9d-8d38-f1e16bdb4bb7") });
+                values: new object[] { new Guid("354168b3-0dee-4c5d-9c70-71aa2b0c002a"), new Guid("916c0887-96fc-4789-aeec-74f29530f098") });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -399,6 +428,16 @@ namespace Library.Infrastructure.Migrations
                 name: "IX_Lectures_SubjectId",
                 table: "Lectures",
                 column: "SubjectId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Notifications_RecipientUserId",
+                table: "Notifications",
+                column: "RecipientUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Notifications_SenderId",
+                table: "Notifications",
+                column: "SenderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Students_UserId",
@@ -451,6 +490,9 @@ namespace Library.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Lectures");
+
+            migrationBuilder.DropTable(
+                name: "Notifications");
 
             migrationBuilder.DropTable(
                 name: "StudentSubject");

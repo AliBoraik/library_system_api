@@ -80,7 +80,7 @@ public class AuthController(IAuthService authService, IOutputCacheStore cacheSto
     {
         return Ok(new
         {
-            Id = User.FindFirst(ClaimTypes.NameIdentifier)!.Value, 
+            Id = User.FindFirst(ClaimTypes.NameIdentifier)!.Value,
             Role = User.FindFirst(ClaimTypes.Role)!.Value
         });
     }

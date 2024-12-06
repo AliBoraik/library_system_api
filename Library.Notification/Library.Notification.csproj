@@ -6,19 +6,19 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
-    
+
     <ItemGroup>
         <Content Include="..\.dockerignore">
             <Link>.dockerignore</Link>
         </Content>
     </ItemGroup>
     <ItemGroup>
-      <ProjectReference Include="..\Library.Application\Library.Application.csproj" />
-      <ProjectReference Include="..\Library.Domain\Library.Domain.csproj" />
-      <ProjectReference Include="..\Library.Infrastructure\Library.Infrastructure.csproj" />
+        <ProjectReference Include="..\Library.Application\Library.Application.csproj"/>
+        <ProjectReference Include="..\Library.Domain\Library.Domain.csproj"/>
+        <ProjectReference Include="..\Library.Infrastructure\Library.Infrastructure.csproj"/>
     </ItemGroup>
     <ItemGroup>
-      <PackageReference Include="Confluent.Kafka" Version="2.6.1" />
+        <PackageReference Include="Confluent.Kafka" Version="2.6.1"/>
     </ItemGroup>
-    
+
 </Project>

@@ -22,6 +22,7 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
 
     public DbSet<Teacher> Teachers { get; init; }
     public DbSet<Student> Students { get; init; }
+    public DbSet<NotificationModel> Notifications { get; init; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -45,6 +46,22 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
             .HasMany(t => t.Subjects)
             .WithOne(s => s.Teacher)
             .HasForeignKey(s => s.TeacherId);
+
+        modelBuilder.Entity<NotificationModel>(entity =>
+        {
+            entity.HasKey(n => n.NotificationId); // Set primary key explicitly
+
+            entity.HasOne(n => n.RecipientUser) // Configure recipient relationship
+                .WithMany(u => u.ReceivedNotifications)
+                .HasForeignKey(n => n.RecipientUserId)
+                .OnDelete(DeleteBehavior.Restrict); // Prevent cascade delete
+
+            entity.HasOne(n => n.SenderUser) // Configure sender relationship
+                .WithMany(u => u.SentNotifications)
+                .HasForeignKey(n => n.SenderId)
+                .OnDelete(DeleteBehavior.Restrict); // Prevent cascade delete
+        });
+
 
         // roles ids
         var adminRoleId = Guid.NewGuid();
@@ -90,7 +107,7 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
                 NormalizedUserName = "ADMIN",
                 PasswordHash = "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q=="
             });
-        
+
         modelBuilder.Entity<IdentityUserRole<Guid>>().HasData(
             new IdentityUserRole<Guid>
             {
@@ -107,16 +124,16 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
                 SecurityStamp = Guid.NewGuid().ToString(),
                 UserName = "teacher",
                 NormalizedUserName = "TEACHER",
-                PasswordHash = "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q==",
+                PasswordHash = "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q=="
             });
-        
+
         modelBuilder.Entity<Teacher>()
             .HasData(new Teacher
             {
                 TeacherId = Guid.NewGuid(),
                 UserId = user1Id
             });
-        
+
         modelBuilder.Entity<User>()
             .HasData(new User
             {
@@ -126,17 +143,17 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
                 SecurityStamp = Guid.NewGuid().ToString(),
                 UserName = "student",
                 NormalizedUserName = "STUDENT",
-                PasswordHash = "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q==",
+                PasswordHash = "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q=="
             });
-        
+
         modelBuilder.Entity<Student>()
             .HasData(new Student
             {
                 StudentId = Guid.NewGuid(),
                 UserId = user2Id
             });
-        
-        
+
+
         modelBuilder.Entity<IdentityUserRole<Guid>>().HasData(
             new IdentityUserRole<Guid>
             {
@@ -150,7 +167,7 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
                 RoleId = studentRoleId,
                 UserId = user2Id
             });
-        
+
 
         var department1 = new Department
         {

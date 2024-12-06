@@ -3,7 +3,6 @@ using Library.Auth.Services;
 using Library.Infrastructure.Configurations;
 using Library.Interfaces.Services;
 
-
 namespace Library.Auth.Configurations;
 
 public static class ConfigureServices
@@ -12,11 +11,11 @@ public static class ConfigureServices
     {
         services.AddAuthBuilder(configuration);
         // Redis OutputCache
-        services.AddDatabaseConfiguration(configuration); 
+        services.AddDatabaseConfiguration(configuration);
         // Add Redis connect for OutputCache
         services.AddRedisOutputCache(configuration);
         // register services 
         services.AddScoped<IAuthService, AuthService>();
-        services.AddSingleton<ITokenService , TokenService>();
+        services.AddSingleton<ITokenService, TokenService>();
     }
 }
