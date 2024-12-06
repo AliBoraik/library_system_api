@@ -6,15 +6,18 @@ using Library.Interfaces.Services;
 
 namespace Library.Notification.Consumers;
 
-public class NotificationSubscriberBackground(ConsumerConfig consumerConfig, ILogger<NotificationSubscriberBackground> logger , INotificationService notificationService)
+public class NotificationSubscriberBackground(
+    ConsumerConfig consumerConfig,
+    ILogger<NotificationSubscriberBackground> logger,
+    IServiceScopeFactory scopeFactory)
     : BackgroundService
 {
-
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
     {
         Task.Run(() => StartConsumer(stoppingToken), stoppingToken);
         return Task.CompletedTask;
     }
+
     private async Task StartConsumer(CancellationToken stoppingToken)
     {
         try
@@ -27,14 +30,17 @@ public class NotificationSubscriberBackground(ConsumerConfig consumerConfig, ILo
             {
                 while (!stoppingToken.IsCancellationRequested)
                 {
+                    // Create a scope using the CreateScope method
+                    using var scope = scopeFactory.CreateScope();
+                    // Resolve the user service using the GetRequiredService method
+                    var notificationService = scope.ServiceProvider.GetRequiredService<INotificationService>();
                     var consumer = consumerBuilder.Consume(cancelToken.Token);
-                    var notificationRequest = JsonSerializer.Deserialize<NotificationRequest>(consumer.Message.Value);
+                    var notificationRequest = JsonSerializer.Deserialize<CreateNotificationDto>(consumer.Message.Value);
                     if (notificationRequest != null)
                     {
                         await notificationService.SendNotificationAsync(notificationRequest);
                         logger.LogInformation("Processing notification title : {0}", notificationRequest.Title);
-                        
-                    } 
+                    }
                 }
             }
             catch (OperationCanceledException)

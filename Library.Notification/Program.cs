@@ -2,7 +2,6 @@ using Library.Application.Configurations;
 using Library.Notification.Configurations;
 using Library.Notification.Consumers;
 using Library.Notification.Middleware;
-using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,39 +15,19 @@ builder.Services.AddConsumerConfig(builder.Configuration);
 builder.Services.AddSwaggerConfiguration();
 // add background services 
 builder.Services.AddHostedService<NotificationSubscriberBackground>();
-// add cors
-builder.Services.AddCors(options =>
-{
-    options.AddDefaultPolicy(policy =>
-    {
-        policy.AllowAnyHeader()
-            .AllowAnyMethod()
-            .WithOrigins("http://localhost:3000")
-            .WithExposedHeaders("Content-Disposition")
-            .AllowCredentials();
-    });
-});
 
 // Register Notification Service
 var app = builder.Build();
 
-app.UseForwardedHeaders(new ForwardedHeadersOptions
-{
-    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-});
-
 app.UseSwagger();
 app.UseSwaggerUI();
 
-app.UseCors();
+app.UseAuthentication();
+app.UseAuthorization();
+app.UseHttpsRedirection();
 
 // Global error handler
 app.UseMiddleware<ExceptionMiddleware>();
-
-app.UseHttpsRedirection();
-// Authentication & Authorization
-app.UseAuthentication();
-app.UseAuthorization();
 
 app.MapControllers();
 // Output cache  

@@ -1,42 +1,41 @@
 using AutoMapper;
 using Library.Domain;
 using Library.Domain.DTOs.Notification;
-using Library.Domain.Models.MongoDbModels;
+using Library.Domain.Models;
 using Library.Interfaces.Repositories;
 using Library.Interfaces.Services;
 
 namespace Library.Notification.Services;
 
-public class NotificationService(INotificationRepository notificationRepository,  IMapper mapper) : INotificationService
+public class NotificationService(INotificationRepository notificationRepository, IMapper mapper) : INotificationService
 {
-    
-    public async Task<Result<IEnumerable<NotificationDto>, Error>> GetNotificationsAsync(string userId)
+    public async Task<IEnumerable<NotificationDto>> GetNotificationsAsync(string userId)
     {
-        var notifications = await notificationRepository.FindUserNotificationAsync(Guid.Parse(userId));
-        return mapper.Map<List<NotificationDto>>(notifications);
+        var notifications = await notificationRepository.FindNotificationsByUserIdAsync(Guid.Parse(userId));
+        return mapper.Map<IEnumerable<NotificationDto>>(notifications);
     }
-    
-    public async Task<Result<SendNotificationResponse, Error>> SendNotificationAsync(NotificationRequest request)
+
+    public async Task<Result<Ok, Error>> SendNotificationAsync(CreateNotificationDto createNotification)
     {
         var notification = new NotificationModel
         {
-            RecipientUserId = request.RecipientUserId,
-            Title = request.Title,
-            Message = request.Message,
-            SenderId = request.SenderId,
+            RecipientUserId = createNotification.RecipientUserId,
+            Title = createNotification.Title,
+            Message = createNotification.Message,
+            SenderId = createNotification.SenderId,
             SentAt = DateTime.UtcNow,
             IsRead = false
         };
-        var notificationId = await notificationRepository.AddNotificationAsync(notification);
-        
-        return new SendNotificationResponse { Success = true, NotificationId = notificationId.ToString() };
+        await notificationRepository.AddNotificationAsync(notification);
+        await notificationRepository.SaveChangesAsync();
+
+        return new Ok();
     }
 
-    public async Task<Result<Ok, Error>> MarkNotificationReadAsync(string notificationId)
+    public async Task<Result<Ok, Error>> MarkNotificationReadAsync(Guid notificationId)
     {
-        var result = await notificationRepository.MarkNotificationReadAsync(notificationId);
-        if (!result)
-            return new Error(StatusCodes.Status400BadRequest ,  "Can not make notification read!");
+        await notificationRepository.MarkNotificationReadAsync(notificationId);
+        await notificationRepository.SaveChangesAsync();
         return new Ok();
     }
 }

@@ -7,4 +7,10 @@ public class User : IdentityUser<Guid>
 {
     public virtual Student Student { get; init; } = null!;
     public virtual Teacher Teacher { get; init; } = null!;
+
+    public virtual ICollection<NotificationModel> SentNotifications { get; set; } =
+        null!; // Notifications sent by the user
+
+    public ICollection<NotificationModel> ReceivedNotifications { get; set; } =
+        null!; // Notifications received by the user
 }

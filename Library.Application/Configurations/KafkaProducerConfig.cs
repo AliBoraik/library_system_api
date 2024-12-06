@@ -1,4 +1,5 @@
 using Confluent.Kafka;
+using Library.Interfaces.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,6 +14,6 @@ public static class KafkaProducerConfig
             BootstrapServers = configuration.GetConnectionString("Kafka")
         };
         services.AddSingleton(producerConfig);
-        services.AddSingleton<ProducerService>();
+        services.AddSingleton<IProducerService, ProducerService>();
     }
 }

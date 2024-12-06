@@ -11,5 +11,4 @@ public class Lecture
 
     public Guid SubjectId { get; set; }
     public Subject Subject { get; set; }
-    
 }

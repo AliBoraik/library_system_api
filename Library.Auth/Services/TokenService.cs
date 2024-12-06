@@ -1,6 +1,5 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Principal;
 using System.Text;
 using Library.Domain.Auth;
 using Library.Interfaces.Services;
@@ -10,9 +9,12 @@ namespace Library.Auth.Services;
 
 public class TokenService(JwtOptions jwtOptions) : ITokenService
 {
-    private readonly  SymmetricSecurityKey _accessSymmetricSecurityKey = new(Encoding.UTF8.GetBytes(jwtOptions.AccessSigningKey));
-    private readonly  SymmetricSecurityKey _refreshSymmetricSecurityKey = new(Encoding.UTF8.GetBytes(jwtOptions.RefreshSigningKey));
-    
+    private readonly SymmetricSecurityKey _accessSymmetricSecurityKey =
+        new(Encoding.UTF8.GetBytes(jwtOptions.AccessSigningKey));
+
+    private readonly SymmetricSecurityKey _refreshSymmetricSecurityKey =
+        new(Encoding.UTF8.GetBytes(jwtOptions.RefreshSigningKey));
+
     public GeneratedAccessToken CreateAccessToken(List<Claim> accessAuthClaims)
     {
         var token = new JwtSecurityToken(
@@ -28,7 +30,7 @@ public class TokenService(JwtOptions jwtOptions) : ITokenService
             ValidTo = ToUnixTimestampSeconds(token.ValidTo)
         };
     }
-    
+
 
     public string CreateRefreshToken(List<Claim> authClaims)
     {
@@ -44,7 +46,6 @@ public class TokenService(JwtOptions jwtOptions) : ITokenService
 
     public async Task<TokenValidationResult> AccessTokenValidationResult(string accessToken)
     {
-        
         var tokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
@@ -53,11 +54,11 @@ public class TokenService(JwtOptions jwtOptions) : ITokenService
             ValidateIssuerSigningKey = true,
             ValidAudience = jwtOptions.Audience,
             ValidIssuer = jwtOptions.Issuer,
-            IssuerSigningKey = _accessSymmetricSecurityKey,
+            IssuerSigningKey = _accessSymmetricSecurityKey
         };
-        
+
         var tokenHandler = new JwtSecurityTokenHandler();
-        
+
         return await tokenHandler.ValidateTokenAsync(accessToken, tokenValidationParameters);
     }
 
@@ -72,15 +73,16 @@ public class TokenService(JwtOptions jwtOptions) : ITokenService
             ValidAudience = jwtOptions.Audience,
             ValidIssuer = jwtOptions.Issuer,
             IssuerSigningKey = _refreshSymmetricSecurityKey,
-            LifetimeValidator = (_, expires, _, _) =>  expires != null && expires > DateTime.UtcNow
+            LifetimeValidator = (_, expires, _, _) => expires != null && expires > DateTime.UtcNow
         };
-        
+
         var tokenHandler = new JwtSecurityTokenHandler();
         return await tokenHandler.ValidateTokenAsync(refreshToken, tokenValidationParameters);
     }
-    private static string WriteTokenToString( JwtSecurityToken jwtSecurityToken)
+
+    private static string WriteTokenToString(JwtSecurityToken jwtSecurityToken)
     {
-        return new  JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
+        return new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
     }
 
     private static long ToUnixTimestampSeconds(DateTime dateTime)

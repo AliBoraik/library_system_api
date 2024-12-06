@@ -8,7 +8,7 @@ public class Book
     public string FilePath { get; set; }
     public Guid UploadedBy { get; set; }
     public DateTime UploadedAt { get; set; } = DateTime.UtcNow;
-    
+
     public Guid SubjectId { get; set; }
     public Subject Subject { get; set; }
 }

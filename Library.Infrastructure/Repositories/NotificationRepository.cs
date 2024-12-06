@@ -1,36 +1,57 @@
-using Library.Domain.Models.MongoDbModels;
+using Library.Domain.Models;
+using Library.Infrastructure.DataContext;
 using Library.Interfaces.Repositories;
-using MongoDB.Bson;
-using MongoDB.Driver;
+using Microsoft.EntityFrameworkCore;
 
 namespace Library.Infrastructure.Repositories;
 
-public class NotificationRepository(IMongoDatabase database) : INotificationRepository
+public class NotificationRepository(AppDbContext context) : INotificationRepository
 {
-    private readonly IMongoCollection<NotificationModel> _notificationsCollection =
-        database.GetCollection<NotificationModel>("Notifications");
-
-
-    public async Task<List<NotificationModel>> FindUserNotificationAsync(Guid userId)
+    // Get all notifications for a specific user
+    public async Task<IEnumerable<NotificationModel>> FindNotificationsByUserIdAsync(Guid userId)
     {
-        var notifications = await _notificationsCollection
-            .Find(n => n.RecipientUserId == userId)
-            .SortByDescending(n => n.SentAt)
+        return await context.Notifications
+            .Where(n => n.RecipientUserId == userId)
+            .OrderByDescending(n => n.SentAt)
             .ToListAsync();
-        return notifications;
     }
 
-    public async Task<ObjectId> AddNotificationAsync(NotificationModel notification)
+    // Add a new notification
+    public async Task<Guid> AddNotificationAsync(NotificationModel notification)
     {
-        await _notificationsCollection.InsertOneAsync(notification);
-        return notification.Id;
+        var result = await context.Notifications.AddAsync(notification);
+        return result.Entity.RecipientUserId;
     }
 
-    public async Task<bool> MarkNotificationReadAsync(string notificationId)
+    // Mark a notification as read
+    public async Task MarkNotificationReadAsync(Guid notificationId)
     {
-        var filter = Builders<NotificationModel>.Filter.Eq(n => n.Id, new ObjectId(notificationId));
-        var update = Builders<NotificationModel>.Update.Set(n => n.IsRead, true);
-        var result = await _notificationsCollection.UpdateOneAsync(filter, update);
-        return result.ModifiedCount > 0;
+        var notification = await context.Notifications.FindAsync(notificationId);
+        if (notification != null)
+        {
+            notification.IsRead = true;
+            context.Notifications.Update(notification);
+        }
+    }
+
+    // Get a single notification by ID
+    public async Task<NotificationModel?> FindNotificationByIdAsync(Guid notificationId)
+    {
+        return await context.Notifications.FindAsync(notificationId);
+    }
+
+    // Get unread notifications for a user
+    public async Task<IEnumerable<NotificationModel>> FindUnreadNotificationsByUserIdAsync(Guid userId)
+    {
+        return await context.Notifications
+            .Where(n => n.RecipientUserId == userId && !n.IsRead)
+            .OrderByDescending(n => n.SentAt)
+            .ToListAsync();
+    }
+
+    // Save changes to the database
+    public async Task SaveChangesAsync()
+    {
+        await context.SaveChangesAsync();
     }
 }

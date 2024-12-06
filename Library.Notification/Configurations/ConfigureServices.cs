@@ -1,5 +1,7 @@
 using Library.Application.Configurations;
 using Library.Infrastructure.Configurations;
+using Library.Infrastructure.Repositories;
+using Library.Interfaces.Repositories;
 using Library.Interfaces.Services;
 using Library.Notification.Mapping;
 using Library.Notification.Services;
@@ -14,11 +16,13 @@ public static class ConfigureServices
         // Add Redis connect for OutputCache
         services.AddRedisOutputCache(configuration);
         // Add Database connect Configuration
-        services.AddMongoDb(configuration);
+        services.AddDatabaseConfiguration(configuration);
         // Add AutoMapper
         services.AddAutoMapper(typeof(NotificationAutoMapperProfile));
-        
+
         // register services 
-        services.AddSingleton<INotificationService, NotificationService>();
+        services.AddScoped<INotificationService, NotificationService>();
+        // register repository
+        services.AddScoped<INotificationRepository, NotificationRepository>();
     }
 }

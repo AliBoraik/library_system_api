@@ -20,7 +20,7 @@ public class ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddlewa
             (
                 StatusCodes.Status500InternalServerError,
                 StringConstants.InternalServerError
-                ));
+            ));
         }
     }
 }

@@ -5,19 +5,19 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-      <UserSecretsId>a407ebec-a6e9-42b1-9098-054b7917df5c</UserSecretsId>
-  </PropertyGroup>
+        <UserSecretsId>a407ebec-a6e9-42b1-9098-054b7917df5c</UserSecretsId>
+    </PropertyGroup>
 
     <ItemGroup>
         <Content Include="..\.dockerignore">
             <Link>.dockerignore</Link>
         </Content>
     </ItemGroup>
-    
+
 
     <ItemGroup>
-        <ProjectReference Include="..\Library.Application\Library.Application.csproj" />
-        <ProjectReference Include="..\Library.Infrastructure\Library.Infrastructure.csproj" />
+        <ProjectReference Include="..\Library.Application\Library.Application.csproj"/>
+        <ProjectReference Include="..\Library.Infrastructure\Library.Infrastructure.csproj"/>
     </ItemGroup>
 
 </Project>
