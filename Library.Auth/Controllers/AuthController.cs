@@ -52,7 +52,7 @@ public class AuthController(IAuthService authService, IOutputCacheStore cacheSto
 
     [HttpPost]
     [Route("Register-Student")]
-   // [Authorize(Roles = AppRoles.Admin)]
+    // [Authorize(Roles = AppRoles.Admin)]
     public async Task<IActionResult> RegisterStudent([FromBody] RegisterDto registerDto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -61,7 +61,7 @@ public class AuthController(IAuthService authService, IOutputCacheStore cacheSto
         await cacheStore.EvictByTagAsync(OutputCacheTags.Students, CancellationToken.None);
         return Ok();
     }
-    
+
     [HttpPost]
     [Route("Refresh-token")]
     public async Task<ActionResult<AuthDataResponse>> RefreshToken(RefreshTokenDto refreshTokenDto)
@@ -75,14 +75,13 @@ public class AuthController(IAuthService authService, IOutputCacheStore cacheSto
 
     [HttpGet]
     [Route("Validate-Token")]
-    [Authorize]
+    [Authorize(AuthenticationSchemes = "Bearer")]
     public IActionResult ValidateToken()
     {
-        var authClaims = new Dictionary<string, string>
+        return Ok(new
         {
-            { AppClaimTypes.Id, User.FindFirst(AppClaimTypes.Id)!.Value },
-            { AppClaimTypes.Role, User.FindFirst(ClaimTypes.Role)!.Value }
-        };
-        return Ok(authClaims);
+            Id = User.FindFirst(ClaimTypes.NameIdentifier)!.Value, 
+            Role = User.FindFirst(ClaimTypes.Role)!.Value
+        });
     }
 }

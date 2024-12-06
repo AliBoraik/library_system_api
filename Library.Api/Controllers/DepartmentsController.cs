@@ -10,7 +10,6 @@ namespace Library.Api.Controllers;
 
 [Route("Api/[controller]")]
 [ApiController]
-[Authorize]
 public class DepartmentsController(IDepartmentService departmentService, IOutputCacheStore cacheStore) : ControllerBase
 {
     // GET: api/Department

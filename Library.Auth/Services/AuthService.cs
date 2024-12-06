@@ -21,17 +21,18 @@ public class AuthService(UserManager<User> userManager, ITokenService tokenServi
         var userRoles = await userManager.GetRolesAsync(user);
         var accessAuthClaims = new List<Claim>
         {
-            new(AppClaimTypes.Name, user.UserName!),
-            new(AppClaimTypes.Email, user.Email!),
-            new(AppClaimTypes.Id, user.Id.ToString()),
+            new(ClaimTypes.Name, user.UserName!),
+            new(ClaimTypes.Email , user.Email!),
+            new(ClaimTypes.NameIdentifier , user.Id.ToString()),
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
-        accessAuthClaims.AddRange(userRoles.Select(userRole => new Claim(AppClaimTypes.Role, userRole)));
+        accessAuthClaims.AddRange(userRoles.Select(userRole => new Claim(ClaimTypes.Role, userRole)));
         
         var refreshAuthClaims = new List<Claim>
         {
-            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()), 
-            new(AppClaimTypes.Id, user.Id.ToString()),
+            new Claim(ClaimTypes.Name, user.UserName!),
+            new(ClaimTypes.NameIdentifier , user.Id.ToString()),
+            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
         
         var generatedAccessToken = tokenService.CreateAccessToken(accessAuthClaims);
@@ -57,7 +58,9 @@ public class AuthService(UserManager<User> userManager, ITokenService tokenServi
         if (!accessTokenValidationResult.IsValid)
             return new Error(StatusCodes.Status401Unauthorized, "Not Validate access token");
         
-        var generatedAccessToken = tokenService.CreateAccessToken(accessTokenValidationResult.ClaimsIdentity.Claims.ToList());
+        var accessAuthClaims = accessTokenValidationResult.ClaimsIdentity.Claims.ToList();
+        
+        var generatedAccessToken = tokenService.CreateAccessToken(accessAuthClaims);
         
         return new AuthDataResponse
         {

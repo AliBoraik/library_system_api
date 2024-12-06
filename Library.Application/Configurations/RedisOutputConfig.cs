@@ -8,10 +8,9 @@ public static class RedisOutputConfig
 {
     public static IServiceCollection AddRedisOutputCache(this IServiceCollection services, IConfiguration configuration)
     {
-        var dockerEnv = Environment.GetEnvironmentVariable("CONNECTION_STRING_REDIS");
         services.AddStackExchangeRedisOutputCache(options =>
         {
-            options.Configuration = dockerEnv ?? configuration.GetConnectionString("Redis")!;
+            options.Configuration = configuration.GetConnectionString("Redis")!;
             options.InstanceName = "LibraryApp";
         });
         services.AddOutputCache(options =>

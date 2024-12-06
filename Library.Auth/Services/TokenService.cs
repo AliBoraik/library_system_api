@@ -1,5 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Principal;
 using System.Text;
 using Library.Domain.Auth;
 using Library.Interfaces.Services;
@@ -43,17 +44,20 @@ public class TokenService(JwtOptions jwtOptions) : ITokenService
 
     public async Task<TokenValidationResult> AccessTokenValidationResult(string accessToken)
     {
+        
         var tokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
             ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
             ValidAudience = jwtOptions.Audience,
             ValidIssuer = jwtOptions.Issuer,
             IssuerSigningKey = _accessSymmetricSecurityKey,
-            ValidateLifetime = false
         };
         
         var tokenHandler = new JwtSecurityTokenHandler();
+        
         return await tokenHandler.ValidateTokenAsync(accessToken, tokenValidationParameters);
     }
 
@@ -63,10 +67,11 @@ public class TokenService(JwtOptions jwtOptions) : ITokenService
         {
             ValidateIssuer = true,
             ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
             ValidAudience = jwtOptions.Audience,
             ValidIssuer = jwtOptions.Issuer,
             IssuerSigningKey = _refreshSymmetricSecurityKey,
-            ValidateLifetime = false,
             LifetimeValidator = (_, expires, _, _) =>  expires != null && expires > DateTime.UtcNow
         };
         
