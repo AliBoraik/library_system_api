@@ -7,9 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Library.Notification.Controllers;
 
-[ApiController]
 [Route("api/[controller]")]
-[Authorize]
+[ApiController]
 public class NotificationController(INotificationService notificationService) : ControllerBase
 {
     /// <summary>
@@ -25,9 +24,10 @@ public class NotificationController(INotificationService notificationService) : 
     }
 
     /// <summary>
-    ///     Sends a notification to a user.
+    /// Sends a notification to the specified recipients.
     /// </summary>
     [HttpPost("Send")]
+    [Authorize(Roles = AppRoles.Admin)]
     public async Task<ActionResult> SendNotification([FromBody] CreateNotificationDto request)
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -39,7 +39,7 @@ public class NotificationController(INotificationService notificationService) : 
     }
 
     /// <summary>
-    ///     Marks a notification as read.
+    /// Marks the specified notification as read.
     /// </summary>
     [HttpPatch("{notificationId}/Read")]
     public async Task<IActionResult> MarkNotificationRead([FromRoute] Guid notificationId)

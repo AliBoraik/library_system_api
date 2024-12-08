@@ -1,17 +1,25 @@
 using Library.Api.Middleware;
 using Library.Application.Configurations;
 using Library.Infrastructure.Configurations;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Mvc.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApiApplication(builder.Configuration);
-builder.Services.AddKafkaProducerConfig(builder.Configuration);
 builder.Services.AddSwaggerConfiguration();
-builder.Services.AddControllers();
-// Redis OutputCache
-builder.Services.AddRedisOutputCache(builder.Configuration);
+// Add Controllers  
+builder.Services.AddControllers(config =>
+{
+    var policy = new AuthorizationPolicyBuilder()
+        .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+        .RequireAuthenticatedUser()
+        .Build();
+    config.Filters.Add(new AuthorizeFilter(policy));
+});
 //Cors
 builder.Services.AddCors(options =>
 {

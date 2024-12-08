@@ -22,8 +22,7 @@ public static class AuthConfig
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(options =>
+            }).AddJwtBearer(options =>
             {
                 //convert the string signing key to byte array
                 var signingKeyBytes = Encoding.UTF8

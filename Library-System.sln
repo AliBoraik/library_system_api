@@ -17,7 +17,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Application", "Libr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Auth", "Library.Auth\Library.Auth.csproj", "{CDEFA17A-BB57-4EEE-87A3-C4313F23C112}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Notification", "Library.Notification\Library.Notification.csproj", "{0DBC6D1E-8706-4A6A-9D90-C799345EDBF1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Notification", "Library.Notification\Library.Notification.csproj", "{839AAC26-A0D1-4D54-B948-53AB2D1A13C7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,9 +49,9 @@ Global
 		{CDEFA17A-BB57-4EEE-87A3-C4313F23C112}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CDEFA17A-BB57-4EEE-87A3-C4313F23C112}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CDEFA17A-BB57-4EEE-87A3-C4313F23C112}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0DBC6D1E-8706-4A6A-9D90-C799345EDBF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0DBC6D1E-8706-4A6A-9D90-C799345EDBF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0DBC6D1E-8706-4A6A-9D90-C799345EDBF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0DBC6D1E-8706-4A6A-9D90-C799345EDBF1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{839AAC26-A0D1-4D54-B948-53AB2D1A13C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{839AAC26-A0D1-4D54-B948-53AB2D1A13C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{839AAC26-A0D1-4D54-B948-53AB2D1A13C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{839AAC26-A0D1-4D54-B948-53AB2D1A13C7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
