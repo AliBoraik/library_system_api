@@ -1,6 +1,7 @@
 # Library System API (Microservices Architecture)
 
-This repository contains the **Library System API**, designed with a microservices architecture to manage books, departments, lectures, students, subjects, and teachers. It is built with ASP.NET Core, utilizing PostgreSQL as the database and Redis for output caching.
+This repository contains the **Library System API**, designed with a microservices architecture to manage books, departments, lectures, students, subjects, teachers, and notifications. It is built with ASP.NET Core, utilizing PostgreSQL as the database, Redis for output caching, and Kafka for messaging.
+
 
 ## Project Structure
 
@@ -8,12 +9,13 @@ The solution is divided into the following microservices and layers:
 
 ### Microservices and Layers
 
-- **Library.Api**: Handles API endpoints and controllers for the library system . 
+- **Library.Api**: Handles API endpoints and controllers for the library system.
 - **Library.Application**: Contains business logic and application-level services.
 - **Library.Auth**: Handles authentication and user management using JWT (JSON Web Token).
-- **Library.Domain**: Represents the domain entities and core business rules. 
+- **Library.Domain**: Represents the domain entities and core business rules.
 - **Library.Infrastructure**: Contains infrastructure-level code like database configurations.
 - **Library.Interfaces**: Defines interfaces for services and repositories.
+- **Library.Notification**: Handles notifications, including creating, retrieving, and managing read/unread states.
 ---
 
 
@@ -22,6 +24,7 @@ The solution is divided into the following microservices and layers:
 - **ASP.NET Core**: Backend framework.
 - **PostgreSQL**: Relational database for persisting data.
 - **Redis**: Used for output caching.
+- **Kafka**: Used for messaging to send and receive notifications.
 - **Swagger**: API documentation and testing.
 - **Nginx**: Open-source web server software used for reverse proxy.
 - **JWT**: Used for secure authentication and authorization.
@@ -52,6 +55,7 @@ You can access the Swagger UI for the APIs using the following links:
 
 - **API Documentation**: [Access Swagger for API](http://localhost:5253/swagger/index.html)
 - **Authentication API Documentation**: [Access Swagger for Auth API](http://localhost:5202/swagger/index.html)
+- **Notification API Documentation**: [Access Swagger for Notification API](http://localhost:5124/swagger/index.html)
 
 
 ## Features
@@ -103,6 +107,14 @@ You can access the Swagger UI for the APIs using the following links:
 #### Teachers
 - **GET** `/Api/Teachers` - Retrieve all teachers.  
 - **GET** `/Api/Teachers/{teacherId}` - Get details of a specific teacher by ID.  
-- **DELETE** `/Api/Teachers/{teacherId}` - Delete a specific teacher by ID.  
+- **DELETE** `/Api/Teachers/{teacherId}` - Delete a specific teacher by ID.
+
+### Notification API Endpoints
+
+#### Notification
+- **GET** `/Api/Notification` - Retrieve all notifications.  
+- **POST** `/Api/Notification/Send` - Send a new notification.  
+- **PATCH** `/Api/Notification/{notificationId}/Read` - Mark a notification as read.  
+
 
 ---
