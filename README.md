@@ -37,7 +37,7 @@ The solution is divided into the following microservices and layers:
 
 Before running the application, ensure that you have the following dependencies installed:
 
-- Dcoker 
+- Docker 
 
 ### Installation
 
