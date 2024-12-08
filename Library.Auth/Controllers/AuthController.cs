@@ -20,6 +20,7 @@ public class AuthController(IAuthService authService, IOutputCacheStore cacheSto
     /// </summary>
     [HttpPost]
     [Route("Login")]
+    [AllowAnonymous]
     public async Task<ActionResult<AuthDataResponse>> Login([FromBody] LoginDto loginDto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -79,6 +80,7 @@ public class AuthController(IAuthService authService, IOutputCacheStore cacheSto
     /// </summary>
     [HttpPost]
     [Route("Refresh-token")]
+    [AllowAnonymous]
     public async Task<ActionResult<AuthDataResponse>> RefreshToken(RefreshTokenDto refreshTokenDto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -93,7 +95,6 @@ public class AuthController(IAuthService authService, IOutputCacheStore cacheSto
     /// </summary>
     [HttpGet]
     [Route("Validate-Token")]
-    [Authorize]
     public IActionResult ValidateToken()
     {
         return Ok(new

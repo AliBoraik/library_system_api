@@ -5,12 +5,13 @@ using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddControllers();
+
 // add auth service Collections
 builder.Services.AddAuthApplication(builder.Configuration);
 // Add Swagger Configuration
 builder.Services.AddSwaggerConfiguration();
+// Add services to the container.
+builder.Services.AddControllers();
 // add cors
 builder.Services.AddCors(options =>
 {
@@ -38,10 +39,16 @@ app.UseCors();
 
 // Global error handler
 app.UseMiddleware<ExceptionMiddleware>();
+
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
+
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllers();
+app.MapControllers().RequireAuthorization();
 // Output cache  
 app.UseOutputCache();
 app.MapGet("_health", () => Results.Ok("Ok")).ShortCircuit();

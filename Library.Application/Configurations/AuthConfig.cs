@@ -1,6 +1,7 @@
 using System.Text;
 using Library.Domain.Auth;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -42,5 +43,11 @@ public static class AuthConfig
                     LifetimeValidator = (_, expires, _, _) => expires != null && expires > DateTime.UtcNow
                 };
             });
+
+        services.AddAuthorizationBuilder()
+            .SetDefaultPolicy(new AuthorizationPolicyBuilder()
+                .RequireAuthenticatedUser()
+                .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+                .Build());
     }
 }

@@ -1,10 +1,7 @@
 using Library.Api.Middleware;
 using Library.Application.Configurations;
 using Library.Infrastructure.Configurations;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.AspNetCore.Mvc.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
@@ -12,14 +9,7 @@ builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApiApplication(builder.Configuration);
 builder.Services.AddSwaggerConfiguration();
 // Add Controllers  
-builder.Services.AddControllers(config =>
-{
-    var policy = new AuthorizationPolicyBuilder()
-        .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
-        .RequireAuthenticatedUser()
-        .Build();
-    config.Filters.Add(new AuthorizeFilter(policy));
-});
+builder.Services.AddControllers();
 //Cors
 builder.Services.AddCors(options =>
 {
@@ -48,12 +38,16 @@ app.UseCors();
 // Global error handler
 app.UseMiddleware<ExceptionMiddleware>();
 
-app.UseHttpsRedirection();
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
+
 // Authentication & Authorization
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllers();
+app.MapControllers().RequireAuthorization();
 // Output cache  
 app.UseOutputCache();
 app.MapGet("_health", () => Results.Ok("Ok")).ShortCircuit();

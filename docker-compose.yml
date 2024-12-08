@@ -92,10 +92,11 @@
   nginx:
     image: nginx:alpine
     container_name: "library_nginx"
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
     ports:
       - "80:80"
+    restart: always
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
 
 volumes:
   db_data:
