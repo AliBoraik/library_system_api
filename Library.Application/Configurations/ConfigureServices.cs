@@ -9,7 +9,12 @@ public static class ConfigureServices
 {
     public static void AddApiApplication(this IServiceCollection services, IConfiguration configuration)
     {
+        // Auth configurations 
         services.AddAuthBuilder(configuration);
+        // Redis OutputCache
+        services.AddRedisOutputCache(configuration);
+        // add Kafka Producer configurations
+        services.AddKafkaProducerConfig(configuration);
         // Service 
         services.AddScoped<ILectureService, LectureService>();
         services.AddScoped<IDepartmentService, DepartmentService>();

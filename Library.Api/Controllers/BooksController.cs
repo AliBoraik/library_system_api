@@ -11,7 +11,6 @@ namespace Library.Api.Controllers;
 
 [Route("Api/[controller]")]
 [ApiController]
-[Authorize]
 public class BooksController(IBookService bookService, IOutputCacheStore cacheStore) : ControllerBase
 {
     // GET: api/Books

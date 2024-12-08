@@ -11,7 +11,6 @@ namespace Library.Api.Controllers;
 
 [Route("Api/[controller]")]
 [ApiController]
-[Authorize]
 public class LecturesController(ILectureService lectureService, IOutputCacheStore cacheStore) : ControllerBase
 {
     // GET: api/Lectures

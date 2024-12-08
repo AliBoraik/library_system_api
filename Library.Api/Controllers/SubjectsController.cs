@@ -10,7 +10,6 @@ namespace Library.Api.Controllers;
 
 [Route("Api/[controller]")]
 [ApiController]
-[Authorize]
 public class SubjectsController(ISubjectService subjectService, IOutputCacheStore cacheStore) : ControllerBase
 {
     // GET: api/Subjects

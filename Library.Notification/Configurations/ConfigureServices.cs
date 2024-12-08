@@ -12,14 +12,16 @@ public static class ConfigureServices
 {
     public static void AddNotificationApplication(this IServiceCollection services, IConfiguration configuration)
     {
+        // Auth configurations 
         services.AddAuthBuilder(configuration);
+        // Add Consumer Configuration
+        services.AddConsumerConfig(configuration);
+        // Redis OutputCache
+        services.AddDatabaseConfiguration(configuration);
         // Add Redis connect for OutputCache
         services.AddRedisOutputCache(configuration);
-        // Add Database connect Configuration
-        services.AddDatabaseConfiguration(configuration);
         // Add AutoMapper
         services.AddAutoMapper(typeof(NotificationAutoMapperProfile));
-
         // register services 
         services.AddScoped<INotificationService, NotificationService>();
         // register repository

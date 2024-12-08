@@ -75,7 +75,7 @@ public class AuthController(IAuthService authService, IOutputCacheStore cacheSto
 
     [HttpGet]
     [Route("Validate-Token")]
-    [Authorize(AuthenticationSchemes = "Bearer")]
+    [Authorize]
     public IActionResult ValidateToken()
     {
         return Ok(new

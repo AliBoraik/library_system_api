@@ -1,22 +1,28 @@
 using Library.Application.Configurations;
 using Library.Notification.Configurations;
-using Library.Notification.Consumers;
 using Library.Notification.Middleware;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Mvc.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// add auth service Collections
-builder.Services.AddNotificationApplication(builder.Configuration);
-// Add Consumer Configuration
-builder.Services.AddConsumerConfig(builder.Configuration);
-// Add Swagger Configuration
-builder.Services.AddSwaggerConfiguration();
-// add background services 
-builder.Services.AddHostedService<NotificationSubscriberBackground>();
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddNotificationApplication(builder.Configuration);
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddSwaggerConfiguration();
+// Add Controllers  
+builder.Services.AddControllers(config =>
+{
+    var policy = new AuthorizationPolicyBuilder()
+        .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+        .RequireAuthenticatedUser()
+        .Build();
+    config.Filters.Add(new AuthorizeFilter(policy));
+});
 
+//Cors
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
@@ -29,7 +35,6 @@ builder.Services.AddCors(options =>
     });
 });
 
-// Register Notification Service
 var app = builder.Build();
 
 app.UseForwardedHeaders(new ForwardedHeadersOptions
@@ -51,6 +56,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
 // Output cache  
 app.UseOutputCache();
 app.MapGet("_health", () => Results.Ok("Ok")).ShortCircuit();
