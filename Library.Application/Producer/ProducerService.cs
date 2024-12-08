@@ -3,7 +3,7 @@ using Confluent.Kafka;
 using Library.Domain.DTOs.Notification;
 using Library.Interfaces.Services;
 
-namespace Library.Application;
+namespace Library.Application.Producer;
 
 public class ProducerService(ProducerConfig producerConfig) : IProducerService
 {
