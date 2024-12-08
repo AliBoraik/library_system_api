@@ -12,7 +12,9 @@ namespace Library.Api.Controllers;
 [ApiController]
 public class SubjectsController(ISubjectService subjectService, IOutputCacheStore cacheStore) : ControllerBase
 {
-    // GET: api/Subjects
+    /// <summary>
+    /// Retrieves all subjects.
+    /// </summary>
     [HttpGet]
     [OutputCache(Tags = [OutputCacheTags.Subjects], PolicyName = nameof(AuthCachePolicy))]
     public async Task<ActionResult<IEnumerable<SubjectDto>>> GetSubjects()
@@ -21,7 +23,9 @@ public class SubjectsController(ISubjectService subjectService, IOutputCacheStor
         return Ok(subjectsAsyncDto);
     }
 
-    // GET: api/Subjects/5
+    /// <summary>
+    /// Retrieves details of a specific subject by its ID.
+    /// </summary>
     [HttpGet("{subjectId:guid}")]
     [OutputCache(Tags = [OutputCacheTags.Subjects], PolicyName = nameof(AuthCachePolicy))]
     public async Task<ActionResult<SubjectDetailsDto>> GetSubject(Guid subjectId)
@@ -32,7 +36,9 @@ public class SubjectsController(ISubjectService subjectService, IOutputCacheStor
             error => StatusCode(error.Code, error));
     }
 
-    // POST: api/Subjects
+    /// <summary>
+    /// Creates a new subject.
+    /// </summary>
     [HttpPost]
     [Authorize(Roles = AppRoles.Admin)]
     public async Task<ActionResult> PostSubject([FromBody] CreateSubjectDto createSubjectDto)
@@ -46,7 +52,9 @@ public class SubjectsController(ISubjectService subjectService, IOutputCacheStor
         return CreatedAtAction("GetSubject", new { subjectId }, new { subjectId });
     }
 
-    // PUT: api/Subjects/5
+    /// <summary>
+    /// Updates an existing subject.
+    /// </summary>
     [HttpPut]
     [Authorize(Roles = AppRoles.Admin)]
     public async Task<IActionResult> PutSubject([FromBody] SubjectDto subjectDto)
@@ -59,7 +67,9 @@ public class SubjectsController(ISubjectService subjectService, IOutputCacheStor
         return Ok();
     }
 
-    // DELETE: api/Subjects/5
+    /// <summary>
+    /// Deletes a specific subject by its ID.
+    /// </summary>
     [HttpDelete("{subjectId:guid}")]
     [Authorize(Roles = AppRoles.Admin)]
     public async Task<IActionResult> DeleteSubject(Guid subjectId)
@@ -71,7 +81,9 @@ public class SubjectsController(ISubjectService subjectService, IOutputCacheStor
         return Ok();
     }
 
-    // POST: api/Subject/AddStudent
+    /// <summary>
+    /// Adds a student to a subject.
+    /// </summary>
     [HttpPost("AddStudent")]
     [Authorize(Roles = AppRoles.Admin)]
     public async Task<IActionResult> AddStudentToSubject([FromBody] AddStudentToSubjectRequest request)

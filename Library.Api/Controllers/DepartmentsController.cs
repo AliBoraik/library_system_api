@@ -12,7 +12,9 @@ namespace Library.Api.Controllers;
 [ApiController]
 public class DepartmentsController(IDepartmentService departmentService, IOutputCacheStore cacheStore) : ControllerBase
 {
-    // GET: api/Department
+    /// <summary>
+    /// Retrieves all departments.
+    /// </summary>
     [HttpGet]
     [OutputCache(Tags = [OutputCacheTags.Departments], PolicyName = nameof(AuthCachePolicy))]
     public async Task<ActionResult<IEnumerable<DepartmentDto>>> GetDepartments()
@@ -22,8 +24,10 @@ public class DepartmentsController(IDepartmentService departmentService, IOutput
             dto => Ok(dto),
             error => StatusCode(error.Code, error));
     }
-
-    // GET: api/Department/5
+    
+    /// <summary>
+    /// Retrieves details of a specific department by its ID.
+    /// </summary>
     [HttpGet("{departmentId:guid}")]
     [OutputCache(Tags = [OutputCacheTags.Departments], PolicyName = nameof(AuthCachePolicy))]
     public async Task<ActionResult<DepartmentDetailsDto>> GetDepartment(Guid departmentId)
@@ -35,7 +39,9 @@ public class DepartmentsController(IDepartmentService departmentService, IOutput
             error => StatusCode(error.Code, error));
     }
 
-    // POST: api/Department
+    /// <summary>
+    /// Creates a new department.
+    /// </summary>
     [HttpPost]
     [Authorize(Roles = AppRoles.Admin)]
     public async Task<ActionResult> PostDepartment([FromBody] CreateDepartmentDto createDepartmentDto)
@@ -48,7 +54,9 @@ public class DepartmentsController(IDepartmentService departmentService, IOutput
         return CreatedAtAction("GetDepartment", new { departmentId }, new { departmentId });
     }
 
-    // PUT: api/Department/5
+    /// <summary>
+    /// Updates an existing department.
+    /// </summary>
     [HttpPut]
     [Authorize(Roles = AppRoles.Admin)]
     public async Task<IActionResult> PutDepartment([FromBody] DepartmentDto departmentDto)
@@ -60,7 +68,9 @@ public class DepartmentsController(IDepartmentService departmentService, IOutput
         return Ok();
     }
 
-    // DELETE: api/Department/5
+    /// <summary>
+    /// Deletes a specific department by its ID.
+    /// </summary>
     [HttpDelete("{departmentId:guid}")]
     [Authorize(Roles = AppRoles.Admin)]
     public async Task<IActionResult> DeleteDepartment(Guid departmentId)

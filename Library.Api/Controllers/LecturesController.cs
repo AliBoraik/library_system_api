@@ -13,7 +13,9 @@ namespace Library.Api.Controllers;
 [ApiController]
 public class LecturesController(ILectureService lectureService, IOutputCacheStore cacheStore) : ControllerBase
 {
-    // GET: api/Lectures
+    /// <summary>
+    /// Retrieves all lectures.
+    /// </summary>
     [HttpGet]
     [OutputCache(Tags = [OutputCacheTags.Lectures], PolicyName = nameof(AuthCachePolicy))]
     public async Task<ActionResult<IEnumerable<LectureResponseDto>>> GetLectures()
@@ -22,7 +24,9 @@ public class LecturesController(ILectureService lectureService, IOutputCacheStor
         return Ok(lecturesAsyncDto);
     }
 
-    // GET: api/Lectures/5
+    /// <summary>
+    /// Retrieves details of a specific lecture by its ID.
+    /// </summary>
     [HttpGet("{lectureId:guid}")]
     [OutputCache(Tags = [OutputCacheTags.Lectures], PolicyName = nameof(AuthCachePolicy))]
     public async Task<ActionResult<LectureResponseDto>> GetLecture(Guid lectureId)
@@ -33,7 +37,9 @@ public class LecturesController(ILectureService lectureService, IOutputCacheStor
             error => StatusCode(error.Code, error));
     }
 
-    // POST: api/Lectures
+    /// <summary>
+    /// Creates a new lecture.
+    /// </summary>
     [HttpPost]
     [Authorize(Roles = $"{AppRoles.Admin},{AppRoles.Teacher}")]
     public async Task<ActionResult<LectureResponseDto>> PostLecture([FromForm] CreateLectureDto createLectureDto)
@@ -50,7 +56,9 @@ public class LecturesController(ILectureService lectureService, IOutputCacheStor
         return CreatedAtAction("GetLecture", new { lectureId }, new { lectureId });
     }
 
-    // DELETE: api/Lectures/5
+    /// <summary>
+    /// Deletes a specific lecture by its ID.
+    /// </summary>
     [HttpDelete("{lectureId:guid}")]
     [Authorize(Roles = $"{AppRoles.Admin},{AppRoles.Teacher}")]
     public async Task<IActionResult> DeleteLecture(Guid lectureId)
@@ -65,7 +73,9 @@ public class LecturesController(ILectureService lectureService, IOutputCacheStor
         return Ok();
     }
 
-    // GET: api/Lectures/download/5
+    /// <summary>
+    /// Downloads the content of a specific lecture by its ID.
+    /// </summary>
     [HttpGet("Download/{lectureId:guid}")]
     [OutputCache(Tags = [OutputCacheTags.Lectures])]
     public async Task<IActionResult> DownloadLecture(Guid lectureId)
