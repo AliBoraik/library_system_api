@@ -13,6 +13,9 @@ namespace Library.Api.Controllers;
 [Authorize(Roles = AppRoles.Admin)]
 public class StudentsController(IStudentService studentService, IOutputCacheStore cacheStore) : ControllerBase
 {
+    /// <summary>
+    /// Retrieves all students.
+    /// </summary>
     [HttpGet]
     [OutputCache(Tags = [OutputCacheTags.Students], PolicyName = nameof(AuthCachePolicy))]
     public async Task<IActionResult> GetAllStudents()
@@ -20,7 +23,9 @@ public class StudentsController(IStudentService studentService, IOutputCacheStor
         var studentsAsyncDto = await studentService.GetAllStudentsAsync();
         return Ok(studentsAsyncDto);
     }
-
+    /// <summary>
+    /// Retrieves details of a specific student by their ID.
+    /// </summary>
     [HttpGet("{studentId:guid}")]
     [OutputCache(Tags = [OutputCacheTags.Students], PolicyName = nameof(AuthCachePolicy))]
     public async Task<ActionResult<StudentDto>> GetStudent(Guid studentId)
@@ -31,18 +36,11 @@ public class StudentsController(IStudentService studentService, IOutputCacheStor
             dto => Ok(dto),
             error => StatusCode(error.Code, error));
     }
+    
 
-
-    [HttpDelete("{studentId:guid}")]
-    public async Task<IActionResult> DeleteStudent(Guid studentId)
-    {
-        var result = await studentService.DeleteStudentAsync(studentId);
-        if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
-        await cacheStore.EvictByTagAsync(OutputCacheTags.Students, CancellationToken.None);
-        return Ok();
-    }
-
-    // GET api/students/subject/{subjectId}
+    /// <summary>
+    /// Retrieves students associated with a specific subject.
+    /// </summary>
     [HttpGet("Subject/{subjectId}")]
     [OutputCache(Tags = [OutputCacheTags.Students], PolicyName = nameof(AuthCachePolicy))]
     public async Task<ActionResult<List<StudentDto>>> GetStudentsBySubjectId(Guid subjectId)
@@ -52,5 +50,17 @@ public class StudentsController(IStudentService studentService, IOutputCacheStor
         return result.Match<ActionResult<List<StudentDto>>>(
             dto => Ok(dto),
             error => StatusCode(error.Code, error));
+    }
+        
+    /// <summary>
+    /// Deletes a specific student by their ID.
+    /// </summary>
+    [HttpDelete("{studentId:guid}")]
+    public async Task<IActionResult> DeleteStudent(Guid studentId)
+    {
+        var result = await studentService.DeleteStudentAsync(studentId);
+        if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
+        await cacheStore.EvictByTagAsync(OutputCacheTags.Students, CancellationToken.None);
+        return Ok();
     }
 }

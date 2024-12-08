@@ -15,6 +15,9 @@ namespace Library.Auth.Controllers;
 [ApiController]
 public class AuthController(IAuthService authService, IOutputCacheStore cacheStore) : ControllerBase
 {
+    /// <summary>
+    /// Authenticates a user and generates a JWT token.
+    /// </summary>
     [HttpPost]
     [Route("Login")]
     public async Task<ActionResult<AuthDataResponse>> Login([FromBody] LoginDto loginDto)
@@ -26,6 +29,9 @@ public class AuthController(IAuthService authService, IOutputCacheStore cacheSto
             error => StatusCode(error.Code, error));
     }
 
+    /// <summary>
+    /// Registers a new admin user.
+    /// </summary>
     [HttpPost]
     [Route("Register-Admin")]
     [Authorize(Roles = AppRoles.Admin)]
@@ -37,7 +43,10 @@ public class AuthController(IAuthService authService, IOutputCacheStore cacheSto
             _ => Ok(),
             error => StatusCode(error.Code, error));
     }
-
+    
+    /// <summary>
+    /// Registers a new teacher user.
+    /// </summary>
     [HttpPost]
     [Route("Register-Teacher")]
     [Authorize(Roles = AppRoles.Admin)]
@@ -50,9 +59,12 @@ public class AuthController(IAuthService authService, IOutputCacheStore cacheSto
         return Ok();
     }
 
+    /// <summary>
+    /// Registers a new student user.
+    /// </summary>
     [HttpPost]
     [Route("Register-Student")]
-    // [Authorize(Roles = AppRoles.Admin)]
+    [Authorize(Roles = AppRoles.Admin)]
     public async Task<IActionResult> RegisterStudent([FromBody] RegisterDto registerDto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -62,6 +74,9 @@ public class AuthController(IAuthService authService, IOutputCacheStore cacheSto
         return Ok();
     }
 
+    /// <summary>
+    /// Refreshes an expired JWT token.
+    /// </summary>
     [HttpPost]
     [Route("Refresh-token")]
     public async Task<ActionResult<AuthDataResponse>> RefreshToken(RefreshTokenDto refreshTokenDto)
@@ -73,6 +88,9 @@ public class AuthController(IAuthService authService, IOutputCacheStore cacheSto
             error => StatusCode(error.Code, error));
     }
 
+    /// <summary>
+    /// Validates the provided JWT token.
+    /// </summary>
     [HttpGet]
     [Route("Validate-Token")]
     [Authorize]

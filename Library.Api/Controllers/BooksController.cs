@@ -13,7 +13,9 @@ namespace Library.Api.Controllers;
 [ApiController]
 public class BooksController(IBookService bookService, IOutputCacheStore cacheStore) : ControllerBase
 {
-    // GET: api/Books
+    /// <summary>
+    /// Retrieves a list of books with caching applied.
+    /// </summary>
     [HttpGet]
     [OutputCache(Tags = [OutputCacheTags.Books], PolicyName = nameof(AuthCachePolicy))]
     public async Task<ActionResult<IEnumerable<BookResponseDto>>> GetBooks()
@@ -22,7 +24,9 @@ public class BooksController(IBookService bookService, IOutputCacheStore cacheSt
         return Ok(booksAsyncDto);
     }
 
-    // GET: api/Books/5
+    /// <summary>
+    /// Retrieves details of a specific book by its ID.
+    /// </summary>
     [HttpGet("{bookId:guid}")]
     [OutputCache(Tags = [OutputCacheTags.Books], PolicyName = nameof(AuthCachePolicy))]
     public async Task<ActionResult<BookResponseDto>> GetBook(Guid bookId)
@@ -33,7 +37,9 @@ public class BooksController(IBookService bookService, IOutputCacheStore cacheSt
             error => StatusCode(error.Code, error));
     }
 
-    // POST: api/Books
+    /// <summary>
+    /// Creates a new book entry.
+    /// </summary>
     [HttpPost]
     [Authorize(Roles = $"{AppRoles.Admin},{AppRoles.Teacher}")]
     public async Task<ActionResult<BookResponseDto>> PostBook([FromForm] CreateBookDto createLectureDto)
@@ -50,7 +56,9 @@ public class BooksController(IBookService bookService, IOutputCacheStore cacheSt
         return CreatedAtAction("GetBook", new { bookId }, new { bookId });
     }
 
-    // DELETE: api/Books/5
+    /// <summary>
+    /// Deletes a specific book by its ID.
+    /// </summary>
     [HttpDelete("{bookId:guid}")]
     [Authorize(Roles = $"{AppRoles.Admin},{AppRoles.Teacher}")]
     public async Task<IActionResult> DeleteBook(Guid bookId)
@@ -65,7 +73,9 @@ public class BooksController(IBookService bookService, IOutputCacheStore cacheSt
         return Ok();
     }
 
-    // GET: api/Books/download/5
+    /// <summary>
+    /// Downloads the content of a specific book by its ID.
+    /// </summary>
     [HttpGet("Download/{bookId:guid}")]
     [OutputCache(Tags = [OutputCacheTags.Books])]
     public async Task<IActionResult> DownloadBook(Guid bookId)
