@@ -18,7 +18,7 @@ public class StudentRepository(AppDbContext context) : IStudentRepository
     {
         return await context.Students
             .AsNoTracking()
-            .Where(s => s.StudentId == id)
+            .Where(s => s.UserId == id)
             .Include(s => s.User)
             .FirstOrDefaultAsync();
     }

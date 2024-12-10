@@ -17,7 +17,7 @@ public class DepartmentRepository(AppDbContext context) : IDepartmentRepository
     public async Task<Department?> FindDepartmentByIdAsync(Guid id)
     {
         return await context.Departments
-            .Where(d => d.DepartmentId == id)
+            .Where(d => d.Id == id)
             .AsNoTracking()
             .Include(d => d.Subjects)
             .FirstOrDefaultAsync();
@@ -25,7 +25,7 @@ public class DepartmentRepository(AppDbContext context) : IDepartmentRepository
 
     public async Task<bool> DepartmentExistsAsync(Guid id)
     {
-        return await context.Departments.AnyAsync(d => d.DepartmentId == id);
+        return await context.Departments.AnyAsync(d => d.Id == id);
     }
 
     public async Task AddDepartmentAsync(Department department)
