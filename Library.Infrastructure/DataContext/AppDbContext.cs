@@ -49,7 +49,7 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
 
         modelBuilder.Entity<NotificationModel>(entity =>
         {
-            entity.HasKey(n => n.NotificationId); // Set primary key explicitly
+            entity.HasKey(n => n.Id); // Set primary key explicitly
 
             entity.HasOne(n => n.RecipientUser) // Configure recipient relationship
                 .WithMany(u => u.ReceivedNotifications)
@@ -130,7 +130,6 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
         modelBuilder.Entity<Teacher>()
             .HasData(new Teacher
             {
-                TeacherId = Guid.NewGuid(),
                 UserId = user1Id
             });
 
@@ -149,7 +148,6 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
         modelBuilder.Entity<Student>()
             .HasData(new Student
             {
-                StudentId = Guid.NewGuid(),
                 UserId = user2Id
             });
 
@@ -171,14 +169,14 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
 
         var department1 = new Department
         {
-            DepartmentId = Guid.NewGuid(),
+            Id = Guid.NewGuid(),
             Name = "Computer Science",
             Description = "Department of Computer Science"
         };
 
         var department2 = new Department
         {
-            DepartmentId = Guid.NewGuid(),
+            Id = Guid.NewGuid(),
             Name = "Mathematics",
             Description = "Department of Mathematics"
         };
