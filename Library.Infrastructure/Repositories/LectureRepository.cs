@@ -18,7 +18,7 @@ public class LectureRepository(AppDbContext context) : ILectureRepository
     {
         return await context.Lectures
             .AsNoTracking()
-            .Where(l => l.LectureId == id)
+            .Where(l => l.Id == id)
             .Include(l => l.Subject)
             .FirstOrDefaultAsync();
     }
@@ -35,7 +35,7 @@ public class LectureRepository(AppDbContext context) : ILectureRepository
     {
         return await context.Lectures
             .AsNoTracking()
-            .Where(l => l.LectureId == id)
+            .Where(l => l.Id == id)
             .Select(l => l.FilePath)
             .FirstOrDefaultAsync();
     }

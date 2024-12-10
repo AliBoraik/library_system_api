@@ -2,7 +2,7 @@ namespace Library.Domain.Models;
 
 public class NotificationModel
 {
-    public Guid NotificationId { get; set; } // Primary key
+    public Guid Id { get; set; } // Primary key
 
     public string Title { get; set; } = null!; // The message title
 

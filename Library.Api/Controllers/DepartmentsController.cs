@@ -28,12 +28,12 @@ public class DepartmentsController(IDepartmentService departmentService, IOutput
     /// <summary>
     /// Retrieves details of a specific department by its ID.
     /// </summary>
-    [HttpGet("{departmentId:guid}")]
+    [HttpGet("{id:guid}")]
     [OutputCache(Tags = [OutputCacheTags.Departments], PolicyName = nameof(AuthCachePolicy))]
-    public async Task<ActionResult<DepartmentDetailsDto>> GetDepartment(Guid departmentId)
+    public async Task<ActionResult<DepartmentDetailsDto>> GetDepartment(Guid id)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
-        var result = await departmentService.GetDepartmentByIdAsync(departmentId);
+        var result = await departmentService.GetDepartmentByIdAsync(id);
         return result.Match<ActionResult<DepartmentDetailsDto>>(
             dto => Ok(dto),
             error => StatusCode(error.Code, error));
@@ -50,8 +50,8 @@ public class DepartmentsController(IDepartmentService departmentService, IOutput
         var result = await departmentService.AddDepartmentAsync(createDepartmentDto);
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Departments, CancellationToken.None);
-        var departmentId = result.Value;
-        return CreatedAtAction("GetDepartment", new { departmentId }, new { departmentId });
+        var id = result.Value;
+        return CreatedAtAction("GetDepartment", new { id }, new { id });
     }
 
     /// <summary>
@@ -71,11 +71,11 @@ public class DepartmentsController(IDepartmentService departmentService, IOutput
     /// <summary>
     /// Deletes a specific department by its ID.
     /// </summary>
-    [HttpDelete("{departmentId:guid}")]
+    [HttpDelete("{id:guid}")]
     [Authorize(Roles = AppRoles.Admin)]
-    public async Task<IActionResult> DeleteDepartment(Guid departmentId)
+    public async Task<IActionResult> DeleteDepartment(Guid id)
     {
-        var result = await departmentService.DeleteDepartmentAsync(departmentId);
+        var result = await departmentService.DeleteDepartmentAsync(id);
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Departments, CancellationToken.None);
         return Ok();

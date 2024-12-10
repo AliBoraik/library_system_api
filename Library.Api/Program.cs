@@ -13,7 +13,7 @@ builder.Services.AddControllers();
 //Cors
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(policy =>
+    options.AddPolicy("ClientPolicy", policy =>
     {
         policy.AllowAnyHeader()
             .AllowAnyMethod()
@@ -33,7 +33,7 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
 app.UseSwagger();
 app.UseSwaggerUI();
 
-app.UseCors();
+app.UseCors("ClientPolicy");
 
 // Global error handler
 app.UseMiddleware<ExceptionMiddleware>();

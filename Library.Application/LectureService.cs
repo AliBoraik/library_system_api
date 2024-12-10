@@ -48,12 +48,12 @@ public class LectureService(
         // save in database
         var lecture = mapper.Map<Lecture>(lectureDto);
         lecture.FilePath = fullFilePath;
-        lecture.LectureId = lectureId;
+        lecture.Id = lectureId;
         lecture.UploadedBy = userId;
         await lectureRepository.AddLectureAsync(lecture);
         // save in disk
         var uploadResult = await uploadsService.AddFile(fullDirectoryPath, fullFilePath, lectureDto.File);
-        if (uploadResult.IsOk) return lecture.LectureId;
+        if (uploadResult.IsOk) return lecture.Id;
         await lectureRepository.DeleteLectureAsync(lecture);
         return uploadResult.Error;
     }

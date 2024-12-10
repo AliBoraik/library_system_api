@@ -26,11 +26,11 @@ public class SubjectsController(ISubjectService subjectService, IOutputCacheStor
     /// <summary>
     /// Retrieves details of a specific subject by its ID.
     /// </summary>
-    [HttpGet("{subjectId:guid}")]
+    [HttpGet("{id:guid}")]
     [OutputCache(Tags = [OutputCacheTags.Subjects], PolicyName = nameof(AuthCachePolicy))]
-    public async Task<ActionResult<SubjectDetailsDto>> GetSubject(Guid subjectId)
+    public async Task<ActionResult<SubjectDetailsDto>> GetSubject(Guid id)
     {
-        var result = await subjectService.GetSubjectByIdAsync(subjectId);
+        var result = await subjectService.GetSubjectByIdAsync(id);
         return result.Match<ActionResult<SubjectDetailsDto>>(
             dto => Ok(dto),
             error => StatusCode(error.Code, error));
@@ -48,8 +48,8 @@ public class SubjectsController(ISubjectService subjectService, IOutputCacheStor
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Subjects, CancellationToken.None);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Departments, CancellationToken.None);
-        var subjectId = result.Value;
-        return CreatedAtAction("GetSubject", new { subjectId }, new { subjectId });
+        var id = result.Value;
+        return CreatedAtAction("GetSubject", new { id }, new { id });
     }
 
     /// <summary>

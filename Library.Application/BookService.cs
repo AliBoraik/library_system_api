@@ -37,6 +37,8 @@ public class BookService(
         var subject = await subjectRepository.FindSubjectByIdAsync(bookDto.SubjectId);
         if (subject == null)
             return new Error(StatusCodes.Status404NotFound, $"Subject with Id = {bookDto.SubjectId} not found");
+        Console.WriteLine(subject.TeacherId);
+        Console.WriteLine(userId);
         if (subject.TeacherId != userId)
             return new Error(StatusCodes.Status403Forbidden, "You don't have access");
         // file info
@@ -47,12 +49,12 @@ public class BookService(
         // save in database
         var book = mapper.Map<Book>(bookDto);
         book.FilePath = fullFilePath;
-        book.BookId = bookId;
+        book.Id = bookId;
         book.UploadedBy = userId;
         await bookRepository.AddBookAsync(book);
         // save in disk
         var uploadResult = await uploadsService.AddFile(fullDirectoryPath, fullFilePath, bookDto.File);
-        if (uploadResult.IsOk) return book.BookId;
+        if (uploadResult.IsOk) return book.Id;
         await bookRepository.DeleteBookAsync(book);
         return uploadResult.Error;
     }

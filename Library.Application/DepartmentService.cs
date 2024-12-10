@@ -29,19 +29,19 @@ public class DepartmentService(IDepartmentRepository departmentRepository, IMapp
     public async Task<Result<Guid, Error>> AddDepartmentAsync(CreateDepartmentDto createDepartmentDto)
     {
         var department = mapper.Map<Department>(createDepartmentDto);
-        var departmentExists = await departmentRepository.FindDepartmentByIdAsync(department.DepartmentId);
+        var departmentExists = await departmentRepository.FindDepartmentByIdAsync(department.Id);
         if (departmentExists != null)
             return new Error(StatusCodes.Status409Conflict, "Department already exists");
         await departmentRepository.AddDepartmentAsync(department);
-        return department.DepartmentId;
+        return department.Id;
     }
 
     public async Task<Result<Ok, Error>> UpdateDepartmentAsync(DepartmentDto departmentDto)
     {
-        var departmentExists = await departmentRepository.DepartmentExistsAsync((Guid)departmentDto.DepartmentId!);
+        var departmentExists = await departmentRepository.DepartmentExistsAsync((Guid)departmentDto.Id!);
         if (!departmentExists)
             return new Error(StatusCodes.Status404NotFound,
-                $"Can't found Department with ID = {departmentDto.DepartmentId}");
+                $"Can't found Department with ID = {departmentDto.Id}");
         var department = mapper.Map<Department>(departmentDto);
         await departmentRepository.UpdateDepartmentAsync(department);
         return new Ok();
