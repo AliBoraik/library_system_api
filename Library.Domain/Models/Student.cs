@@ -4,8 +4,7 @@ namespace Library.Domain.Models;
 
 public class Student
 {
-    [Key] public Guid StudentId { get; set; }
-
+    [Key]
     public Guid UserId { get; set; }
     public virtual User User { get; set; }
 
