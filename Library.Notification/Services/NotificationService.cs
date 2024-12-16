@@ -17,6 +17,7 @@ public class NotificationService(INotificationRepository notificationRepository,
 
     public async Task<Result<Ok, Error>> SendNotificationAsync(CreateNotificationDto createNotification)
     {
+        // TODO check RecipientUserId  
         var notification = new NotificationModel
         {
             RecipientUserId = createNotification.RecipientUserId,

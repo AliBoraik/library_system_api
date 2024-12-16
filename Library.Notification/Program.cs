@@ -1,10 +1,8 @@
 using Library.Application.Configurations;
 using Library.Notification.Configurations;
+using Library.Notification.Consumers;
 using Library.Notification.Middleware;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.AspNetCore.Mvc.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +10,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddNotificationApplication(builder.Configuration);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddSwaggerConfiguration();
+// add background services 
+builder.Services.AddHostedService<NotificationSubBackground>();
 // Add Controllers  
 builder.Services.AddControllers();
 
