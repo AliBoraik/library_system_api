@@ -1,12 +1,16 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Library.Domain.Models;
 
-public class Student
+public class Student 
 {
     [Key]
-    public Guid UserId { get; set; }
+    public Guid Id { get; set; }
+    
+    [ForeignKey(nameof(Id))]
     public virtual User User { get; set; }
 
     public List<Subject> Subjects { get; } = [];
+    
 }

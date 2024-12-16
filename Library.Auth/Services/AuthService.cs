@@ -4,12 +4,13 @@ using Library.Domain;
 using Library.Domain.Auth;
 using Library.Domain.Constants;
 using Library.Domain.Models;
+using Library.Infrastructure.DataContext;
 using Library.Interfaces.Services;
 using Microsoft.AspNetCore.Identity;
 
 namespace Library.Auth.Services;
 
-public class AuthService(UserManager<User> userManager, ITokenService tokenService)
+public class AuthService(UserManager<User> userManager, ITokenService tokenService , AppDbContext  context)
     : IAuthService
 {
     public async Task<Result<AuthDataResponse, Error>> LoginAsync(LoginDto loginDto)
@@ -81,12 +82,18 @@ public class AuthService(UserManager<User> userManager, ITokenService tokenServi
             Email = dto.Email,
             SecurityStamp = Guid.NewGuid().ToString(),
             UserName = dto.Username,
-            Teacher = new Teacher()
         };
-
-        var result = await userManager.CreateAsync(user, dto.Password);
-        if (!result.Succeeded)
-            return new Error(StatusCodes.Status500InternalServerError, result.Errors.First().Description);
+        
+        var createUserResult = await userManager.CreateAsync(user, dto.Password);
+        if (!createUserResult.Succeeded)
+            return new Error(StatusCodes.Status500InternalServerError, createUserResult.Errors.First().Description);
+        // Create Teacher
+        var teacher = new Teacher
+        {
+            Id = user.Id,
+        };
+        await context.Teachers.AddAsync(teacher);
+        await context.SaveChangesAsync();
         await userManager.AddToRoleAsync(user, AppRoles.Teacher);
         return new Ok();
     }
@@ -100,12 +107,18 @@ public class AuthService(UserManager<User> userManager, ITokenService tokenServi
         {
             Email = dto.Email,
             SecurityStamp = Guid.NewGuid().ToString(),
-            UserName = dto.Username,
-            Student = new Student()
+            UserName = dto.Username
         };
         var result = await userManager.CreateAsync(user, dto.Password);
         if (!result.Succeeded)
             return new Error(StatusCodes.Status500InternalServerError, result.Errors.First().Description);
+        // Create Student
+        var student = new Student
+        {
+            Id = user.Id,
+        };
+        await context.Students.AddAsync(student);
+        await context.SaveChangesAsync();
         await userManager.AddToRoleAsync(user, AppRoles.Student);
         return new Ok();
     }
