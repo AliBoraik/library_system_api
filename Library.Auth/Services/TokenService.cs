@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Library.Domain;
 using Library.Domain.Auth;
 using Library.Interfaces.Services;
 using Microsoft.IdentityModel.Tokens;
@@ -27,7 +28,7 @@ public class TokenService(JwtOptions jwtOptions) : ITokenService
         return new GeneratedAccessToken
         {
             AccessToken = WriteTokenToString(token),
-            ValidTo = ToUnixTimestampSeconds(token.ValidTo)
+            ValidTo = Converter.ToUnixTimestampSeconds(token.ValidTo)
         };
     }
 
@@ -83,10 +84,5 @@ public class TokenService(JwtOptions jwtOptions) : ITokenService
     private static string WriteTokenToString(JwtSecurityToken jwtSecurityToken)
     {
         return new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
-    }
-
-    private static long ToUnixTimestampSeconds(DateTime dateTime)
-    {
-        return new DateTimeOffset(dateTime.ToUniversalTime()).ToUnixTimeSeconds();
     }
 }

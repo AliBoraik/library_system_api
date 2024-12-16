@@ -19,11 +19,10 @@ public class TeacherRepository(AppDbContext context) : ITeacherRepository
     {
         return await context.Teachers
             .AsNoTracking()
-            .Where(s => s.UserId == id)
+            .Where(s => s.Id == id)
             .Include(t => t.User)
             .FirstOrDefaultAsync();
     }
-
     public async Task<Teacher?> FindTeacherByNameAsync(string name)
     {
         return await context.Teachers

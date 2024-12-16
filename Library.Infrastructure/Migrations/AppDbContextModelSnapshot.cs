@@ -77,13 +77,13 @@ namespace Library.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("3751e556-8e37-4ea8-b762-ffd0e8d45ea5"),
+                            Id = new Guid("c297f2b7-085e-48c9-850e-095d9201a453"),
                             Description = "Department of Computer Science",
                             Name = "Computer Science"
                         },
                         new
                         {
-                            Id = new Guid("6ff27b9d-0639-4d89-b17e-0861f2cca80d"),
+                            Id = new Guid("d6b0dda9-e259-44b5-97fa-b6fd5ad27802"),
                             Description = "Department of Mathematics",
                             Name = "Mathematics"
                         });
@@ -160,17 +160,17 @@ namespace Library.Infrastructure.Migrations
 
             modelBuilder.Entity("Library.Domain.Models.Student", b =>
                 {
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid>("Id")
                         .HasColumnType("uuid");
 
-                    b.HasKey("UserId");
+                    b.HasKey("Id");
 
                     b.ToTable("Students");
 
                     b.HasData(
                         new
                         {
-                            UserId = new Guid("bc340443-a045-458a-9e14-4f84ef212575")
+                            Id = new Guid("a7f3008e-57ec-4925-b856-19642b4ed486")
                         });
                 });
 
@@ -205,17 +205,17 @@ namespace Library.Infrastructure.Migrations
 
             modelBuilder.Entity("Library.Domain.Models.Teacher", b =>
                 {
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid>("Id")
                         .HasColumnType("uuid");
 
-                    b.HasKey("UserId");
+                    b.HasKey("Id");
 
                     b.ToTable("Teachers");
 
                     b.HasData(
                         new
                         {
-                            UserId = new Guid("e79b98b8-9888-4c5c-b0c8-4c1c75a3eab3")
+                            Id = new Guid("d0ada66c-e6f0-442d-80bd-a69ee8f7968b")
                         });
                 });
 
@@ -286,9 +286,9 @@ namespace Library.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("eccb2308-82d1-42d2-9e43-36031703c4c2"),
+                            Id = new Guid("8eed8780-fba5-48e3-81c9-6718963c645c"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "ad14fa64-8de1-4273-870c-c6b5cf1cd1c0",
+                            ConcurrencyStamp = "129fe942-cedd-408e-ab4d-dc8a82833a29",
                             Email = "admin@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
@@ -296,15 +296,15 @@ namespace Library.Infrastructure.Migrations
                             NormalizedUserName = "ADMIN",
                             PasswordHash = "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "2b41b824-3b36-4d36-8c2e-7ebf5dc2cdd4",
+                            SecurityStamp = "ac6e8a28-efd2-4e86-a714-5e4039d6e7d6",
                             TwoFactorEnabled = false,
                             UserName = "admin"
                         },
                         new
                         {
-                            Id = new Guid("e79b98b8-9888-4c5c-b0c8-4c1c75a3eab3"),
+                            Id = new Guid("d0ada66c-e6f0-442d-80bd-a69ee8f7968b"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "7ec82778-8ce7-46b9-ac7a-a2f5fc826538",
+                            ConcurrencyStamp = "6645eed9-a049-402b-a237-951cbca24ad0",
                             Email = "teacher@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
@@ -312,15 +312,15 @@ namespace Library.Infrastructure.Migrations
                             NormalizedUserName = "TEACHER",
                             PasswordHash = "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "9d9f9ae2-e830-49e0-83ed-0e7fa3d905c2",
+                            SecurityStamp = "df9f51f3-5193-4afa-a581-9b1b96d1a1b3",
                             TwoFactorEnabled = false,
                             UserName = "teacher"
                         },
                         new
                         {
-                            Id = new Guid("bc340443-a045-458a-9e14-4f84ef212575"),
+                            Id = new Guid("a7f3008e-57ec-4925-b856-19642b4ed486"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "678772ff-58d9-456a-9c2a-e945ddd2ed45",
+                            ConcurrencyStamp = "1f38b63e-3f81-4537-a837-60d77f169068",
                             Email = "student@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
@@ -328,7 +328,7 @@ namespace Library.Infrastructure.Migrations
                             NormalizedUserName = "STUDENT",
                             PasswordHash = "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "48bc33a5-9d28-44c9-bb13-4e265acee257",
+                            SecurityStamp = "1720ec92-bcd3-4ef7-ae8a-a36f29078ee0",
                             TwoFactorEnabled = false,
                             UserName = "student"
                         });
@@ -363,19 +363,19 @@ namespace Library.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("f20d44e1-670c-4069-bb1c-2e56a82a8c59"),
+                            Id = new Guid("3690a952-0d94-409c-8b46-a87596e8b841"),
                             Name = "admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = new Guid("46e5f57d-b8ad-40fb-ad16-bac22dc96b9c"),
+                            Id = new Guid("41d83e23-f05b-4245-8dcf-cd50a457c57d"),
                             Name = "teacher",
                             NormalizedName = "TEACHER"
                         },
                         new
                         {
-                            Id = new Guid("7e2c0988-0647-416d-97c9-b17bd6f78dd2"),
+                            Id = new Guid("7c69bd6c-ef54-467b-88e2-eeb391f05283"),
                             Name = "student",
                             NormalizedName = "STUDENT"
                         });
@@ -467,18 +467,18 @@ namespace Library.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = new Guid("eccb2308-82d1-42d2-9e43-36031703c4c2"),
-                            RoleId = new Guid("f20d44e1-670c-4069-bb1c-2e56a82a8c59")
+                            UserId = new Guid("8eed8780-fba5-48e3-81c9-6718963c645c"),
+                            RoleId = new Guid("3690a952-0d94-409c-8b46-a87596e8b841")
                         },
                         new
                         {
-                            UserId = new Guid("e79b98b8-9888-4c5c-b0c8-4c1c75a3eab3"),
-                            RoleId = new Guid("46e5f57d-b8ad-40fb-ad16-bac22dc96b9c")
+                            UserId = new Guid("d0ada66c-e6f0-442d-80bd-a69ee8f7968b"),
+                            RoleId = new Guid("41d83e23-f05b-4245-8dcf-cd50a457c57d")
                         },
                         new
                         {
-                            UserId = new Guid("bc340443-a045-458a-9e14-4f84ef212575"),
-                            RoleId = new Guid("7e2c0988-0647-416d-97c9-b17bd6f78dd2")
+                            UserId = new Guid("a7f3008e-57ec-4925-b856-19642b4ed486"),
+                            RoleId = new Guid("7c69bd6c-ef54-467b-88e2-eeb391f05283")
                         });
                 });
 
@@ -503,13 +503,13 @@ namespace Library.Infrastructure.Migrations
 
             modelBuilder.Entity("StudentSubject", b =>
                 {
-                    b.Property<Guid>("StudentsUserId")
+                    b.Property<Guid>("StudentsId")
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("SubjectsId")
                         .HasColumnType("uuid");
 
-                    b.HasKey("StudentsUserId", "SubjectsId");
+                    b.HasKey("StudentsId", "SubjectsId");
 
                     b.HasIndex("SubjectsId");
 
@@ -560,8 +560,8 @@ namespace Library.Infrastructure.Migrations
             modelBuilder.Entity("Library.Domain.Models.Student", b =>
                 {
                     b.HasOne("Library.Domain.Models.User", "User")
-                        .WithOne("Student")
-                        .HasForeignKey("Library.Domain.Models.Student", "UserId")
+                        .WithMany()
+                        .HasForeignKey("Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -588,8 +588,8 @@ namespace Library.Infrastructure.Migrations
             modelBuilder.Entity("Library.Domain.Models.Teacher", b =>
                 {
                     b.HasOne("Library.Domain.Models.User", "User")
-                        .WithOne("Teacher")
-                        .HasForeignKey("Library.Domain.Models.Teacher", "UserId")
+                        .WithMany()
+                        .HasForeignKey("Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -651,7 +651,7 @@ namespace Library.Infrastructure.Migrations
                 {
                     b.HasOne("Library.Domain.Models.Student", null)
                         .WithMany()
-                        .HasForeignKey("StudentsUserId")
+                        .HasForeignKey("StudentsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -684,12 +684,6 @@ namespace Library.Infrastructure.Migrations
                     b.Navigation("ReceivedNotifications");
 
                     b.Navigation("SentNotifications");
-
-                    b.Navigation("Student")
-                        .IsRequired();
-
-                    b.Navigation("Teacher")
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

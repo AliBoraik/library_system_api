@@ -130,7 +130,7 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
         modelBuilder.Entity<Teacher>()
             .HasData(new Teacher
             {
-                UserId = user1Id
+                Id = user1Id,
             });
 
         modelBuilder.Entity<User>()
@@ -148,7 +148,7 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
         modelBuilder.Entity<Student>()
             .HasData(new Student
             {
-                UserId = user2Id
+                Id = user2Id
             });
 
 
