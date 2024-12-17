@@ -178,27 +178,19 @@ namespace Library.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Title = table.Column<string>(type: "text", nullable: false),
-                    RecipientUserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    SenderId = table.Column<Guid>(type: "uuid", nullable: false),
                     Message = table.Column<string>(type: "text", nullable: false),
                     SentAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    IsRead = table.Column<bool>(type: "boolean", nullable: false)
+                    SenderUserId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Notifications", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Notifications_AspNetUsers_RecipientUserId",
-                        column: x => x.RecipientUserId,
+                        name: "FK_Notifications_AspNetUsers_SenderUserId",
+                        column: x => x.SenderUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Notifications_AspNetUsers_SenderId",
-                        column: x => x.SenderId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -236,6 +228,31 @@ namespace Library.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "UserNotifications",
+                columns: table => new
+                {
+                    NotificationId = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    IsRead = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserNotifications", x => new { x.NotificationId, x.UserId });
+                    table.ForeignKey(
+                        name: "FK_UserNotifications_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserNotifications_Notifications_NotificationId",
+                        column: x => x.NotificationId,
+                        principalTable: "Notifications",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Subjects",
                 columns: table => new
                 {
@@ -243,7 +260,7 @@ namespace Library.Infrastructure.Migrations
                     Name = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
                     DepartmentId = table.Column<Guid>(type: "uuid", nullable: false),
-                    TeacherId = table.Column<Guid>(type: "uuid", nullable: true)
+                    TeacherId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -258,7 +275,8 @@ namespace Library.Infrastructure.Migrations
                         name: "FK_Subjects_Teachers_TeacherId",
                         column: x => x.TeacherId,
                         principalTable: "Teachers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -336,9 +354,9 @@ namespace Library.Infrastructure.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { new Guid("3690a952-0d94-409c-8b46-a87596e8b841"), null, "admin", "ADMIN" },
-                    { new Guid("41d83e23-f05b-4245-8dcf-cd50a457c57d"), null, "teacher", "TEACHER" },
-                    { new Guid("7c69bd6c-ef54-467b-88e2-eeb391f05283"), null, "student", "STUDENT" }
+                    { new Guid("1d9eccf5-9e7e-4a3c-8e11-af1009f77b63"), null, "admin", "ADMIN" },
+                    { new Guid("5bc6dd15-36a0-45be-bc1d-bc8e4bf771a7"), null, "teacher", "TEACHER" },
+                    { new Guid("7a3d0314-0978-4cf8-b0f7-317fc76d5cfb"), null, "student", "STUDENT" }
                 });
 
             migrationBuilder.InsertData(
@@ -346,9 +364,9 @@ namespace Library.Infrastructure.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { new Guid("8eed8780-fba5-48e3-81c9-6718963c645c"), 0, "129fe942-cedd-408e-ab4d-dc8a82833a29", "admin@gmail.com", false, false, null, "ADMIN@GMAIL.COM", "ADMIN", "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q==", null, false, "ac6e8a28-efd2-4e86-a714-5e4039d6e7d6", false, "admin" },
-                    { new Guid("a7f3008e-57ec-4925-b856-19642b4ed486"), 0, "1f38b63e-3f81-4537-a837-60d77f169068", "student@gmail.com", false, false, null, "STUDENT@GMAIL.COM", "STUDENT", "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q==", null, false, "1720ec92-bcd3-4ef7-ae8a-a36f29078ee0", false, "student" },
-                    { new Guid("d0ada66c-e6f0-442d-80bd-a69ee8f7968b"), 0, "6645eed9-a049-402b-a237-951cbca24ad0", "teacher@gmail.com", false, false, null, "TEACHER@GMAIL.COM", "TEACHER", "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q==", null, false, "df9f51f3-5193-4afa-a581-9b1b96d1a1b3", false, "teacher" }
+                    { new Guid("36bd12ff-7016-40e1-ac51-df28974335ae"), 0, "11171396-92d1-4446-8b01-90924fde0d90", "teacher@gmail.com", false, false, null, "TEACHER@GMAIL.COM", "TEACHER", "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q==", null, false, "f6b8e6fa-87cd-4e9c-aa1b-3c8528610061", false, "teacher" },
+                    { new Guid("937e8daa-d0d0-4c6e-8898-a9d646bbed4d"), 0, "6697da89-18f8-4b42-9ade-d0c0a5786cd9", "student@gmail.com", false, false, null, "STUDENT@GMAIL.COM", "STUDENT", "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q==", null, false, "c7a95115-59cf-42ac-b451-b4df3f62e2bb", false, "student" },
+                    { new Guid("d7d002f8-0a8d-4dc3-aedd-f042c30c7a36"), 0, "18fad253-e2b3-4b37-a9b1-e6763ffd9cb3", "admin@gmail.com", false, false, null, "ADMIN@GMAIL.COM", "ADMIN", "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q==", null, false, "64d153f7-b3e8-44d8-985f-98d9d251e464", false, "admin" }
                 });
 
             migrationBuilder.InsertData(
@@ -356,8 +374,8 @@ namespace Library.Infrastructure.Migrations
                 columns: new[] { "Id", "Description", "Name" },
                 values: new object[,]
                 {
-                    { new Guid("c297f2b7-085e-48c9-850e-095d9201a453"), "Department of Computer Science", "Computer Science" },
-                    { new Guid("d6b0dda9-e259-44b5-97fa-b6fd5ad27802"), "Department of Mathematics", "Mathematics" }
+                    { new Guid("91fb583f-370a-41f1-b03d-f01f88f7f819"), "Department of Computer Science", "Computer Science" },
+                    { new Guid("b309aea7-b181-4d35-9506-f0a643461d5b"), "Department of Mathematics", "Mathematics" }
                 });
 
             migrationBuilder.InsertData(
@@ -365,20 +383,20 @@ namespace Library.Infrastructure.Migrations
                 columns: new[] { "RoleId", "UserId" },
                 values: new object[,]
                 {
-                    { new Guid("3690a952-0d94-409c-8b46-a87596e8b841"), new Guid("8eed8780-fba5-48e3-81c9-6718963c645c") },
-                    { new Guid("7c69bd6c-ef54-467b-88e2-eeb391f05283"), new Guid("a7f3008e-57ec-4925-b856-19642b4ed486") },
-                    { new Guid("41d83e23-f05b-4245-8dcf-cd50a457c57d"), new Guid("d0ada66c-e6f0-442d-80bd-a69ee8f7968b") }
+                    { new Guid("5bc6dd15-36a0-45be-bc1d-bc8e4bf771a7"), new Guid("36bd12ff-7016-40e1-ac51-df28974335ae") },
+                    { new Guid("7a3d0314-0978-4cf8-b0f7-317fc76d5cfb"), new Guid("937e8daa-d0d0-4c6e-8898-a9d646bbed4d") },
+                    { new Guid("1d9eccf5-9e7e-4a3c-8e11-af1009f77b63"), new Guid("d7d002f8-0a8d-4dc3-aedd-f042c30c7a36") }
                 });
 
             migrationBuilder.InsertData(
                 table: "Students",
                 column: "Id",
-                value: new Guid("a7f3008e-57ec-4925-b856-19642b4ed486"));
+                value: new Guid("937e8daa-d0d0-4c6e-8898-a9d646bbed4d"));
 
             migrationBuilder.InsertData(
                 table: "Teachers",
                 column: "Id",
-                value: new Guid("d0ada66c-e6f0-442d-80bd-a69ee8f7968b"));
+                value: new Guid("36bd12ff-7016-40e1-ac51-df28974335ae"));
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -428,14 +446,9 @@ namespace Library.Infrastructure.Migrations
                 column: "SubjectId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Notifications_RecipientUserId",
+                name: "IX_Notifications_SenderUserId",
                 table: "Notifications",
-                column: "RecipientUserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Notifications_SenderId",
-                table: "Notifications",
-                column: "SenderId");
+                column: "SenderUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_StudentSubject_SubjectsId",
@@ -451,6 +464,11 @@ namespace Library.Infrastructure.Migrations
                 name: "IX_Subjects_TeacherId",
                 table: "Subjects",
                 column: "TeacherId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserNotifications_UserId",
+                table: "UserNotifications",
+                column: "UserId");
         }
 
         /// <inheritdoc />
@@ -478,10 +496,10 @@ namespace Library.Infrastructure.Migrations
                 name: "Lectures");
 
             migrationBuilder.DropTable(
-                name: "Notifications");
+                name: "StudentSubject");
 
             migrationBuilder.DropTable(
-                name: "StudentSubject");
+                name: "UserNotifications");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -491,6 +509,9 @@ namespace Library.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Subjects");
+
+            migrationBuilder.DropTable(
+                name: "Notifications");
 
             migrationBuilder.DropTable(
                 name: "Departments");
