@@ -12,6 +12,6 @@ public class Subject
     public ICollection<Book> Books { get; set; }
     public List<Student> Students { get; } = [];
 
-    public Guid? TeacherId { get; set; }
+    public Guid TeacherId { get; set; }
     public Teacher? Teacher { get; set; }
 }

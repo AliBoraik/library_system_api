@@ -14,6 +14,16 @@ public class SubjectRepository(AppDbContext context) : ISubjectRepository
             .ToListAsync();
     }
 
+    public async Task<IEnumerable<Guid>> FindStudentIdsBySubjectAsync(Guid subjectId)
+    {
+        var studentIds = await context.Subjects
+            .Where(s => s.Id == subjectId)
+            .SelectMany(s => s.Students) // Flatten the collection of Students
+            .Select(student => student.Id) // Select only the Student ID
+            .ToListAsync();
+        return studentIds;
+    }
+
     public async Task<Subject?> FindSubjectDetailsByIdAsync(Guid id)
     {
         return await context.Subjects

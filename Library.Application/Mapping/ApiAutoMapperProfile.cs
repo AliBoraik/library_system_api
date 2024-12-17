@@ -29,18 +29,11 @@ public class ApiAutoMapperProfile : Profile
         CreateMap<Book, CreateBookDto>().ReverseMap();
         // Student
         CreateMap<User, StudentDto>().ReverseMap();
-        CreateMap<User, CreateStudent>().ReverseMap();
         CreateMap<Student, StudentDto>()
-            .IncludeMembers(s => s.User);
-        CreateMap<Student, CreateStudent>()
             .IncludeMembers(s => s.User);
         // Teacher
         CreateMap<User, TeacherDto>().ReverseMap();
-        CreateMap<User, CreateTeacher>().ReverseMap();
         CreateMap<Teacher, TeacherDto>()
-            .IncludeMembers(s => s.User)
-            .ReverseMap();
-        CreateMap<Teacher, CreateTeacher>()
             .IncludeMembers(s => s.User)
             .ReverseMap();
     }

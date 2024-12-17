@@ -23,6 +23,8 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
     public DbSet<Teacher> Teachers { get; init; }
     public DbSet<Student> Students { get; init; }
     public DbSet<NotificationModel> Notifications { get; init; }
+    
+    public DbSet<UserNotification> UserNotifications { get; init; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -46,22 +48,19 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
             .HasMany(t => t.Subjects)
             .WithOne(s => s.Teacher)
             .HasForeignKey(s => s.TeacherId);
+        
+        modelBuilder.Entity<UserNotification>()
+            .HasKey(un => new { un.NotificationId, un.UserId }); // Composite key
 
-        modelBuilder.Entity<NotificationModel>(entity =>
-        {
-            entity.HasKey(n => n.Id); // Set primary key explicitly
+        modelBuilder.Entity<UserNotification>()
+            .HasOne(un => un.Notification)
+            .WithMany(n => n.UserNotifications)
+            .HasForeignKey(un => un.NotificationId);
 
-            entity.HasOne(n => n.RecipientUser) // Configure recipient relationship
-                .WithMany(u => u.ReceivedNotifications)
-                .HasForeignKey(n => n.RecipientUserId)
-                .OnDelete(DeleteBehavior.Restrict); // Prevent cascade delete
-
-            entity.HasOne(n => n.SenderUser) // Configure sender relationship
-                .WithMany(u => u.SentNotifications)
-                .HasForeignKey(n => n.SenderId)
-                .OnDelete(DeleteBehavior.Restrict); // Prevent cascade delete
-        });
-
+        modelBuilder.Entity<UserNotification>()
+            .HasOne(un => un.User)
+            .WithMany(u => u.UserNotifications)
+            .HasForeignKey(un => un.UserId);
 
         // roles ids
         var adminRoleId = Guid.NewGuid();
