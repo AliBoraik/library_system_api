@@ -29,15 +29,31 @@ public class NotificationSubBackground(
                 // Resolve the user service using the GetRequiredService method
                 var notificationService = scope.ServiceProvider.GetRequiredService<INotificationService>();
                 var consumeResult = _consumerBuilder.Consume(stoppingToken);
-                var notificationRequest =
-                    JsonSerializer.Deserialize<CreateNotificationDto>(consumeResult.Message.Value);
-                if (notificationRequest == null)
+                
+                // Deserialize the message
+                var message = consumeResult.Message.Value;
+                
+                if (message.Contains("RecipientUserIds")) // Identify Bulk Notification
                 {
-                    logger.LogWarning("Failed to deserialize the message.");
-                    continue;
+                    var bulkNotification =  JsonSerializer.Deserialize<CreateBulkNotificationDto>(message);
+                    if (bulkNotification != null)
+                    {
+                        var result =  await notificationService.SendBulkNotificationAsync(bulkNotification);
+                        if(result.IsOk) 
+                            logger.LogInformation("Kafka Consumer consumed new bulk notifications !");
+                    }
                 }
-                //await notificationService.SendNotificationAsync(notificationRequest);
-                logger.LogInformation("Kafka Consumer consumed message => {}", notificationRequest!.Message);
+                else // Single Notification
+                {
+                    var notification =  JsonSerializer.Deserialize<CreateNotificationDto>(message);
+                    if (notification != null)
+                    {
+                        var result =  await notificationService.SendNotificationAsync(notification);
+                        if(result.IsOk) 
+                            logger.LogInformation("Kafka Consumer consumed new notification !");
+                    }
+                }
+               
             }
         }
         catch (ConsumeException ce)

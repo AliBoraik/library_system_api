@@ -12,14 +12,27 @@ namespace Library.Notification.Controllers;
 public class NotificationController(INotificationService notificationService) : ControllerBase
 {
     /// <summary>
-    ///     Retrieves all notifications.
+    /// Retrieves all notifications.
     /// </summary>
     [HttpGet]
     public async Task<ActionResult<IEnumerable<NotificationDto>>> GetNotifications()
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        Console.WriteLine(userId);
         if (userId == null) return Unauthorized(StringConstants.UserIdMissing);
-        var notifications = await notificationService.GetNotificationsAsync(userId);
+        var notifications = await notificationService.GetNotificationsAsync(Guid.Parse(userId));
+        return Ok(notifications);
+    }
+    
+    /// <summary>
+    /// Retrieves all Unread notifications.
+    /// </summary>
+    [HttpGet("UnreadNotifications")]
+    public async Task<ActionResult<IEnumerable<NotificationDto>>> GetUnreadNotifications()
+    {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userId == null) return Unauthorized(StringConstants.UserIdMissing);
+        var notifications = await notificationService.GetUnreadNotificationsByUserIdAsync(Guid.Parse(userId));
         return Ok(notifications);
     }
 
@@ -44,9 +57,22 @@ public class NotificationController(INotificationService notificationService) : 
     [HttpPatch("{notificationId}/Read")]
     public async Task<IActionResult> MarkNotificationRead([FromRoute] Guid notificationId)
     {
-        var result = await notificationService.MarkNotificationReadAsync(notificationId);
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userId == null) return Unauthorized(StringConstants.UserIdMissing);
+        var result = await notificationService.MarkNotificationReadAsync(notificationId ,  Guid.Parse(userId));
         return result.Match<ActionResult>(
             _ => Ok(),
             error => StatusCode(error.Code, error));
+    }
+    /// <summary>
+    /// Deletes a specific notification by its ID.
+    /// </summary>
+    [HttpDelete("{id:guid}")]
+    [Authorize(Roles = AppRoles.Admin)]
+    public async Task<IActionResult> DeleteNotification(Guid id)
+    {
+        var result = await notificationService.DeleteNotificationByIdAsync(id);
+        if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
+        return Ok();
     }
 }
