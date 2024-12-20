@@ -17,7 +17,6 @@ The solution is divided into the following microservices and layers :
 - **Library.Interfaces**: Defines interfaces for services and repositories.
 - **Library.Notification**: Handles notifications, including creating, retrieving, and managing read/unread states.
 
-![library_system_architecture](Library.Diagrams/library_system_architecture.png)
 ---
 
 
