@@ -50,6 +50,7 @@ docker compose up
 ```
 3. URL http://localhost/apiService to access for API .
 5. URL http://localhost/authService to access for Auth API .
+6. URL http://localhost/notificationService to access for Notification API .
 
 ## API Documentation
 
