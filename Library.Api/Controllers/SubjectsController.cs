@@ -70,11 +70,11 @@ public class SubjectsController(ISubjectService subjectService, IOutputCacheStor
     /// <summary>
     /// Deletes a specific subject by its ID.
     /// </summary>
-    [HttpDelete("{subjectId:guid}")]
+    [HttpDelete("{id:guid}")]
     [Authorize(Roles = AppRoles.Admin)]
-    public async Task<IActionResult> DeleteSubject(Guid subjectId)
+    public async Task<IActionResult> DeleteSubject(Guid id)
     {
-        var result = await subjectService.DeleteSubjectAsync(subjectId);
+        var result = await subjectService.DeleteSubjectAsync(id);
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Subjects, CancellationToken.None);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Departments, CancellationToken.None);

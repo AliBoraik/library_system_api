@@ -27,11 +27,11 @@ public class LecturesController(ILectureService lectureService, IOutputCacheStor
     /// <summary>
     /// Retrieves details of a specific lecture by its ID.
     /// </summary>
-    [HttpGet("{lectureId:guid}")]
+    [HttpGet("{id:guid}")]
     [OutputCache(Tags = [OutputCacheTags.Lectures], PolicyName = nameof(AuthCachePolicy))]
-    public async Task<ActionResult<LectureResponseDto>> GetLecture(Guid lectureId)
+    public async Task<ActionResult<LectureResponseDto>> GetLecture(Guid id)
     {
-        var result = await lectureService.GetLectureByIdAsync(lectureId);
+        var result = await lectureService.GetLectureByIdAsync(id);
         return result.Match<ActionResult<LectureResponseDto>>(
             dto => Ok(dto),
             error => StatusCode(error.Code, error));
@@ -59,14 +59,14 @@ public class LecturesController(ILectureService lectureService, IOutputCacheStor
     /// <summary>
     /// Deletes a specific lecture by its ID.
     /// </summary>
-    [HttpDelete("{lectureId:guid}")]
+    [HttpDelete("{id:guid}")]
     [Authorize(Roles = $"{AppRoles.Admin},{AppRoles.Teacher}")]
-    public async Task<IActionResult> DeleteLecture(Guid lectureId)
+    public async Task<IActionResult> DeleteLecture(Guid id)
     {
         // Get the current user's ID
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (userId == null) return Unauthorized(StringConstants.UserIdMissing);
-        var result = await lectureService.DeleteLectureAsync(lectureId, Guid.Parse(userId));
+        var result = await lectureService.DeleteLectureAsync(id, Guid.Parse(userId));
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Lectures, CancellationToken.None);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Subjects, CancellationToken.None);
@@ -76,11 +76,11 @@ public class LecturesController(ILectureService lectureService, IOutputCacheStor
     /// <summary>
     /// Downloads the content of a specific lecture by its ID.
     /// </summary>
-    [HttpGet("Download/{lectureId:guid}")]
+    [HttpGet("Download/{id:guid}")]
     [OutputCache(Tags = [OutputCacheTags.Lectures])]
-    public async Task<IActionResult> DownloadLecture(Guid lectureId)
+    public async Task<IActionResult> DownloadLecture(Guid id)
     {
-        var result = await lectureService.GetLectureFilePathByIdAsync(lectureId);
+        var result = await lectureService.GetLectureFilePathByIdAsync(id);
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
         var path = result.Value;
         var fileBytes = await System.IO.File.ReadAllBytesAsync(path);

@@ -27,11 +27,11 @@ public class BooksController(IBookService bookService, IOutputCacheStore cacheSt
     /// <summary>
     /// Retrieves details of a specific book by its ID.
     /// </summary>
-    [HttpGet("{bookId:guid}")]
+    [HttpGet("{id:guid}")]
     [OutputCache(Tags = [OutputCacheTags.Books], PolicyName = nameof(AuthCachePolicy))]
-    public async Task<ActionResult<BookResponseDto>> GetBook(Guid bookId)
+    public async Task<ActionResult<BookResponseDto>> GetBook(Guid id)
     {
-        var result = await bookService.GetBookByIdAsync(bookId);
+        var result = await bookService.GetBookByIdAsync(id);
         return result.Match<ActionResult<BookResponseDto>>(
             dto => Ok(dto),
             error => StatusCode(error.Code, error));
@@ -59,14 +59,14 @@ public class BooksController(IBookService bookService, IOutputCacheStore cacheSt
     /// <summary>
     /// Deletes a specific book by its ID.
     /// </summary>
-    [HttpDelete("{bookId:guid}")]
+    [HttpDelete("{id:guid}")]
     [Authorize(Roles = $"{AppRoles.Admin},{AppRoles.Teacher}")]
-    public async Task<IActionResult> DeleteBook(Guid bookId)
+    public async Task<IActionResult> DeleteBook(Guid id)
     {
         // Get the current user's ID
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (userId == null) return Unauthorized(StringConstants.UserIdMissing);
-        var result = await bookService.DeleteBookAsync(bookId, Guid.Parse(userId));
+        var result = await bookService.DeleteBookAsync(id, Guid.Parse(userId));
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Books, CancellationToken.None);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Subjects, CancellationToken.None);
@@ -76,11 +76,11 @@ public class BooksController(IBookService bookService, IOutputCacheStore cacheSt
     /// <summary>
     /// Downloads the content of a specific book by its ID.
     /// </summary>
-    [HttpGet("Download/{bookId:guid}")]
+    [HttpGet("Download/{id:guid}")]
     [OutputCache(Tags = [OutputCacheTags.Books])]
-    public async Task<IActionResult> DownloadBook(Guid bookId)
+    public async Task<IActionResult> DownloadBook(Guid id)
     {
-        var result = await bookService.GetBookFilePathByIdAsync(bookId);
+        var result = await bookService.GetBookFilePathByIdAsync(id);
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
         var path = result.Value;
         var fileBytes = await System.IO.File.ReadAllBytesAsync(path);

@@ -26,12 +26,12 @@ public class TeachersController(ITeacherService teacherService, IOutputCacheStor
     /// <summary>
     /// Retrieves details of a specific teacher by their ID.
     /// </summary>
-    [HttpGet("{teacherId:guid}")]
+    [HttpGet("{id:guid}")]
     [OutputCache(Tags = [OutputCacheTags.Teachers], PolicyName = nameof(AuthCachePolicy))]
-    public async Task<ActionResult<TeacherDto>> GetTeacher(Guid teacherId)
+    public async Task<ActionResult<TeacherDto>> GetTeacher(Guid id)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
-        var result = await teacherService.GetTeacherByIdAsync(teacherId);
+        var result = await teacherService.GetTeacherByIdAsync(id);
         return result.Match<ActionResult<TeacherDto>>(
             dto => Ok(dto),
             error => StatusCode(error.Code, error));
@@ -40,10 +40,10 @@ public class TeachersController(ITeacherService teacherService, IOutputCacheStor
     /// <summary>
     /// Deletes a specific teacher by their ID.
     /// </summary>
-    [HttpDelete("{teacherId:guid}")]
-    public async Task<IActionResult> DeleteTeacher(Guid teacherId)
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> DeleteTeacher(Guid id)
     {
-        var result = await teacherService.DeleteTeacherAsync(teacherId);
+        var result = await teacherService.DeleteTeacherAsync(id);
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Teachers, CancellationToken.None);
         return Ok();
