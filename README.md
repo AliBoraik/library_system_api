@@ -17,6 +17,7 @@ The solution is divided into the following microservices and layers :
 - **Library.Interfaces**: Defines interfaces for services and repositories.
 - **Library.Notification**: Handles notifications, including creating, retrieving, and managing read/unread states.
 
+![library_system_architecture](Library.Diagrams/system_architecture.png)
 ---
 
 
@@ -49,6 +50,7 @@ docker compose up
 ```
 3. URL http://localhost/apiService to access for API .
 5. URL http://localhost/authService to access for Auth API .
+6. URL http://localhost/notificationService to access for Notification API .
 
 ## API Documentation
 
@@ -76,46 +78,49 @@ You can access the Swagger UI for the APIs using the following links:
 - **GET** `/Api/Departments` - Retrieve all departments.  
 - **POST** `/Api/Departments` - Add a new department.  
 - **PUT** `/Api/Departments` - Update a department.  
-- **GET** `/Api/Departments/{departmentId}` - Get a specific department by ID.  
-- **DELETE** `/Api/Departments/{departmentId}` - Delete a specific department by ID.  
+- **GET** `/Api/Departments/{id}` - Get a specific department by ID.  
+- **DELETE** `/Api/Departments/{id}` - Delete a specific department by ID.  
 
 #### Books
 - **GET** `/Api/Books` - Retrieve all books.  
 - **POST** `/Api/Books` - Add a new book.  
-- **GET** `/Api/Books/{bookId}` - Get details of a specific book by ID.  
-- **DELETE** `/Api/Books/{bookId}` - Delete a specific book by ID.  
-- **GET** `/Api/Books/Download/{bookId}` - Download a specific book by ID.  
+- **GET** `/Api/Books/{id}` - Get details of a specific book by ID.  
+- **DELETE** `/Api/Books/{id}` - Delete a specific book by ID.  
+- **GET** `/Api/Books/Download/{id}` - Download a specific book by ID.  
 
 #### Lectures
 - **GET** `/Api/Lectures` - Retrieve all lectures.  
 - **POST** `/Api/Lectures` - Add a new lecture.  
-- **GET** `/Api/Lectures/{lectureId}` - Get a specific lecture by ID.  
-- **DELETE** `/Api/Lectures/{lectureId}` - Delete a specific lecture by ID.  
-- **GET** `/Api/Lectures/Download/{lectureId}` - Download a lecture by ID.  
+- **GET** `/Api/Lectures/{id}` - Get a specific lecture by ID.  
+- **DELETE** `/Api/Lectures/{id}` - Delete a specific lecture by ID.  
+- **GET** `/Api/Lectures/Download/{id}` - Download a lecture by ID.  
 
 #### Students
 - **GET** `/Api/Students` - Retrieve all students.  
-- **GET** `/Api/Students/{studentId}` - Get details of a specific student by ID.  
-- **DELETE** `/Api/Students/{studentId}` - Delete a specific student by ID.  
+- **GET** `/Api/Students/{id}` - Get details of a specific student by ID.  
+- **DELETE** `/Api/Students/{id}` - Delete a specific student by ID.  
 
 #### Subjects
 - **GET** `/Api/Subjects` - Retrieve all subjects.  
 - **POST** `/Api/Subjects` - Add a new subject.  
 - **PUT** `/Api/Subjects` - Update a subject.  
-- **GET** `/Api/Subjects/{subjectId}` - Get details of a specific subject by ID.  
-- **DELETE** `/Api/Subjects/{subjectId}` - Delete a specific subject by ID.  
+- **GET** `/Api/Subjects/{id}` - Get details of a specific subject by ID.  
+- **DELETE** `/Api/Subjects/{id}` - Delete a specific subject by ID.
+- **POST** `/Api/AddStudent` -  Adds a student to a subject.
 
 #### Teachers
 - **GET** `/Api/Teachers` - Retrieve all teachers.  
-- **GET** `/Api/Teachers/{teacherId}` - Get details of a specific teacher by ID.  
-- **DELETE** `/Api/Teachers/{teacherId}` - Delete a specific teacher by ID.
+- **GET** `/Api/Teachers/{id}` - Get details of a specific teacher by ID.  
+- **DELETE** `/Api/Teachers/{id}` - Delete a specific teacher by ID.
 
 ### Notification API Endpoints
 
 #### Notification
-- **GET** `/Api/Notification` - Retrieve all notifications.  
-- **POST** `/Api/Notification/Send` - Send a new notification.  
-- **PATCH** `/Api/Notification/{notificationId}/Read` - Mark a notification as read.  
+- **GET** `/Api/Notification` - Retrieve all notifications.
+- **GET** `/Api/Notification/UnreadNotifications` - Retrieves all Unread notifications.
+- **POST** `/Api/Notification/Send` - Sends a notification to the specified recipients.
+- **PATCH** `/Api/Notification/{id}/Read` - Marks the specified notification as read.
+- **DELETE** `/Api/Notification/{id}` - Deletes a specific notification by its ID.
 
 
 ---
