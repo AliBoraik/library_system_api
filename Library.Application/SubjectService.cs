@@ -20,7 +20,7 @@ public class SubjectService(
         return mapper.Map<IEnumerable<SubjectDto>>(subjects);
     }
 
-    public async Task<Result<SubjectDetailsDto, Error>> GetSubjectByIdAsync(Guid id)
+    public async Task<Result<SubjectDetailsDto, Error>> GetSubjectByIdAsync(int id)
     {
         var subject = await subjectRepository.FindSubjectDetailsByIdAsync(id);
         if (subject == null)
@@ -28,7 +28,7 @@ public class SubjectService(
         return mapper.Map<SubjectDetailsDto>(subject);
     }
 
-    public async Task<Result<Guid, Error>> AddSubjectAsync(CreateSubjectDto createSubjectDto)
+    public async Task<Result<int, Error>> AddSubjectAsync(CreateSubjectDto createSubjectDto)
     {
         var department = await departmentRepository.DepartmentExistsAsync(createSubjectDto.DepartmentId);
         if (!department)
@@ -39,7 +39,7 @@ public class SubjectService(
         return subject.Id;
     }
 
-    public async Task<Result<Ok, Error>> AddStudentToSubjectAsync(Guid studentId, Guid subjectId)
+    public async Task<Result<Ok, Error>> AddStudentToSubjectAsync(Guid studentId, int subjectId)
     {
         var subject = await subjectRepository.FindSubjectDetailsByIdAsync(subjectId);
         if (subject == null)
@@ -58,7 +58,7 @@ public class SubjectService(
         return new Ok();
     }
 
-    public async Task<Result<Ok, Error>> DeleteSubjectAsync(Guid id)
+    public async Task<Result<Ok, Error>> DeleteSubjectAsync(int id)
     {
         var subject = await subjectRepository.FindSubjectByIdAsync(id);
         if (subject == null)

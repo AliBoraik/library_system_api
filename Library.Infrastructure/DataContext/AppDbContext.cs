@@ -168,14 +168,14 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
 
         var department1 = new Department
         {
-            Id = Guid.NewGuid(),
+            Id = 1,
             Name = "Computer Science",
             Description = "Department of Computer Science"
         };
 
         var department2 = new Department
         {
-            Id = Guid.NewGuid(),
+            Id = 2,
             Name = "Mathematics",
             Description = "Department of Mathematics"
         };

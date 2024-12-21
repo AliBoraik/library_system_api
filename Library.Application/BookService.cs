@@ -90,7 +90,7 @@ public class BookService(
         return bookFilePath;
     }
 
-    private async Task SendBulkNotificationAsync(string title, string message, Guid subjectId , Guid senderId)
+    private async Task SendBulkNotificationAsync(string title, string message, int subjectId , Guid senderId)
     {
         // Retrieve data from the database (adjust the condition as needed)
         var recipients = await subjectRepository.FindStudentIdsBySubjectAsync(subjectId);

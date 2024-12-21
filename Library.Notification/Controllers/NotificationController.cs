@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using Library.Domain;
 using Library.Domain.Constants;
 using Library.Domain.DTOs.Notification;
 using Library.Interfaces.Services;
@@ -33,6 +34,20 @@ public class NotificationController(INotificationService notificationService) : 
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (userId == null) return Unauthorized(StringConstants.UserIdMissing);
         var notifications = await notificationService.GetUnreadNotificationsByUserIdAsync(Guid.Parse(userId));
+        return Ok(notifications);
+    }
+
+    /// <summary>
+    /// Retrieves Limit notifications.
+    /// </summary>
+    [HttpGet("LimitNotifications")]
+    public async Task<ActionResult<IEnumerable<NotificationDto>>> GetLimitNotifications([FromQuery] int page = 1, [FromQuery] int limit = 10)
+    {
+        if (page <= 0 || limit <= 0)
+            return BadRequest(new Error ( 400, "Page and limit must be greater than zero." ));
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userId == null) return Unauthorized(StringConstants.UserIdMissing);
+        var notifications = await notificationService.GetLimitNotificationsAsync(Guid.Parse(userId) , page , limit);
         return Ok(notifications);
     }
 

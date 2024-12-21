@@ -32,7 +32,7 @@ public class StudentRepository(AppDbContext context) : IStudentRepository
             .FirstOrDefaultAsync();
     }
 
-    public async Task<List<Student>> FindStudentsBySubjectAsync(Guid subjectId)
+    public async Task<List<Student>> FindStudentsBySubjectAsync(int subjectId)
     {
         var studentsWithSubjectsAndUser = await context.Students
             .Where(s => s.Subjects.Any(sub => sub.Id == subjectId)) // Filter students by subject ID

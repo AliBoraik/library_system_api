@@ -15,7 +15,13 @@ public class NotificationService(INotificationRepository notificationRepository,
         var notifications = await notificationRepository.FindNotificationsByUserIdAsync(userId);
         return mapper.Map<IEnumerable<NotificationDto>>(notifications);
     }
-    
+
+    public async Task<IEnumerable<NotificationDto>> GetLimitNotificationsAsync(Guid userId , int page, int limit)
+    {
+        var notifications = await notificationRepository.FindLimitNotificationByUserIdAsync(userId , page, limit);
+        return mapper.Map<IEnumerable<NotificationDto>>(notifications);
+    }
+
     public async Task<Result<Ok, Error>> SendBulkNotificationAsync(CreateBulkNotificationDto bulkNotificationDto)
     {
         var notificationModel = new NotificationModel

@@ -1,7 +1,10 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace Library.Domain.Models;
 
 public class NotificationModel
 {
+    [Key]
     public Guid Id { get; set; } // Primary key
     public string Title { get; set; } = null!; // The message title
     public string Message { get; set; } = null!; // The message content

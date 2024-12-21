@@ -6,13 +6,13 @@ public interface ISubjectRepository
 {
     Task<IEnumerable<Subject>> FindAllSubjectsInfoAsync();
     
-    Task<IEnumerable<Guid>> FindStudentIdsBySubjectAsync(Guid subjectId);
-    Task<Subject?> FindSubjectDetailsByIdAsync(Guid id);
-    Task<Subject?> FindSubjectByIdAsync(Guid id);
+    Task<IEnumerable<Guid>> FindStudentIdsBySubjectAsync(int subjectId);
+    Task<Subject?> FindSubjectDetailsByIdAsync(int id);
+    Task<Subject?> FindSubjectByIdAsync(int id);
     
-    Task AddStudentToSubjectAsync(Guid studentId, Guid subjectId);
-    Task<bool> SubjectExistsAsync(Guid id);
+    Task AddStudentToSubjectAsync(Guid studentId, int subjectId);
+    Task<bool> SubjectExistsAsync(int id);
     Task AddSubjectAsync(Subject subject);
     Task UpdateSubjectAsync(Subject subject);
-    Task DeleteSubjectAsync(Subject id);
+    Task DeleteSubjectAsync(Subject subject);
 }

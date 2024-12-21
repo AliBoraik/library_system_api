@@ -43,7 +43,7 @@ public class StudentsController(IStudentService studentService, IOutputCacheStor
     /// </summary>
     [HttpGet("Subject/{id}")]
     [OutputCache(Tags = [OutputCacheTags.Students], PolicyName = nameof(AuthCachePolicy))]
-    public async Task<ActionResult<List<StudentDto>>> GetStudentsBySubjectId(Guid id)
+    public async Task<ActionResult<List<StudentDto>>> GetStudentsBySubjectId(int id)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
         var result = await studentService.GetStudentsBySubjectAsync(id);

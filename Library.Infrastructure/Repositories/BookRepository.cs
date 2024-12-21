@@ -23,7 +23,7 @@ public class BookRepository(AppDbContext context) : IBookRepository
             .FirstOrDefaultAsync();
     }
 
-    public async Task<Book?> FindBookByNameAsync(string name, Guid subjectId)
+    public async Task<Book?> FindBookByNameAsync(string name, int subjectId)
     {
         return await context.Books
             .AsNoTracking()

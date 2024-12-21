@@ -24,7 +24,7 @@ public class StudentService(IStudentRepository studentRepository, ISubjectReposi
         return mapper.Map<StudentDto>(student);
     }
 
-    public async Task<Result<List<StudentDto>, Error>> GetStudentsBySubjectAsync(Guid subjectId)
+    public async Task<Result<List<StudentDto>, Error>> GetStudentsBySubjectAsync(int subjectId)
     {
         var subject = await subjectRepository.SubjectExistsAsync(subjectId);
         if (!subject)

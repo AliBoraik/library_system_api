@@ -14,7 +14,7 @@ public class DepartmentRepository(AppDbContext context) : IDepartmentRepository
             .ToListAsync();
     }
 
-    public async Task<Department?> FindDepartmentByIdAsync(Guid id)
+    public async Task<Department?> FindDepartmentByIdAsync(int id)
     {
         return await context.Departments
             .Where(d => d.Id == id)
@@ -23,7 +23,7 @@ public class DepartmentRepository(AppDbContext context) : IDepartmentRepository
             .FirstOrDefaultAsync();
     }
 
-    public async Task<bool> DepartmentExistsAsync(Guid id)
+    public async Task<bool> DepartmentExistsAsync(int id)
     {
         return await context.Departments.AnyAsync(d => d.Id == id);
     }

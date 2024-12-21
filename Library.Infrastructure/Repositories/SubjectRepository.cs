@@ -14,7 +14,7 @@ public class SubjectRepository(AppDbContext context) : ISubjectRepository
             .ToListAsync();
     }
 
-    public async Task<IEnumerable<Guid>> FindStudentIdsBySubjectAsync(Guid subjectId)
+    public async Task<IEnumerable<Guid>> FindStudentIdsBySubjectAsync(int subjectId)
     {
         var studentIds = await context.Subjects
             .Where(s => s.Id == subjectId)
@@ -24,7 +24,7 @@ public class SubjectRepository(AppDbContext context) : ISubjectRepository
         return studentIds;
     }
 
-    public async Task<Subject?> FindSubjectDetailsByIdAsync(Guid id)
+    public async Task<Subject?> FindSubjectDetailsByIdAsync(int id)
     {
         return await context.Subjects
             .AsNoTracking()
@@ -35,7 +35,7 @@ public class SubjectRepository(AppDbContext context) : ISubjectRepository
             .FirstOrDefaultAsync();
     }
 
-    public async Task<Subject?> FindSubjectByIdAsync(Guid id)
+    public async Task<Subject?> FindSubjectByIdAsync(int id)
     {
         return await context.Subjects
             .AsNoTracking()
@@ -43,7 +43,7 @@ public class SubjectRepository(AppDbContext context) : ISubjectRepository
             .FirstOrDefaultAsync();
     }
 
-    public async Task AddStudentToSubjectAsync(Guid studentId, Guid subjectId)
+    public async Task AddStudentToSubjectAsync(Guid studentId, int subjectId)
     {
         var student = await context.Students.FindAsync(studentId);
         var subject = await context.Subjects.FindAsync(subjectId);
@@ -56,7 +56,7 @@ public class SubjectRepository(AppDbContext context) : ISubjectRepository
         }
     }
 
-    public async Task<bool> SubjectExistsAsync(Guid id)
+    public async Task<bool> SubjectExistsAsync(int id)
     {
         return await context.Subjects.AnyAsync(d => d.Id == id);
     }

@@ -17,6 +17,17 @@ public class NotificationRepository(AppDbContext context) : INotificationReposit
             .ToListAsync();
     }
 
+    public async Task<IEnumerable<NotificationModel>> FindLimitNotificationByUserIdAsync(Guid userId, int page, int limit)
+    {
+        return await  context.Notifications
+            .Where(n => n.UserNotifications.Any(un => un.UserId == userId)) // Filter notifications by userId
+            .Include(n => n.UserNotifications.Where(un => un.UserId == userId)) // Include only UserNotifications where UserId matches
+            .OrderByDescending(n => n.SentAt)
+            .Skip((page - 1) * limit)
+            .Take(limit)
+            .ToListAsync();
+    }
+
     // Add a new notification
     public async Task<Guid> AddNotificationAsync(NotificationModel notification)
     {

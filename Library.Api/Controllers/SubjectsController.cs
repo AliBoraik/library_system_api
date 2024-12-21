@@ -26,9 +26,9 @@ public class SubjectsController(ISubjectService subjectService, IOutputCacheStor
     /// <summary>
     /// Retrieves details of a specific subject by its ID.
     /// </summary>
-    [HttpGet("{id:guid}")]
+    [HttpGet("{id:int}")]
     [OutputCache(Tags = [OutputCacheTags.Subjects], PolicyName = nameof(AuthCachePolicy))]
-    public async Task<ActionResult<SubjectDetailsDto>> GetSubject(Guid id)
+    public async Task<ActionResult<SubjectDetailsDto>> GetSubject(int id)
     {
         var result = await subjectService.GetSubjectByIdAsync(id);
         return result.Match<ActionResult<SubjectDetailsDto>>(
@@ -70,9 +70,9 @@ public class SubjectsController(ISubjectService subjectService, IOutputCacheStor
     /// <summary>
     /// Deletes a specific subject by its ID.
     /// </summary>
-    [HttpDelete("{id:guid}")]
+    [HttpDelete("{id:int}")]
     [Authorize(Roles = AppRoles.Admin)]
-    public async Task<IActionResult> DeleteSubject(Guid id)
+    public async Task<IActionResult> DeleteSubject(int id)
     {
         var result = await subjectService.DeleteSubjectAsync(id);
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);

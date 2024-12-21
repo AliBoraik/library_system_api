@@ -23,7 +23,7 @@ public class LectureRepository(AppDbContext context) : ILectureRepository
             .FirstOrDefaultAsync();
     }
 
-    public async Task<Lecture?> FindLectureByNameAsync(string name, Guid subjectId)
+    public async Task<Lecture?> FindLectureByNameAsync(string name, int subjectId)
     {
         return await context.Lectures
             .AsNoTracking()

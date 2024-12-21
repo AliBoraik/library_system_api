@@ -6,10 +6,10 @@ namespace Library.Interfaces.Services;
 public interface ISubjectService
 {
     Task<IEnumerable<SubjectDto>> GetAllSubjectsAsync();
-    Task<Result<SubjectDetailsDto, Error>> GetSubjectByIdAsync(Guid id);
-    Task<Result<Guid, Error>> AddSubjectAsync(CreateSubjectDto subjectDto);
-    Task<Result<Ok, Error>> AddStudentToSubjectAsync(Guid studentId, Guid subjectId);
+    Task<Result<SubjectDetailsDto, Error>> GetSubjectByIdAsync(int id);
+    Task<Result<int, Error>> AddSubjectAsync(CreateSubjectDto subjectDto);
+    Task<Result<Ok, Error>> AddStudentToSubjectAsync(Guid studentId, int subjectId);
 
     Task<Result<Ok, Error>> UpdateSubjectAsync(SubjectDto subjectDto);
-    Task<Result<Ok, Error>> DeleteSubjectAsync(Guid id);
+    Task<Result<Ok, Error>> DeleteSubjectAsync(int id);
 }

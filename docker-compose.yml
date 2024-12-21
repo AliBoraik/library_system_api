@@ -6,7 +6,6 @@
     env_file: .env
     ports:
       - "5253:8080"
-      - "5254:8081"
   
   library_auth:
     build:
@@ -15,7 +14,6 @@
     env_file: .env
     ports:
       - "5202:8080"
-      - '5203:8081'
   
   library_notification:
     build:
@@ -24,7 +22,6 @@
     env_file: .env
     ports:
       - "5124:8080"
-      - '7115:8081'
   
   library_db:
     image: postgres:latest

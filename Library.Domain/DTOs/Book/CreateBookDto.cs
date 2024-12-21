@@ -7,7 +7,7 @@ namespace Library.Domain.DTOs.Book;
 
 public class CreateBookDto
 {
-    [Required] public Guid SubjectId { get; set; }
+    [Required] public int SubjectId { get; set; }
 
     [Required] public string Title { get; set; } = null!;
 

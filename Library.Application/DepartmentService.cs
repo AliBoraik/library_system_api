@@ -18,7 +18,7 @@ public class DepartmentService(IDepartmentRepository departmentRepository, IMapp
         return Result<IEnumerable<DepartmentDto>, Error>.Ok(dto);
     }
 
-    public async Task<Result<DepartmentDetailsDto, Error>> GetDepartmentByIdAsync(Guid id)
+    public async Task<Result<DepartmentDetailsDto, Error>> GetDepartmentByIdAsync(int id)
     {
         var department = await departmentRepository.FindDepartmentByIdAsync(id);
         if (department == null)
@@ -26,7 +26,7 @@ public class DepartmentService(IDepartmentRepository departmentRepository, IMapp
         return mapper.Map<DepartmentDetailsDto>(department);
     }
 
-    public async Task<Result<Guid, Error>> AddDepartmentAsync(CreateDepartmentDto createDepartmentDto)
+    public async Task<Result<int, Error>> AddDepartmentAsync(CreateDepartmentDto createDepartmentDto)
     {
         var department = mapper.Map<Department>(createDepartmentDto);
         var departmentExists = await departmentRepository.FindDepartmentByIdAsync(department.Id);
@@ -38,7 +38,7 @@ public class DepartmentService(IDepartmentRepository departmentRepository, IMapp
 
     public async Task<Result<Ok, Error>> UpdateDepartmentAsync(DepartmentDto departmentDto)
     {
-        var departmentExists = await departmentRepository.DepartmentExistsAsync((Guid)departmentDto.Id!);
+        var departmentExists = await departmentRepository.DepartmentExistsAsync(departmentDto.Id);
         if (!departmentExists)
             return new Error(StatusCodes.Status404NotFound,
                 $"Can't found Department with ID = {departmentDto.Id}");
@@ -47,7 +47,7 @@ public class DepartmentService(IDepartmentRepository departmentRepository, IMapp
         return new Ok();
     }
 
-    public async Task<Result<Ok, Error>> DeleteDepartmentAsync(Guid id)
+    public async Task<Result<Ok, Error>> DeleteDepartmentAsync(int id)
     {
         var departmentExists = await departmentRepository.FindDepartmentByIdAsync(id);
         if (departmentExists == null)

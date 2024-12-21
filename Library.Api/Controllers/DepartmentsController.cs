@@ -28,9 +28,9 @@ public class DepartmentsController(IDepartmentService departmentService, IOutput
     /// <summary>
     /// Retrieves details of a specific department by its ID.
     /// </summary>
-    [HttpGet("{id:guid}")]
+    [HttpGet("{id:int}")]
     [OutputCache(Tags = [OutputCacheTags.Departments], PolicyName = nameof(AuthCachePolicy))]
-    public async Task<ActionResult<DepartmentDetailsDto>> GetDepartment(Guid id)
+    public async Task<ActionResult<DepartmentDetailsDto>> GetDepartment(int id)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
         var result = await departmentService.GetDepartmentByIdAsync(id);
@@ -71,9 +71,9 @@ public class DepartmentsController(IDepartmentService departmentService, IOutput
     /// <summary>
     /// Deletes a specific department by its ID.
     /// </summary>
-    [HttpDelete("{id:guid}")]
+    [HttpDelete("{id:int}")]
     [Authorize(Roles = AppRoles.Admin)]
-    public async Task<IActionResult> DeleteDepartment(Guid id)
+    public async Task<IActionResult> DeleteDepartment(int id)
     {
         var result = await departmentService.DeleteDepartmentAsync(id);
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
