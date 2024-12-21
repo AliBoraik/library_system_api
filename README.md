@@ -115,9 +115,11 @@ You can access the Swagger UI for the APIs using the following links:
 ### Notification API Endpoints
 
 #### Notification
-- **GET** `/Api/Notification` - Retrieve all notifications.  
-- **POST** `/Api/Notification/Send` - Send a new notification.  
-- **PATCH** `/Api/Notification/{notificationId}/Read` - Mark a notification as read.  
+- **GET** `/Api/Notification` - Retrieve all notifications.
+- **GET** `/Api/Notification/UnreadNotifications` - Retrieves all Unread notifications.
+- **POST** `/Api/Notification/Send` - Sends a notification to the specified recipients.
+- **PATCH** `/Api/Notification/{notificationId}/Read` - Marks the specified notification as read.
+- **DELETE** `/Api/Notification/{id}` - Deletes a specific notification by its ID.
 
 
 ---
