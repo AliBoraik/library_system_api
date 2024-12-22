@@ -65,6 +65,21 @@ public class NotificationController(INotificationService notificationService) : 
             Ok,
             error => StatusCode(error.Code, error));
     }
+    
+    /// <summary>
+    /// Sends Bulk a notification to the specified recipients.
+    /// </summary>
+    [HttpPost("SendBulk")]
+    [Authorize(Roles = AppRoles.Admin)]
+    public async Task<ActionResult> SendBulkNotification([FromBody] CreateBulkNotificationDto request)
+    {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userId == null) return Unauthorized(StringConstants.UserIdMissing);
+        var result = await notificationService.SendBulkNotificationAsync(request);
+        return result.Match<ActionResult>(
+            Ok,
+            error => StatusCode(error.Code, error));
+    }
 
     /// <summary>
     /// Marks the specified notification as read.
