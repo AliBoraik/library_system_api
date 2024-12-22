@@ -42,9 +42,9 @@ public class LectureService(
             return new Error(StatusCodes.Status403Forbidden, "You don't have access");
         // file info
         var lectureId = Guid.NewGuid();
-        var fullDirectoryPath = Path.Combine("Uploads", lectureDto.SubjectId.ToString());
-        var fullFilePath = Path.Combine(fullDirectoryPath, lectureId.ToString()) +
-                           Path.GetExtension(lectureDto.File.FileName);
+        var baseUploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "Uploads");
+        var fullDirectoryPath = Path.Combine(baseUploadsPath, lectureDto.SubjectId.ToString());
+        var fullFilePath = Path.Combine(fullDirectoryPath, lectureId.ToString()) + Path.GetExtension(lectureDto.File.FileName);
         // save in database
         var lecture = mapper.Map<Lecture>(lectureDto);
         lecture.FilePath = fullFilePath;

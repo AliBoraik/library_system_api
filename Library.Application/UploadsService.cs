@@ -15,8 +15,9 @@ public class UploadsService : IUploadsService
             await file.CopyToAsync(stream);
             return new Ok();
         }
-        catch (Exception)
+        catch (Exception e)
         {
+            Console.WriteLine(e);
             return new Error(StatusCodes.Status500InternalServerError, "Can't save file");
         }
     }

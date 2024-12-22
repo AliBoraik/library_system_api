@@ -44,9 +44,9 @@ public class BookService(
             return new Error(StatusCodes.Status403Forbidden, "You don't have access");
         // file info
         var bookId = Guid.NewGuid();
-        var fullDirectoryPath = Path.Combine("Uploads", bookDto.SubjectId.ToString());
-        var fullFilePath = Path.Combine(fullDirectoryPath, bookId.ToString()) +
-                           Path.GetExtension(bookDto.File.FileName);
+        var baseUploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "Uploads");
+        var fullDirectoryPath = Path.Combine(baseUploadsPath, bookDto.SubjectId.ToString());
+        var fullFilePath = Path.Combine(fullDirectoryPath, bookId.ToString()) + Path.GetExtension(bookDto.File.FileName);
         // save in database
         var book = mapper.Map<Book>(bookDto);
         book.FilePath = fullFilePath;
