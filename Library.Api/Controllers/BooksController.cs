@@ -52,8 +52,8 @@ public class BooksController(IBookService bookService, IOutputCacheStore cacheSt
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Books, CancellationToken.None);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Subjects, CancellationToken.None);
-        var bookId = result.Value;
-        return CreatedAtAction("GetBook", new { bookId }, new { bookId });
+        var id = result.Value;
+        return CreatedAtAction("GetBook", new { id }, new { id });
     }
 
     /// <summary>

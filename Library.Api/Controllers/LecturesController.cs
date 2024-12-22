@@ -52,8 +52,8 @@ public class LecturesController(ILectureService lectureService, IOutputCacheStor
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Lectures, CancellationToken.None);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Subjects, CancellationToken.None);
-        var lectureId = result.Value;
-        return CreatedAtAction("GetLecture", new { lectureId }, new { lectureId });
+        var id = result.Value;
+        return CreatedAtAction("GetLecture", new { id }, new { id });
     }
 
     /// <summary>
