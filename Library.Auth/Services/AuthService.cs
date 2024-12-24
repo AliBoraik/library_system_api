@@ -98,7 +98,7 @@ public class AuthService(UserManager<User> userManager, ITokenService tokenServi
         return new Ok();
     }
 
-    public async Task<Result<Ok, Error>> RegisterStudent(RegisterDto dto)
+    public async Task<Result<Ok, Error>> RegisterStudent(RegisterStudentDto dto)
     {
         var userExists = await userManager.FindByEmailAsync(dto.Email);
         if (userExists != null)
@@ -116,6 +116,7 @@ public class AuthService(UserManager<User> userManager, ITokenService tokenServi
         var student = new Student
         {
             Id = user.Id,
+            DepartmentId = dto.DepartmentId
         };
         await context.Students.AddAsync(student);
         await context.SaveChangesAsync();

@@ -66,10 +66,10 @@ public class AuthController(IAuthService authService, IOutputCacheStore cacheSto
     [HttpPost]
     [Route("Register-Student")]
     [Authorize(Roles = AppRoles.Admin)]
-    public async Task<IActionResult> RegisterStudent([FromBody] RegisterDto registerDto)
+    public async Task<IActionResult> RegisterStudent([FromBody] RegisterStudentDto registerStudentDto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
-        var result = await authService.RegisterStudent(registerDto);
+        var result = await authService.RegisterStudent(registerStudentDto);
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Students, CancellationToken.None);
         return Ok();
