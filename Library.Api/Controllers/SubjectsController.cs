@@ -80,19 +80,5 @@ public class SubjectsController(ISubjectService subjectService, IOutputCacheStor
         await cacheStore.EvictByTagAsync(OutputCacheTags.Departments, CancellationToken.None);
         return Ok();
     }
-
-    /// <summary>
-    /// Adds a student to a subject.
-    /// </summary>
-    [HttpPost("AddStudent")]
-    [Authorize(Roles = AppRoles.Admin)]
-    public async Task<IActionResult> AddStudentToSubject([FromBody] AddStudentToSubjectRequest request)
-    {
-        if (!ModelState.IsValid) return BadRequest(ModelState);
-        var result = await subjectService.AddStudentToSubjectAsync(request.StudentId, request.SubjectId);
-        await cacheStore.EvictByTagAsync(OutputCacheTags.Students, CancellationToken.None);
-        return result.Match<ActionResult>(
-            _ => Ok(),
-            error => StatusCode(error.Code, error));
-    }
+    
 }

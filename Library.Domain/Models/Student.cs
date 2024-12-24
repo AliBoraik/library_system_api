@@ -10,7 +10,8 @@ public class Student
     
     [ForeignKey(nameof(Id))]
     public virtual User User { get; set; }
-
-    public List<Subject> Subjects { get; } = [];
+    
+    public int DepartmentId { get; set; } 
+    public Department Department { get; set; }
     
 }

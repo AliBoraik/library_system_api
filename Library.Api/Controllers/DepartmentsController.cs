@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Library.Application.CachePolicies;
 using Library.Domain.Constants;
 using Library.Domain.DTOs.Department;
@@ -17,12 +18,34 @@ public class DepartmentsController(IDepartmentService departmentService, IOutput
     /// </summary>
     [HttpGet]
     [OutputCache(Tags = [OutputCacheTags.Departments], PolicyName = nameof(AuthCachePolicy))]
+    [Authorize(Roles = AppRoles.Admin)]
     public async Task<ActionResult<IEnumerable<DepartmentDto>>> GetDepartments()
     {
         var result = await departmentService.GetAllDepartmentsAsync();
         return result.Match<ActionResult<IEnumerable<DepartmentDto>>>(
             dto => Ok(dto),
             error => StatusCode(error.Code, error));
+    }
+    
+    /// <summary>
+    /// Retrieves details of a specific department by userIdClaim.
+    /// </summary>
+    [HttpGet("User")]
+    [OutputCache(Tags = [OutputCacheTags.Departments] ,  PolicyName = nameof(AuthUserIdCachePolicy))]
+    public async Task<ActionResult<DepartmentDetailsDto>> GetUserDepartment()
+    {
+        // Extract userId from JWT token
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        // Convert userId to Guid
+        if (!Guid.TryParse(userIdClaim, out var userGuid))
+        {
+            return BadRequest("Invalid user ID.");
+        }
+        var result = await departmentService.GetUserDepartmentAsync(userGuid);
+        return result.Match<ActionResult<DepartmentDetailsDto>>(
+            dto => Ok(dto),
+            error => StatusCode(error.Code, error));
+
     }
     
     /// <summary>
