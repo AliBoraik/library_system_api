@@ -6,6 +6,7 @@ namespace Library.Interfaces.Services;
 public interface IDepartmentService
 {
     Task<Result<IEnumerable<DepartmentDto>, Error>> GetAllDepartmentsAsync();
+    Task<Result<DepartmentDetailsDto, Error>> GetUserDepartmentAsync(Guid userId);
     Task<Result<DepartmentDetailsDto, Error>> GetDepartmentByIdAsync(int id);
     Task<Result<int, Error>> AddDepartmentAsync(CreateDepartmentDto createDepartmentDto);
     Task<Result<Ok, Error>> UpdateDepartmentAsync(DepartmentDto createDepartmentDto);

@@ -56,9 +56,12 @@ public class BookService(
         // save in disk
         var uploadResult = await uploadsService.AddFile(fullDirectoryPath, fullFilePath, bookDto.File);
         
+        // Retrieve data from the database (adjust the condition as needed)
+        var recipients =new List<Guid>();
+        
         _ = Task.Run(async () =>
         {
-            await SendBulkNotificationAsync("New Book Added", "New Book Added you can download or read it" , subject.Id , subject.TeacherId);
+            await SendBulkNotificationAsync("New Book Added", "New Book Added you can download or read it" , recipients , subject.TeacherId);
         });
         
         if (uploadResult.IsOk) return book.Id;
@@ -90,10 +93,8 @@ public class BookService(
         return bookFilePath;
     }
 
-    private async Task SendBulkNotificationAsync(string title, string message, int subjectId , Guid senderId)
+    private async Task SendBulkNotificationAsync(string title, string message, IEnumerable<Guid> recipients , Guid senderId)
     {
-        // Retrieve data from the database (adjust the condition as needed)
-        var recipients = await subjectRepository.FindStudentIdsBySubjectAsync(subjectId);
         // Create the notification request
         var notificationRequest = new CreateBulkNotificationDto
         {

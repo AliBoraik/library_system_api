@@ -8,6 +8,6 @@ public interface IAuthService
     Task<Result<AuthDataResponse, Error>> LoginAsync(LoginDto loginDto);
     Task<Result<AuthDataResponse, Error>> RefreshTokenAsync(RefreshTokenDto refreshTokenDto);
     Task<Result<Ok, Error>> RegisterTeacher(RegisterDto dto);
-    Task<Result<Ok, Error>> RegisterStudent(RegisterDto dto);
+    Task<Result<Ok, Error>> RegisterStudent(RegisterStudentDto dto);
     Task<Result<Ok, Error>> RegisterAdmin(RegisterDto dto);
 }
