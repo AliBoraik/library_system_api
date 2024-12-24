@@ -14,6 +14,18 @@ public class DepartmentRepository(AppDbContext context) : IDepartmentRepository
             .ToListAsync();
     }
 
+    public async Task<Department?> FindUserDepartmentAsync(Guid userId)
+    {
+        var student = await context.Students
+            .AsNoTracking()
+            .Where(s => s.User.Id == userId)  // Find student by userId
+            .Include(s => s.Department)       // Include the department
+            .ThenInclude(d => d.Subjects) // Include subjects in the department
+            .FirstOrDefaultAsync();
+
+        return student?.Department; // Return department with subjects or null if not found
+    }
+
     public async Task<Department?> FindDepartmentByIdAsync(int id)
     {
         return await context.Departments
@@ -22,7 +34,7 @@ public class DepartmentRepository(AppDbContext context) : IDepartmentRepository
             .Include(d => d.Subjects)
             .FirstOrDefaultAsync();
     }
-
+    
     public async Task<bool> DepartmentExistsAsync(int id)
     {
         return await context.Departments.AnyAsync(d => d.Id == id);
@@ -55,7 +67,7 @@ public class DepartmentRepository(AppDbContext context) : IDepartmentRepository
             .FirstOrDefaultAsync();
     }
 
-    private async Task Save()
+    public async Task Save()
     {
         await context.SaveChangesAsync();
     }

@@ -12,7 +12,7 @@ public class NotificationRepository(AppDbContext context) : INotificationReposit
     {
         return await  context.Notifications
             .Where(n => n.UserNotifications.Any(un => un.UserId == userId)) // Filter notifications by userId
-            .Include(n => n.UserNotifications.Where(un => un.UserId == userId)) // Include only UserNotifications where UserId matches
+            .Include(n => n.UserNotifications.Where(un => un.UserId == userId)) // Include only UserNotifications where Id matches
             .OrderByDescending(n => n.SentAt)
             .ToListAsync();
     }
@@ -21,7 +21,7 @@ public class NotificationRepository(AppDbContext context) : INotificationReposit
     {
         return await  context.Notifications
             .Where(n => n.UserNotifications.Any(un => un.UserId == userId)) // Filter notifications by userId
-            .Include(n => n.UserNotifications.Where(un => un.UserId == userId)) // Include only UserNotifications where UserId matches
+            .Include(n => n.UserNotifications.Where(un => un.UserId == userId)) // Include only UserNotifications where Id matches
             .OrderByDescending(n => n.SentAt)
             .Skip((page - 1) * limit)
             .Take(limit)
@@ -65,7 +65,7 @@ public class NotificationRepository(AppDbContext context) : INotificationReposit
     {
         return await  context.Notifications
             .Where(n => n.UserNotifications.Any(un => un.UserId == userId && !un.IsRead)) // Filter notifications by userId
-            .Include(n => n.UserNotifications.Where(un => un.UserId == userId)) // Include only UserNotifications where UserId matches
+            .Include(n => n.UserNotifications.Where(un => un.UserId == userId)) // Include only UserNotifications where Id matches
             .OrderByDescending(n => n.SentAt)
             .ToListAsync();
     }

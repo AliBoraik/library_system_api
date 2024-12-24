@@ -10,6 +10,7 @@ public class StudentRepository(AppDbContext context) : IStudentRepository
     public async Task<IEnumerable<Student>> FindStudentsAsync()
     {
         return await context.Students
+            .AsNoTracking()
             .Include(s => s.User)
             .ToListAsync();
     }
@@ -17,7 +18,6 @@ public class StudentRepository(AppDbContext context) : IStudentRepository
     public async Task<Student?> FindStudentByIdAsync(Guid id)
     {
         return await context.Students
-            .AsNoTracking()
             .Where(s => s.Id == id)
             .Include(s => s.User)
             .FirstOrDefaultAsync();
@@ -26,7 +26,6 @@ public class StudentRepository(AppDbContext context) : IStudentRepository
     public async Task<Student?> FindStudentByNameAsync(string name)
     {
         return await context.Students
-            .AsNoTracking()
             .Include(s => s.User)
             .Where(s => s.User.UserName == name)
             .FirstOrDefaultAsync();
@@ -35,16 +34,19 @@ public class StudentRepository(AppDbContext context) : IStudentRepository
     public async Task<List<Student>> FindStudentsBySubjectAsync(int subjectId)
     {
         var studentsWithSubjectsAndUser = await context.Students
-            .Where(s => s.Subjects.Any(sub => sub.Id == subjectId)) // Filter students by subject ID
-            .Include(s => s.User)
+            .Where(s => s.Department.Subjects
+                .Any(sub => sub.Id == subjectId))
+            .Include(s => s.User) 
             .ToListAsync();
+        
         return studentsWithSubjectsAndUser;
     }
 
     public async Task DeleteStudentAsync(Student student)
     {
-        context.Students.Remove(student);
-        await Save();
+        context.Students.Remove(student); 
+        context.Users.Remove(student.User);
+        await Save() ;
     }
 
     private async Task Save()

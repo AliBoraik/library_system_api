@@ -13,17 +13,7 @@ public class SubjectRepository(AppDbContext context) : ISubjectRepository
             .AsNoTracking()
             .ToListAsync();
     }
-
-    public async Task<IEnumerable<Guid>> FindStudentIdsBySubjectAsync(int subjectId)
-    {
-        var studentIds = await context.Subjects
-            .Where(s => s.Id == subjectId)
-            .SelectMany(s => s.Students) // Flatten the collection of Students
-            .Select(student => student.Id) // Select only the Student ID
-            .ToListAsync();
-        return studentIds;
-    }
-
+    
     public async Task<Subject?> FindSubjectDetailsByIdAsync(int id)
     {
         return await context.Subjects
@@ -42,20 +32,7 @@ public class SubjectRepository(AppDbContext context) : ISubjectRepository
             .Where(s => s.Id == id)
             .FirstOrDefaultAsync();
     }
-
-    public async Task AddStudentToSubjectAsync(Guid studentId, int subjectId)
-    {
-        var student = await context.Students.FindAsync(studentId);
-        var subject = await context.Subjects.FindAsync(subjectId);
-
-        if (student != null && subject != null)
-        {
-            // Ensure the Students collection is initialized
-            subject.Students.Add(student);
-            await Save();
-        }
-    }
-
+    
     public async Task<bool> SubjectExistsAsync(int id)
     {
         return await context.Subjects.AnyAsync(d => d.Id == id);

@@ -36,6 +36,7 @@ public class TeacherRepository(AppDbContext context) : ITeacherRepository
     public async Task DeleteTeacherAsync(Teacher teacher)
     {
         context.Teachers.Remove(teacher);
+        context.Users.Remove(teacher.User);
         await Save();
     }
 

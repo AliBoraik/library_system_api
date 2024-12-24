@@ -34,6 +34,7 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
             .HasMany(d => d.Subjects)
             .WithOne(s => s.Department)
             .HasForeignKey(s => s.DepartmentId);
+        
         modelBuilder.Entity<Subject>()
             .HasMany(s => s.Lectures)
             .WithOne(l => l.Subject)
@@ -48,6 +49,12 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
             .HasMany(t => t.Subjects)
             .WithOne(s => s.Teacher)
             .HasForeignKey(s => s.TeacherId);
+        
+        // One-to-Many configuration
+        modelBuilder.Entity<Student>()
+            .HasOne(s => s.Department)
+            .WithMany(d => d.Students)
+            .HasForeignKey(s => s.DepartmentId);
         
         modelBuilder.Entity<UserNotification>()
             .HasKey(un => new { un.NotificationId, un.UserId }); // Composite key
@@ -67,11 +74,11 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
         var teacherRoleId = Guid.NewGuid();
         var studentRoleId = Guid.NewGuid();
         // admin id 
-        var adminId = Guid.NewGuid();
+        var adminId = Guid.Parse("5526a0f8-4e48-4e32-a227-a6f881dd8e26");
         // user 1 id
-        var user1Id = Guid.NewGuid();
+        var teacherId = Guid.Parse("f33f8675-06a1-4a28-b111-f7201cd6eb2f");
         // user 2 id
-        var user2Id = Guid.NewGuid();
+        var studentId = Guid.Parse("bdbb81d1-824f-41c7-b4a9-982c8dcb13dc");
 
 
         modelBuilder.Entity<IdentityRole<Guid>>()
@@ -117,7 +124,7 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
         modelBuilder.Entity<User>()
             .HasData(new User
             {
-                Id = user1Id,
+                Id = teacherId,
                 Email = "teacher@gmail.com",
                 NormalizedEmail = "TEACHER@GMAIL.COM",
                 SecurityStamp = Guid.NewGuid().ToString(),
@@ -129,13 +136,13 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
         modelBuilder.Entity<Teacher>()
             .HasData(new Teacher
             {
-                Id = user1Id,
+                Id = teacherId,
             });
 
         modelBuilder.Entity<User>()
             .HasData(new User
             {
-                Id = user2Id,
+                Id = studentId,
                 Email = "student@gmail.com",
                 NormalizedEmail = "STUDENT@GMAIL.COM",
                 SecurityStamp = Guid.NewGuid().ToString(),
@@ -147,7 +154,8 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
         modelBuilder.Entity<Student>()
             .HasData(new Student
             {
-                Id = user2Id
+                Id = studentId,
+                DepartmentId = 1
             });
 
 
@@ -155,14 +163,14 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
             new IdentityUserRole<Guid>
             {
                 RoleId = teacherRoleId,
-                UserId = user1Id
+                UserId = teacherId
             });
 
         modelBuilder.Entity<IdentityUserRole<Guid>>().HasData(
             new IdentityUserRole<Guid>
             {
                 RoleId = studentRoleId,
-                UserId = user2Id
+                UserId = studentId
             });
 
 
