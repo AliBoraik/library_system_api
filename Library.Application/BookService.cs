@@ -7,6 +7,8 @@ using Library.Domain.Models;
 using Library.Interfaces.Repositories;
 using Library.Interfaces.Services;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Library.Application;
 
@@ -14,6 +16,8 @@ public class BookService(
     IBookRepository bookRepository,
     ISubjectRepository subjectRepository,
     IProducerService producerService,
+    UserManager<User> userManager,
+    IStudentRepository studentRepository,
     IMapper mapper,
     IUploadsService uploadsService) : IBookService
 {
@@ -36,37 +40,50 @@ public class BookService(
         var bookExists = await bookRepository.FindBookByNameAsync(bookDto.Title, bookDto.SubjectId);
         if (bookExists != null)
             return new Error(StatusCodes.Status409Conflict, $"Book with title = {bookDto.Title} already exists");
-        // check Id 
+        // check bookDto.SubjectId 
         var subject = await subjectRepository.FindSubjectByIdAsync(bookDto.SubjectId);
         if (subject == null)
             return new Error(StatusCodes.Status404NotFound, $"Subject with Id = {bookDto.SubjectId} not found");
+        // check subject.TeacherId 
         if (subject.TeacherId != userId)
-            return new Error(StatusCodes.Status403Forbidden, "You don't have access");
+        {
+            // check if userId is Admin 
+            var user = await userManager.FindByIdAsync(userId.ToString());
+            if (user == null)
+            {
+                return new Error(StatusCodes.Status404NotFound, "User not found!");
+            }
+            // Fetch the roles assigned to the user
+            if(!await userManager.IsInRoleAsync(user , AppRoles.Admin)) 
+                return new Error(StatusCodes.Status403Forbidden, "You don't have access");
+        }
+
         // file info
         var bookId = Guid.NewGuid();
         var baseUploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "Uploads");
         var fullDirectoryPath = Path.Combine(baseUploadsPath, bookDto.SubjectId.ToString());
         var fullFilePath = Path.Combine(fullDirectoryPath, bookId.ToString()) + Path.GetExtension(bookDto.File.FileName);
+        // save in disk
+        var uploadResult = await uploadsService.AddFile(fullDirectoryPath, fullFilePath, bookDto.File);
+        if (!uploadResult.IsOk)
+            return uploadResult.Error;
         // save in database
         var book = mapper.Map<Book>(bookDto);
         book.FilePath = fullFilePath;
         book.Id = bookId;
         book.UploadedBy = userId;
         await bookRepository.AddBookAsync(book);
-        // save in disk
-        var uploadResult = await uploadsService.AddFile(fullDirectoryPath, fullFilePath, bookDto.File);
-        
-        // Retrieve data from the database (adjust the condition as needed)
-        var recipients =new List<Guid>();
-        
+       
+       // Run sending notification  in the background
+       var recipients = await studentRepository.FindStudentIdsByDepartmentIdAsync(subject.DepartmentId);
+       
         _ = Task.Run(async () =>
         {
-            await SendBulkNotificationAsync("New Book Added", "New Book Added you can download or read it" , recipients , subject.TeacherId);
+            
+            // Send notification in the background
+            await SendBulkNotificationAsync($"Book Added - {bookDto.Title}", "New Book Added you can download or read it", recipients, subject.TeacherId);
         });
-        
-        if (uploadResult.IsOk) return book.Id;
-        await bookRepository.DeleteBookAsync(book);
-        return uploadResult.Error;
+       return book.Id;
     }
 
     public async Task<Result<Ok, Error>> DeleteBookAsync(Guid id, Guid userId)
@@ -92,6 +109,8 @@ public class BookService(
             return new Error(StatusCodes.Status404NotFound, $"Can't found Book with ID = {id}");
         return bookFilePath;
     }
+    
+
 
     private async Task SendBulkNotificationAsync(string title, string message, IEnumerable<Guid> recipients , Guid senderId)
     {

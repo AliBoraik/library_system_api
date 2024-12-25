@@ -31,15 +31,23 @@ public class StudentRepository(AppDbContext context) : IStudentRepository
             .FirstOrDefaultAsync();
     }
 
-    public async Task<IEnumerable<Student>> FindStudentsBySubjectAsync(int subjectId)
+    public async Task<IEnumerable<Student>> FindStudentsByDepartmentIdAsync(int departmentId)
     {
         var studentsWithSubjectsAndUser = await context.Students
-            .Where(s => s.User.Department.Subjects
-                .Any(sub => sub.Id == subjectId))
+            .Where(s => s.User.DepartmentId == departmentId)
             .Include(s => s.User) 
             .ToListAsync();
         
         return studentsWithSubjectsAndUser;
+    }
+
+    public async Task<IEnumerable<Guid>> FindStudentIdsByDepartmentIdAsync(int departmentId)
+    {
+        var studentsIds = await context.Students
+            .Where(s => s.User.DepartmentId == departmentId)
+            .Select(s => s.Id)
+            .ToListAsync();
+        return studentsIds;
     }
 
     public async Task DeleteStudentAsync(Student student)

@@ -57,7 +57,8 @@ public class AuthController(IAuthService authService, IOutputCacheStore cacheSto
         var result = await authService.RegisterTeacher(registerTeacherDto);
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Teachers, CancellationToken.None);
-        return Ok();
+        var id = result.Value;
+        return Ok(new { id });
     }
 
     /// <summary>
@@ -72,7 +73,8 @@ public class AuthController(IAuthService authService, IOutputCacheStore cacheSto
         var result = await authService.RegisterStudent(registerStudentDto);
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Students, CancellationToken.None);
-        return Ok();
+        var id = result.Value;
+        return Ok(new { id });
     }
 
     /// <summary>

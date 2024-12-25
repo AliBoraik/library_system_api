@@ -46,7 +46,7 @@ public class StudentsController(IStudentService studentService, IOutputCacheStor
     public async Task<ActionResult<List<StudentDto>>> GetStudentsBySubjectId(int id)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
-        var result = await studentService.GetStudentsBySubjectAsync(id);
+        var result = await studentService.GetStudentsByDepartmentIdAsync(id);
         return result.Match<ActionResult<List<StudentDto>>>(
             dto => Ok(dto),
             error => StatusCode(error.Code, error));
