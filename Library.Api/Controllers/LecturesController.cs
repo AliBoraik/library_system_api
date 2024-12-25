@@ -45,10 +45,14 @@ public class LecturesController(ILectureService lectureService, IOutputCacheStor
     public async Task<ActionResult<LectureResponseDto>> PostLecture([FromForm] CreateLectureDto createLectureDto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
-        // Get the current user's ID
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (userId == null) return Unauthorized(StringConstants.UserIdMissing);
-        var result = await lectureService.AddLectureAsync(createLectureDto, Guid.Parse(userId));
+        // Extract userId from JWT token
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        // Convert userId to Guid
+        if (!Guid.TryParse(userIdClaim, out var userGuid))
+        {
+            return BadRequest("Invalid user ID.");
+        }
+        var result = await lectureService.AddLectureAsync(createLectureDto, userGuid);
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Lectures, CancellationToken.None);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Subjects, CancellationToken.None);
@@ -63,10 +67,14 @@ public class LecturesController(ILectureService lectureService, IOutputCacheStor
     [Authorize(Roles = $"{AppRoles.Admin},{AppRoles.Teacher}")]
     public async Task<IActionResult> DeleteLecture(Guid id)
     {
-        // Get the current user's ID
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (userId == null) return Unauthorized(StringConstants.UserIdMissing);
-        var result = await lectureService.DeleteLectureAsync(id, Guid.Parse(userId));
+        // Extract userId from JWT token
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        // Convert userId to Guid
+        if (!Guid.TryParse(userIdClaim, out var userGuid))
+        {
+            return BadRequest("Invalid user ID.");
+        }
+        var result = await lectureService.DeleteLectureAsync(id, userGuid);
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Lectures, CancellationToken.None);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Subjects, CancellationToken.None);

@@ -7,4 +7,7 @@ public class User : IdentityUser<Guid>
 {
     public ICollection<UserNotification> UserNotifications { get; set; } = new List<UserNotification>();
     
+    public int? DepartmentId { get; set; } 
+    public Department Department { get; set; }
+    
 }

@@ -45,10 +45,14 @@ public class BooksController(IBookService bookService, IOutputCacheStore cacheSt
     public async Task<ActionResult<BookResponseDto>> PostBook([FromForm] CreateBookDto createLectureDto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
-        // Get the current user's ID
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (userId == null) return Unauthorized(StringConstants.UserIdMissing);
-        var result = await bookService.AddBookAsync(createLectureDto, Guid.Parse(userId));
+        // Extract userId from JWT token
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        // Convert userId to Guid
+        if (!Guid.TryParse(userIdClaim, out var userGuid))
+        {
+            return BadRequest("Invalid user ID.");
+        }
+        var result = await bookService.AddBookAsync(createLectureDto, userGuid);
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Books, CancellationToken.None);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Subjects, CancellationToken.None);
@@ -63,10 +67,14 @@ public class BooksController(IBookService bookService, IOutputCacheStore cacheSt
     [Authorize(Roles = $"{AppRoles.Admin},{AppRoles.Teacher}")]
     public async Task<IActionResult> DeleteBook(Guid id)
     {
-        // Get the current user's ID
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (userId == null) return Unauthorized(StringConstants.UserIdMissing);
-        var result = await bookService.DeleteBookAsync(id, Guid.Parse(userId));
+        // Extract userId from JWT token
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        // Convert userId to Guid
+        if (!Guid.TryParse(userIdClaim, out var userGuid))
+        {
+            return BadRequest("Invalid user ID.");
+        }
+        var result = await bookService.DeleteBookAsync(id, userGuid);
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Books, CancellationToken.None);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Subjects, CancellationToken.None);

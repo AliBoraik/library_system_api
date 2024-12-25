@@ -31,10 +31,10 @@ public class StudentRepository(AppDbContext context) : IStudentRepository
             .FirstOrDefaultAsync();
     }
 
-    public async Task<List<Student>> FindStudentsBySubjectAsync(int subjectId)
+    public async Task<IEnumerable<Student>> FindStudentsBySubjectAsync(int subjectId)
     {
         var studentsWithSubjectsAndUser = await context.Students
-            .Where(s => s.Department.Subjects
+            .Where(s => s.User.Department.Subjects
                 .Any(sub => sub.Id == subjectId))
             .Include(s => s.User) 
             .ToListAsync();

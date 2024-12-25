@@ -51,9 +51,9 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
             .HasForeignKey(s => s.TeacherId);
         
         // One-to-Many configuration
-        modelBuilder.Entity<Student>()
+        modelBuilder.Entity<User>()
             .HasOne(s => s.Department)
-            .WithMany(d => d.Students)
+            .WithMany(d => d.Users)
             .HasForeignKey(s => s.DepartmentId);
         
         modelBuilder.Entity<UserNotification>()
@@ -148,14 +148,14 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
                 SecurityStamp = Guid.NewGuid().ToString(),
                 UserName = "student",
                 NormalizedUserName = "STUDENT",
-                PasswordHash = "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q=="
+                PasswordHash = "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q==",
+                DepartmentId = 1
             });
 
         modelBuilder.Entity<Student>()
             .HasData(new Student
             {
                 Id = studentId,
-                DepartmentId = 1
             });
 
 

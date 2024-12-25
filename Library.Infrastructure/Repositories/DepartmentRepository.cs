@@ -16,10 +16,10 @@ public class DepartmentRepository(AppDbContext context) : IDepartmentRepository
 
     public async Task<Department?> FindUserDepartmentAsync(Guid userId)
     {
-        var student = await context.Students
+        var student = await context.Users
             .AsNoTracking()
-            .Where(s => s.User.Id == userId)  // Find student by userId
-            .Include(s => s.Department)       // Include the department
+            .Where(u => u.Id == userId)  // Find student by userId
+            .Include(u => u.Department)       // Include the department
             .ThenInclude(d => d.Subjects) // Include subjects in the department
             .FirstOrDefaultAsync();
 

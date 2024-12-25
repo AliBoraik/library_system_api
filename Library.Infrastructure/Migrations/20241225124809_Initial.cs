@@ -29,31 +29,6 @@ namespace Library.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AspNetUsers",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    NormalizedEmail = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    EmailConfirmed = table.Column<bool>(type: "boolean", nullable: false),
-                    PasswordHash = table.Column<string>(type: "text", nullable: true),
-                    SecurityStamp = table.Column<string>(type: "text", nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "text", nullable: true),
-                    PhoneNumber = table.Column<string>(type: "text", nullable: true),
-                    PhoneNumberConfirmed = table.Column<bool>(type: "boolean", nullable: false),
-                    TwoFactorEnabled = table.Column<bool>(type: "boolean", nullable: false),
-                    LockoutEnd = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
-                    LockoutEnabled = table.Column<bool>(type: "boolean", nullable: false),
-                    AccessFailedCount = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Departments",
                 columns: table => new
                 {
@@ -86,6 +61,37 @@ namespace Library.Infrastructure.Migrations
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUsers",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    DepartmentId = table.Column<int>(type: "integer", nullable: true),
+                    UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    NormalizedEmail = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    EmailConfirmed = table.Column<bool>(type: "boolean", nullable: false),
+                    PasswordHash = table.Column<string>(type: "text", nullable: true),
+                    SecurityStamp = table.Column<string>(type: "text", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "text", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "text", nullable: true),
+                    PhoneNumberConfirmed = table.Column<bool>(type: "boolean", nullable: false),
+                    TwoFactorEnabled = table.Column<bool>(type: "boolean", nullable: false),
+                    LockoutEnd = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    LockoutEnabled = table.Column<bool>(type: "boolean", nullable: false),
+                    AccessFailedCount = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AspNetUsers_Departments_DepartmentId",
+                        column: x => x.DepartmentId,
+                        principalTable: "Departments",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -195,6 +201,23 @@ namespace Library.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Students",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Students", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Students_AspNetUsers_Id",
+                        column: x => x.Id,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Teachers",
                 columns: table => new
                 {
@@ -207,30 +230,6 @@ namespace Library.Infrastructure.Migrations
                         name: "FK_Teachers_AspNetUsers_Id",
                         column: x => x.Id,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Students",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    DepartmentId = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Students", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Students_AspNetUsers_Id",
-                        column: x => x.Id,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Students_Departments_DepartmentId",
-                        column: x => x.DepartmentId,
-                        principalTable: "Departments",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -339,19 +338,18 @@ namespace Library.Infrastructure.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { new Guid("205ef090-44c8-41eb-85b5-9b9c2a210d62"), null, "student", "STUDENT" },
-                    { new Guid("6d3a19de-db16-4bcb-8789-3309801af7af"), null, "teacher", "TEACHER" },
-                    { new Guid("ae4c5a64-173e-4b79-ae57-92c5adb4c06b"), null, "admin", "ADMIN" }
+                    { new Guid("0ec09036-8afa-4cf1-a3ce-3bbf1558e68c"), null, "student", "STUDENT" },
+                    { new Guid("b3625075-b908-48ff-bf15-7db72245b4e2"), null, "teacher", "TEACHER" },
+                    { new Guid("ef032e1f-4366-4dd4-842e-26bdfc5ebb66"), null, "admin", "ADMIN" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
-                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "DepartmentId", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { new Guid("5526a0f8-4e48-4e32-a227-a6f881dd8e26"), 0, "1b35cdc5-c42d-4865-bd11-d2adf19d6a4a", "admin@gmail.com", false, false, null, "ADMIN@GMAIL.COM", "ADMIN", "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q==", null, false, "dc9b64b2-f315-4705-8487-970d4146c107", false, "admin" },
-                    { new Guid("bdbb81d1-824f-41c7-b4a9-982c8dcb13dc"), 0, "83daf466-577c-4967-b87c-6dfb6205d894", "student@gmail.com", false, false, null, "STUDENT@GMAIL.COM", "STUDENT", "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q==", null, false, "87435644-1ba1-4383-8f01-886873e5e02e", false, "student" },
-                    { new Guid("f33f8675-06a1-4a28-b111-f7201cd6eb2f"), 0, "71e4a45c-7af1-4092-b51c-6848d54c9b51", "teacher@gmail.com", false, false, null, "TEACHER@GMAIL.COM", "TEACHER", "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q==", null, false, "2d61a3e7-9953-4ee1-807b-5cae28a1d8ab", false, "teacher" }
+                    { new Guid("5526a0f8-4e48-4e32-a227-a6f881dd8e26"), 0, "2b9241ac-308c-4fd6-aa8c-17fbf6656c3b", null, "admin@gmail.com", false, false, null, "ADMIN@GMAIL.COM", "ADMIN", "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q==", null, false, "a80aa9f0-b693-4e9a-aeae-beb15b576aab", false, "admin" },
+                    { new Guid("f33f8675-06a1-4a28-b111-f7201cd6eb2f"), 0, "b86f59a9-890c-4b23-8bff-77a4e8296f97", null, "teacher@gmail.com", false, false, null, "TEACHER@GMAIL.COM", "TEACHER", "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q==", null, false, "6f37fa27-85f6-40f2-8190-94ca0d42f1ed", false, "teacher" }
                 });
 
             migrationBuilder.InsertData(
@@ -368,20 +366,29 @@ namespace Library.Infrastructure.Migrations
                 columns: new[] { "RoleId", "UserId" },
                 values: new object[,]
                 {
-                    { new Guid("ae4c5a64-173e-4b79-ae57-92c5adb4c06b"), new Guid("5526a0f8-4e48-4e32-a227-a6f881dd8e26") },
-                    { new Guid("205ef090-44c8-41eb-85b5-9b9c2a210d62"), new Guid("bdbb81d1-824f-41c7-b4a9-982c8dcb13dc") },
-                    { new Guid("6d3a19de-db16-4bcb-8789-3309801af7af"), new Guid("f33f8675-06a1-4a28-b111-f7201cd6eb2f") }
+                    { new Guid("ef032e1f-4366-4dd4-842e-26bdfc5ebb66"), new Guid("5526a0f8-4e48-4e32-a227-a6f881dd8e26") },
+                    { new Guid("b3625075-b908-48ff-bf15-7db72245b4e2"), new Guid("f33f8675-06a1-4a28-b111-f7201cd6eb2f") }
                 });
 
             migrationBuilder.InsertData(
-                table: "Students",
-                columns: new[] { "Id", "DepartmentId" },
-                values: new object[] { new Guid("bdbb81d1-824f-41c7-b4a9-982c8dcb13dc"), 1 });
+                table: "AspNetUsers",
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "DepartmentId", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[] { new Guid("bdbb81d1-824f-41c7-b4a9-982c8dcb13dc"), 0, "584ee2d6-8b94-4c5e-8672-0c8025e258bb", 1, "student@gmail.com", false, false, null, "STUDENT@GMAIL.COM", "STUDENT", "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q==", null, false, "3f8286ff-af5e-4667-94e4-19566daa3637", false, "student" });
 
             migrationBuilder.InsertData(
                 table: "Teachers",
                 column: "Id",
                 value: new Guid("f33f8675-06a1-4a28-b111-f7201cd6eb2f"));
+
+            migrationBuilder.InsertData(
+                table: "AspNetUserRoles",
+                columns: new[] { "RoleId", "UserId" },
+                values: new object[] { new Guid("0ec09036-8afa-4cf1-a3ce-3bbf1558e68c"), new Guid("bdbb81d1-824f-41c7-b4a9-982c8dcb13dc") });
+
+            migrationBuilder.InsertData(
+                table: "Students",
+                column: "Id",
+                value: new Guid("bdbb81d1-824f-41c7-b4a9-982c8dcb13dc"));
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -415,6 +422,11 @@ namespace Library.Infrastructure.Migrations
                 column: "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_DepartmentId",
+                table: "AspNetUsers",
+                column: "DepartmentId");
+
+            migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
@@ -434,11 +446,6 @@ namespace Library.Infrastructure.Migrations
                 name: "IX_Notifications_SenderUserId",
                 table: "Notifications",
                 column: "SenderUserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Students_DepartmentId",
-                table: "Students",
-                column: "DepartmentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Subjects_DepartmentId",
@@ -496,13 +503,13 @@ namespace Library.Infrastructure.Migrations
                 name: "Notifications");
 
             migrationBuilder.DropTable(
-                name: "Departments");
-
-            migrationBuilder.DropTable(
                 name: "Teachers");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Departments");
         }
     }
 }
