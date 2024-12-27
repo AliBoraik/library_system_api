@@ -13,7 +13,7 @@ namespace Library.Api.Controllers;
 public class SubjectsController(ISubjectService subjectService, IOutputCacheStore cacheStore) : ControllerBase
 {
     /// <summary>
-    /// Retrieves all subjects.
+    ///     Retrieves all subjects.
     /// </summary>
     [HttpGet]
     [OutputCache(Tags = [OutputCacheTags.Subjects], PolicyName = nameof(AuthCachePolicy))]
@@ -24,7 +24,7 @@ public class SubjectsController(ISubjectService subjectService, IOutputCacheStor
     }
 
     /// <summary>
-    /// Retrieves details of a specific subject by its ID.
+    ///     Retrieves details of a specific subject by its ID.
     /// </summary>
     [HttpGet("{id:int}")]
     [OutputCache(Tags = [OutputCacheTags.Subjects], PolicyName = nameof(AuthCachePolicy))]
@@ -37,7 +37,7 @@ public class SubjectsController(ISubjectService subjectService, IOutputCacheStor
     }
 
     /// <summary>
-    /// Creates a new subject.
+    ///     Creates a new subject.
     /// </summary>
     [HttpPost]
     [Authorize(Roles = AppRoles.Admin)]
@@ -53,7 +53,7 @@ public class SubjectsController(ISubjectService subjectService, IOutputCacheStor
     }
 
     /// <summary>
-    /// Updates an existing subject.
+    ///     Updates an existing subject.
     /// </summary>
     [HttpPut]
     [Authorize(Roles = AppRoles.Admin)]
@@ -68,7 +68,7 @@ public class SubjectsController(ISubjectService subjectService, IOutputCacheStor
     }
 
     /// <summary>
-    /// Deletes a specific subject by its ID.
+    ///     Deletes a specific subject by its ID.
     /// </summary>
     [HttpDelete("{id:int}")]
     [Authorize(Roles = AppRoles.Admin)]
@@ -80,5 +80,4 @@ public class SubjectsController(ISubjectService subjectService, IOutputCacheStor
         await cacheStore.EvictByTagAsync(OutputCacheTags.Departments, CancellationToken.None);
         return Ok();
     }
-    
 }

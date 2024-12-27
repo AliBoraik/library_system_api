@@ -14,7 +14,7 @@ namespace Library.Api.Controllers;
 public class TeachersController(ITeacherService teacherService, IOutputCacheStore cacheStore) : ControllerBase
 {
     /// <summary>
-    /// Retrieves all teachers.
+    ///     Retrieves all teachers.
     /// </summary>
     [HttpGet]
     [OutputCache(Tags = [OutputCacheTags.Teachers], PolicyName = nameof(AuthCachePolicy))]
@@ -23,8 +23,9 @@ public class TeachersController(ITeacherService teacherService, IOutputCacheStor
         var teachersAsyncDto = await teacherService.GetAllTeachersAsync();
         return Ok(teachersAsyncDto);
     }
+
     /// <summary>
-    /// Retrieves details of a specific teacher by their ID.
+    ///     Retrieves details of a specific teacher by their ID.
     /// </summary>
     [HttpGet("{id:guid}")]
     [OutputCache(Tags = [OutputCacheTags.Teachers], PolicyName = nameof(AuthCachePolicy))]
@@ -38,7 +39,7 @@ public class TeachersController(ITeacherService teacherService, IOutputCacheStor
     }
 
     /// <summary>
-    /// Deletes a specific teacher by their ID.
+    ///     Deletes a specific teacher by their ID.
     /// </summary>
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteTeacher(Guid id)

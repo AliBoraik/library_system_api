@@ -13,7 +13,7 @@ public class SubjectRepository(AppDbContext context) : ISubjectRepository
             .AsNoTracking()
             .ToListAsync();
     }
-    
+
     public async Task<Subject?> FindSubjectDetailsByIdAsync(int id)
     {
         return await context.Subjects
@@ -32,7 +32,7 @@ public class SubjectRepository(AppDbContext context) : ISubjectRepository
             .Where(s => s.Id == id)
             .FirstOrDefaultAsync();
     }
-    
+
     public async Task<bool> SubjectExistsAsync(int id)
     {
         return await context.Subjects.AnyAsync(d => d.Id == id);

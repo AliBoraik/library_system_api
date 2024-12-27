@@ -23,6 +23,7 @@ public class TeacherRepository(AppDbContext context) : ITeacherRepository
             .Include(t => t.User)
             .FirstOrDefaultAsync();
     }
+
     public async Task<Teacher?> FindTeacherByNameAsync(string name)
     {
         return await context.Teachers
