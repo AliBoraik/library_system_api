@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Library.Auth.Services;
 
-public class AuthService(UserManager<User> userManager, ITokenService tokenService , AppDbContext  context)
+public class AuthService(UserManager<User> userManager, ITokenService tokenService, AppDbContext context)
     : IAuthService
 {
     public async Task<Result<AuthDataResponse, Error>> LoginAsync(LoginDto loginDto)
@@ -77,12 +77,12 @@ public class AuthService(UserManager<User> userManager, ITokenService tokenServi
         var userExists = await userManager.FindByEmailAsync(dto.Email);
         if (userExists != null)
             return new Error(StatusCodes.Status409Conflict, StringConstants.UserAlreadyExists);
-        
+
         var department = await context.Departments.AnyAsync(d => d.Id == dto.DepartmentId);
-        
+
         if (!department)
             return new Error(StatusCodes.Status404NotFound, "Department not found!");
-        
+
         var user = new User
         {
             Email = dto.Email,
@@ -90,18 +90,18 @@ public class AuthService(UserManager<User> userManager, ITokenService tokenServi
             UserName = dto.Username,
             DepartmentId = dto.DepartmentId
         };
-        
+
         var createUserResult = await userManager.CreateAsync(user, dto.Password);
         if (!createUserResult.Succeeded)
             return new Error(StatusCodes.Status500InternalServerError, createUserResult.Errors.First().Description);
         // Create Teacher
         var teacher = new Teacher
         {
-            Id = user.Id,
+            Id = user.Id
         };
         await context.Teachers.AddAsync(teacher);
         await userManager.AddToRoleAsync(user, AppRoles.Teacher);
-        return  user.Id;
+        return user.Id;
     }
 
     public async Task<Result<Guid, Error>> RegisterStudent(RegisterStudentDto dto)
@@ -109,12 +109,12 @@ public class AuthService(UserManager<User> userManager, ITokenService tokenServi
         var userExists = await userManager.FindByEmailAsync(dto.Email);
         if (userExists != null)
             return new Error(StatusCodes.Status409Conflict, StringConstants.UserAlreadyExists);
-        
+
         var department = await context.Departments.AnyAsync(d => d.Id == dto.DepartmentId);
-        
+
         if (!department)
             return new Error(StatusCodes.Status404NotFound, "Department not found!");
-        
+
         var user = new User
         {
             Email = dto.Email,
@@ -128,12 +128,12 @@ public class AuthService(UserManager<User> userManager, ITokenService tokenServi
         // Create Student
         var student = new Student
         {
-            Id = user.Id,
+            Id = user.Id
         };
         await context.Students.AddAsync(student);
         await context.SaveChangesAsync();
         await userManager.AddToRoleAsync(user, AppRoles.Student);
-        return  user.Id;
+        return user.Id;
     }
 
     public async Task<Result<Guid, Error>> RegisterAdmin(RegisterDto dto)
@@ -151,6 +151,6 @@ public class AuthService(UserManager<User> userManager, ITokenService tokenServi
         if (!result.Succeeded)
             return new Error(StatusCodes.Status500InternalServerError, result.Errors.First().Description);
         await userManager.AddToRoleAsync(user, AppRoles.Admin);
-        return  user.Id;
+        return user.Id;
     }
 }

@@ -16,7 +16,7 @@ namespace Library.Auth.Controllers;
 public class AuthController(IAuthService authService, IOutputCacheStore cacheStore) : ControllerBase
 {
     /// <summary>
-    /// Authenticates a user and generates a JWT token.
+    ///     Authenticates a user and generates a JWT token.
     /// </summary>
     [HttpPost]
     [Route("Login")]
@@ -31,7 +31,7 @@ public class AuthController(IAuthService authService, IOutputCacheStore cacheSto
     }
 
     /// <summary>
-    /// Registers a new admin user.
+    ///     Registers a new admin user.
     /// </summary>
     [HttpPost]
     [Route("Register-Admin")]
@@ -44,9 +44,9 @@ public class AuthController(IAuthService authService, IOutputCacheStore cacheSto
             _ => Ok(),
             error => StatusCode(error.Code, error));
     }
-    
+
     /// <summary>
-    /// Registers a new teacher user.
+    ///     Registers a new teacher user.
     /// </summary>
     [HttpPost]
     [Route("Register-Teacher")]
@@ -62,7 +62,7 @@ public class AuthController(IAuthService authService, IOutputCacheStore cacheSto
     }
 
     /// <summary>
-    /// Registers a new student user.
+    ///     Registers a new student user.
     /// </summary>
     [HttpPost]
     [Route("Register-Student")]
@@ -78,7 +78,7 @@ public class AuthController(IAuthService authService, IOutputCacheStore cacheSto
     }
 
     /// <summary>
-    /// Refreshes an expired JWT token.
+    ///     Refreshes an expired JWT token.
     /// </summary>
     [HttpPost]
     [Route("Refresh-token")]
@@ -93,7 +93,7 @@ public class AuthController(IAuthService authService, IOutputCacheStore cacheSto
     }
 
     /// <summary>
-    /// Validates the provided JWT token.
+    ///     Validates the provided JWT token.
     /// </summary>
     [HttpGet]
     [Route("Validate-Token")]

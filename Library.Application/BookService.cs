@@ -8,7 +8,6 @@ using Library.Interfaces.Repositories;
 using Library.Interfaces.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 
 namespace Library.Application;
 
@@ -49,12 +48,9 @@ public class BookService(
         {
             // check if userId is Admin 
             var user = await userManager.FindByIdAsync(userId.ToString());
-            if (user == null)
-            {
-                return new Error(StatusCodes.Status404NotFound, "User not found!");
-            }
+            if (user == null) return new Error(StatusCodes.Status404NotFound, "User not found!");
             // Fetch the roles assigned to the user
-            if(!await userManager.IsInRoleAsync(user , AppRoles.Admin)) 
+            if (!await userManager.IsInRoleAsync(user, AppRoles.Admin))
                 return new Error(StatusCodes.Status403Forbidden, "You don't have access");
         }
 
@@ -62,7 +58,8 @@ public class BookService(
         var bookId = Guid.NewGuid();
         var baseUploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "Uploads");
         var fullDirectoryPath = Path.Combine(baseUploadsPath, bookDto.SubjectId.ToString());
-        var fullFilePath = Path.Combine(fullDirectoryPath, bookId.ToString()) + Path.GetExtension(bookDto.File.FileName);
+        var fullFilePath = Path.Combine(fullDirectoryPath, bookId.ToString()) +
+                           Path.GetExtension(bookDto.File.FileName);
         // save in disk
         var uploadResult = await uploadsService.AddFile(fullDirectoryPath, fullFilePath, bookDto.File);
         if (!uploadResult.IsOk)
@@ -73,17 +70,17 @@ public class BookService(
         book.Id = bookId;
         book.UploadedBy = userId;
         await bookRepository.AddBookAsync(book);
-       
-       // Run sending notification  in the background
-       var recipients = await studentRepository.FindStudentIdsByDepartmentIdAsync(subject.DepartmentId);
-       
+
+        // Run sending notification  in the background
+        var recipients = await studentRepository.FindStudentIdsByDepartmentIdAsync(subject.DepartmentId);
+
         _ = Task.Run(async () =>
         {
-            
             // Send notification in the background
-            await SendBulkNotificationAsync($"Book Added - {bookDto.Title}", "New Book Added you can download or read it", recipients, subject.TeacherId);
+            await SendBulkNotificationAsync($"Book Added - {bookDto.Title}",
+                "New Book Added you can download or read it", recipients, subject.TeacherId);
         });
-       return book.Id;
+        return book.Id;
     }
 
     public async Task<Result<Ok, Error>> DeleteBookAsync(Guid id, Guid userId)
@@ -109,10 +106,10 @@ public class BookService(
             return new Error(StatusCodes.Status404NotFound, $"Can't found Book with ID = {id}");
         return bookFilePath;
     }
-    
 
 
-    private async Task SendBulkNotificationAsync(string title, string message, IEnumerable<Guid> recipients , Guid senderId)
+    private async Task SendBulkNotificationAsync(string title, string message, IEnumerable<Guid> recipients,
+        Guid senderId)
     {
         // Create the notification request
         var notificationRequest = new CreateBulkNotificationDto
@@ -126,5 +123,4 @@ public class BookService(
         // Send the notification event asynchronously
         await producerService.SendBulkNotificationEventToAsync(AppTopics.NotificationTopic, notificationRequest);
     }
-
 }

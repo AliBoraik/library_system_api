@@ -14,7 +14,7 @@ namespace Library.Api.Controllers;
 public class BooksController(IBookService bookService, IOutputCacheStore cacheStore) : ControllerBase
 {
     /// <summary>
-    /// Retrieves a list of books with caching applied.
+    ///     Retrieves a list of books with caching applied.
     /// </summary>
     [HttpGet]
     [OutputCache(Tags = [OutputCacheTags.Books], PolicyName = nameof(AuthCachePolicy))]
@@ -25,7 +25,7 @@ public class BooksController(IBookService bookService, IOutputCacheStore cacheSt
     }
 
     /// <summary>
-    /// Retrieves details of a specific book by its ID.
+    ///     Retrieves details of a specific book by its ID.
     /// </summary>
     [HttpGet("{id:guid}")]
     [OutputCache(Tags = [OutputCacheTags.Books], PolicyName = nameof(AuthCachePolicy))]
@@ -38,7 +38,7 @@ public class BooksController(IBookService bookService, IOutputCacheStore cacheSt
     }
 
     /// <summary>
-    /// Creates a new book entry.
+    ///     Creates a new book entry.
     /// </summary>
     [HttpPost]
     [Authorize(Roles = $"{AppRoles.Admin},{AppRoles.Teacher}")]
@@ -48,10 +48,7 @@ public class BooksController(IBookService bookService, IOutputCacheStore cacheSt
         // Extract userId from JWT token
         var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
         // Convert userId to Guid
-        if (!Guid.TryParse(userIdClaim, out var userGuid))
-        {
-            return BadRequest("Invalid user ID.");
-        }
+        if (!Guid.TryParse(userIdClaim, out var userGuid)) return BadRequest("Invalid user ID.");
         var result = await bookService.AddBookAsync(createLectureDto, userGuid);
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Books, CancellationToken.None);
@@ -61,7 +58,7 @@ public class BooksController(IBookService bookService, IOutputCacheStore cacheSt
     }
 
     /// <summary>
-    /// Deletes a specific book by its ID.
+    ///     Deletes a specific book by its ID.
     /// </summary>
     [HttpDelete("{id:guid}")]
     [Authorize(Roles = $"{AppRoles.Admin},{AppRoles.Teacher}")]
@@ -70,10 +67,7 @@ public class BooksController(IBookService bookService, IOutputCacheStore cacheSt
         // Extract userId from JWT token
         var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
         // Convert userId to Guid
-        if (!Guid.TryParse(userIdClaim, out var userGuid))
-        {
-            return BadRequest("Invalid user ID.");
-        }
+        if (!Guid.TryParse(userIdClaim, out var userGuid)) return BadRequest("Invalid user ID.");
         var result = await bookService.DeleteBookAsync(id, userGuid);
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Books, CancellationToken.None);
@@ -82,7 +76,7 @@ public class BooksController(IBookService bookService, IOutputCacheStore cacheSt
     }
 
     /// <summary>
-    /// Downloads the content of a specific book by its ID.
+    ///     Downloads the content of a specific book by its ID.
     /// </summary>
     [HttpGet("Download/{id:guid}")]
     [OutputCache(Tags = [OutputCacheTags.Books])]

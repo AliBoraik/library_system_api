@@ -23,7 +23,7 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
     public DbSet<Teacher> Teachers { get; init; }
     public DbSet<Student> Students { get; init; }
     public DbSet<NotificationModel> Notifications { get; init; }
-    
+
     public DbSet<UserNotification> UserNotifications { get; init; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -34,7 +34,7 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
             .HasMany(d => d.Subjects)
             .WithOne(s => s.Department)
             .HasForeignKey(s => s.DepartmentId);
-        
+
         modelBuilder.Entity<Subject>()
             .HasMany(s => s.Lectures)
             .WithOne(l => l.Subject)
@@ -49,13 +49,13 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
             .HasMany(t => t.Subjects)
             .WithOne(s => s.Teacher)
             .HasForeignKey(s => s.TeacherId);
-        
+
         // One-to-Many configuration
         modelBuilder.Entity<User>()
             .HasOne(s => s.Department)
             .WithMany(d => d.Users)
             .HasForeignKey(s => s.DepartmentId);
-        
+
         modelBuilder.Entity<UserNotification>()
             .HasKey(un => new { un.NotificationId, un.UserId }); // Composite key
 
@@ -136,7 +136,7 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
         modelBuilder.Entity<Teacher>()
             .HasData(new Teacher
             {
-                Id = teacherId,
+                Id = teacherId
             });
 
         modelBuilder.Entity<User>()
@@ -155,7 +155,7 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
         modelBuilder.Entity<Student>()
             .HasData(new Student
             {
-                Id = studentId,
+                Id = studentId
             });
 
 
