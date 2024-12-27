@@ -35,9 +35,9 @@ public class StudentRepository(AppDbContext context) : IStudentRepository
     {
         var studentsWithSubjectsAndUser = await context.Students
             .Where(s => s.User.DepartmentId == departmentId)
-            .Include(s => s.User) 
+            .Include(s => s.User)
             .ToListAsync();
-        
+
         return studentsWithSubjectsAndUser;
     }
 
@@ -52,9 +52,9 @@ public class StudentRepository(AppDbContext context) : IStudentRepository
 
     public async Task DeleteStudentAsync(Student student)
     {
-        context.Students.Remove(student); 
+        context.Students.Remove(student);
         context.Users.Remove(student.User);
-        await Save() ;
+        await Save();
     }
 
     private async Task Save()

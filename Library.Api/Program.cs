@@ -38,10 +38,7 @@ app.UseCors("ClientPolicy");
 // Global error handler
 app.UseMiddleware<ExceptionMiddleware>();
 
-if (!app.Environment.IsDevelopment())
-{
-    app.UseHttpsRedirection();
-}
+if (!app.Environment.IsDevelopment()) app.UseHttpsRedirection();
 
 // Authentication & Authorization
 app.UseAuthentication();

@@ -14,7 +14,7 @@ namespace Library.Api.Controllers;
 public class StudentsController(IStudentService studentService, IOutputCacheStore cacheStore) : ControllerBase
 {
     /// <summary>
-    /// Retrieves all students.
+    ///     Retrieves all students.
     /// </summary>
     [HttpGet]
     [OutputCache(Tags = [OutputCacheTags.Students], PolicyName = nameof(AuthCachePolicy))]
@@ -23,8 +23,9 @@ public class StudentsController(IStudentService studentService, IOutputCacheStor
         var studentsAsyncDto = await studentService.GetAllStudentsAsync();
         return Ok(studentsAsyncDto);
     }
+
     /// <summary>
-    /// Retrieves details of a specific student by their ID.
+    ///     Retrieves details of a specific student by their ID.
     /// </summary>
     [HttpGet("{id:guid}")]
     [OutputCache(Tags = [OutputCacheTags.Students], PolicyName = nameof(AuthCachePolicy))]
@@ -36,10 +37,10 @@ public class StudentsController(IStudentService studentService, IOutputCacheStor
             dto => Ok(dto),
             error => StatusCode(error.Code, error));
     }
-    
+
 
     /// <summary>
-    /// Retrieves students associated with a specific subject.
+    ///     Retrieves students associated with a specific subject.
     /// </summary>
     [HttpGet("Subject/{id}")]
     [OutputCache(Tags = [OutputCacheTags.Students], PolicyName = nameof(AuthCachePolicy))]
@@ -51,9 +52,9 @@ public class StudentsController(IStudentService studentService, IOutputCacheStor
             dto => Ok(dto),
             error => StatusCode(error.Code, error));
     }
-        
+
     /// <summary>
-    /// Deletes a specific student by their ID.
+    ///     Deletes a specific student by their ID.
     /// </summary>
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteStudent(Guid id)

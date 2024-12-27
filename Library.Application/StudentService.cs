@@ -7,7 +7,10 @@ using Microsoft.AspNetCore.Http;
 
 namespace Library.Application;
 
-public class StudentService(IStudentRepository studentRepository, IDepartmentRepository departmentRepository, IMapper mapper)
+public class StudentService(
+    IStudentRepository studentRepository,
+    IDepartmentRepository departmentRepository,
+    IMapper mapper)
     : IStudentService
 {
     public async Task<IEnumerable<StudentDto>> GetAllStudentsAsync()
@@ -30,7 +33,7 @@ public class StudentService(IStudentRepository studentRepository, IDepartmentRep
         if (department == null)
             return new Error(StatusCodes.Status404NotFound, $"Not found department with id = {departmentId}");
         var students = await studentRepository.FindStudentsByDepartmentIdAsync(departmentId);
-        return Result<IEnumerable<StudentDto>, Error>.Ok( mapper.Map<IEnumerable<StudentDto>>(students));
+        return Result<IEnumerable<StudentDto>, Error>.Ok(mapper.Map<IEnumerable<StudentDto>>(students));
     }
 
 

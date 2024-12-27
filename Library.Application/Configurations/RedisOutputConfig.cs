@@ -16,7 +16,7 @@ public static class RedisOutputConfig
         services.AddOutputCache(options =>
         {
             options.AddPolicy(nameof(AuthCachePolicy), AuthCachePolicy.Instance);
-            options.AddPolicy(nameof(AuthUserIdCachePolicy),AuthUserIdCachePolicy.Instance);
+            options.AddPolicy(nameof(AuthUserIdCachePolicy), AuthUserIdCachePolicy.Instance);
             options.DefaultExpirationTimeSpan = TimeSpan.FromDays(1);
         });
 
