@@ -44,7 +44,8 @@ public class LectureService(
         var lectureId = Guid.NewGuid();
         var baseUploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "Uploads");
         var fullDirectoryPath = Path.Combine(baseUploadsPath, lectureDto.SubjectId.ToString());
-        var fullFilePath = Path.Combine(fullDirectoryPath, lectureId.ToString()) + Path.GetExtension(lectureDto.File.FileName);
+        var fullFilePath = Path.Combine(fullDirectoryPath, lectureId.ToString()) +
+                           Path.GetExtension(lectureDto.File.FileName);
         // save in database
         var lecture = mapper.Map<Lecture>(lectureDto);
         lecture.FilePath = fullFilePath;

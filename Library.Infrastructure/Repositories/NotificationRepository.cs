@@ -10,18 +10,21 @@ public class NotificationRepository(AppDbContext context) : INotificationReposit
     // Get all notifications for a specific user
     public async Task<IEnumerable<NotificationModel>> FindNotificationsByUserIdAsync(Guid userId)
     {
-        return await  context.Notifications
+        return await context.Notifications
             .Where(n => n.UserNotifications.Any(un => un.UserId == userId)) // Filter notifications by userId
-            .Include(n => n.UserNotifications.Where(un => un.UserId == userId)) // Include only UserNotifications where Id matches
+            .Include(n =>
+                n.UserNotifications.Where(un => un.UserId == userId)) // Include only UserNotifications where Id matches
             .OrderByDescending(n => n.SentAt)
             .ToListAsync();
     }
 
-    public async Task<IEnumerable<NotificationModel>> FindLimitNotificationByUserIdAsync(Guid userId, int page, int limit)
+    public async Task<IEnumerable<NotificationModel>> FindLimitNotificationByUserIdAsync(Guid userId, int page,
+        int limit)
     {
-        return await  context.Notifications
+        return await context.Notifications
             .Where(n => n.UserNotifications.Any(un => un.UserId == userId)) // Filter notifications by userId
-            .Include(n => n.UserNotifications.Where(un => un.UserId == userId)) // Include only UserNotifications where Id matches
+            .Include(n =>
+                n.UserNotifications.Where(un => un.UserId == userId)) // Include only UserNotifications where Id matches
             .OrderByDescending(n => n.SentAt)
             .Skip((page - 1) * limit)
             .Take(limit)
@@ -63,13 +66,15 @@ public class NotificationRepository(AppDbContext context) : INotificationReposit
     // Get unread notifications for a user
     public async Task<IEnumerable<NotificationModel>> FindUnreadNotificationsByUserIdAsync(Guid userId)
     {
-        return await  context.Notifications
-            .Where(n => n.UserNotifications.Any(un => un.UserId == userId && !un.IsRead)) // Filter notifications by userId
-            .Include(n => n.UserNotifications.Where(un => un.UserId == userId)) // Include only UserNotifications where Id matches
+        return await context.Notifications
+            .Where(n => n.UserNotifications.Any(un =>
+                un.UserId == userId && !un.IsRead)) // Filter notifications by userId
+            .Include(n =>
+                n.UserNotifications.Where(un => un.UserId == userId)) // Include only UserNotifications where Id matches
             .OrderByDescending(n => n.SentAt)
             .ToListAsync();
     }
-    
+
     public async Task DeleteNotificationAsync(NotificationModel notification)
     {
         context.Notifications.Remove(notification);

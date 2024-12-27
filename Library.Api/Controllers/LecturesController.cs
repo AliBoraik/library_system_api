@@ -14,7 +14,7 @@ namespace Library.Api.Controllers;
 public class LecturesController(ILectureService lectureService, IOutputCacheStore cacheStore) : ControllerBase
 {
     /// <summary>
-    /// Retrieves all lectures.
+    ///     Retrieves all lectures.
     /// </summary>
     [HttpGet]
     [OutputCache(Tags = [OutputCacheTags.Lectures], PolicyName = nameof(AuthCachePolicy))]
@@ -25,7 +25,7 @@ public class LecturesController(ILectureService lectureService, IOutputCacheStor
     }
 
     /// <summary>
-    /// Retrieves details of a specific lecture by its ID.
+    ///     Retrieves details of a specific lecture by its ID.
     /// </summary>
     [HttpGet("{id:guid}")]
     [OutputCache(Tags = [OutputCacheTags.Lectures], PolicyName = nameof(AuthCachePolicy))]
@@ -38,7 +38,7 @@ public class LecturesController(ILectureService lectureService, IOutputCacheStor
     }
 
     /// <summary>
-    /// Creates a new lecture.
+    ///     Creates a new lecture.
     /// </summary>
     [HttpPost]
     [Authorize(Roles = $"{AppRoles.Admin},{AppRoles.Teacher}")]
@@ -48,10 +48,7 @@ public class LecturesController(ILectureService lectureService, IOutputCacheStor
         // Extract userId from JWT token
         var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
         // Convert userId to Guid
-        if (!Guid.TryParse(userIdClaim, out var userGuid))
-        {
-            return BadRequest("Invalid user ID.");
-        }
+        if (!Guid.TryParse(userIdClaim, out var userGuid)) return BadRequest("Invalid user ID.");
         var result = await lectureService.AddLectureAsync(createLectureDto, userGuid);
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Lectures, CancellationToken.None);
@@ -61,7 +58,7 @@ public class LecturesController(ILectureService lectureService, IOutputCacheStor
     }
 
     /// <summary>
-    /// Deletes a specific lecture by its ID.
+    ///     Deletes a specific lecture by its ID.
     /// </summary>
     [HttpDelete("{id:guid}")]
     [Authorize(Roles = $"{AppRoles.Admin},{AppRoles.Teacher}")]
@@ -70,10 +67,7 @@ public class LecturesController(ILectureService lectureService, IOutputCacheStor
         // Extract userId from JWT token
         var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
         // Convert userId to Guid
-        if (!Guid.TryParse(userIdClaim, out var userGuid))
-        {
-            return BadRequest("Invalid user ID.");
-        }
+        if (!Guid.TryParse(userIdClaim, out var userGuid)) return BadRequest("Invalid user ID.");
         var result = await lectureService.DeleteLectureAsync(id, userGuid);
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Lectures, CancellationToken.None);
@@ -82,7 +76,7 @@ public class LecturesController(ILectureService lectureService, IOutputCacheStor
     }
 
     /// <summary>
-    /// Downloads the content of a specific lecture by its ID.
+    ///     Downloads the content of a specific lecture by its ID.
     /// </summary>
     [HttpGet("Download/{id:guid}")]
     [OutputCache(Tags = [OutputCacheTags.Lectures])]

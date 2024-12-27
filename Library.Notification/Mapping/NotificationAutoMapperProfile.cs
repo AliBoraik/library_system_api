@@ -13,11 +13,11 @@ public class NotificationAutoMapperProfile : Profile
             .ForMember(dest => dest.SentAt,
                 opt => opt.MapFrom(src => Converter.ToUnixTimestampSeconds(src.SentAt)))
             .ForMember(dest => dest.IsRead, opt => opt.MapFrom(src => src.UserNotifications.First().IsRead));
-        
+
         CreateMap<CreateNotificationDto, NotificationModel>()
             .ForMember(dest => dest.Id, opt => opt.Ignore()) // Id is auto-generated, so ignore it
             .ForMember(dest => dest.SentAt, opt => opt.MapFrom(_ => DateTime.UtcNow)) // Set current UTC time
-            .ForMember(dest => dest.UserNotifications, opt => opt.MapFrom(src => 
+            .ForMember(dest => dest.UserNotifications, opt => opt.MapFrom(src =>
                 new List<UserNotification>
                 {
                     new()
@@ -25,7 +25,6 @@ public class NotificationAutoMapperProfile : Profile
                         UserId = src.RecipientUserId,
                         IsRead = false
                     }
-                })); 
-        
+                }));
     }
 }

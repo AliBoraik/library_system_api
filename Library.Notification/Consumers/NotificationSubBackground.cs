@@ -12,7 +12,8 @@ public class NotificationSubBackground(
     IServiceScopeFactory scopeFactory)
     : BackgroundService
 {
-    private readonly IConsumer<Ignore, string> _consumerBuilder = new ConsumerBuilder<Ignore, string>(consumerConfig).Build();
+    private readonly IConsumer<Ignore, string> _consumerBuilder =
+        new ConsumerBuilder<Ignore, string>(consumerConfig).Build();
 
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -29,31 +30,30 @@ public class NotificationSubBackground(
                 // Resolve the user service using the GetRequiredService method
                 var notificationService = scope.ServiceProvider.GetRequiredService<INotificationService>();
                 var consumeResult = _consumerBuilder.Consume(stoppingToken);
-                
+
                 // Deserialize the message
                 var message = consumeResult.Message.Value;
-                
+
                 if (message.Contains("RecipientUserIds")) // Identify Bulk Notification
                 {
-                    var bulkNotification =  JsonSerializer.Deserialize<CreateBulkNotificationDto>(message);
+                    var bulkNotification = JsonSerializer.Deserialize<CreateBulkNotificationDto>(message);
                     if (bulkNotification != null)
                     {
-                        var result =  await notificationService.SendBulkNotificationAsync(bulkNotification);
-                        if(result.IsOk) 
+                        var result = await notificationService.SendBulkNotificationAsync(bulkNotification);
+                        if (result.IsOk)
                             logger.LogInformation("Kafka Consumer consumed new bulk notifications !");
                     }
                 }
                 else // Single Notification
                 {
-                    var notification =  JsonSerializer.Deserialize<CreateNotificationDto>(message);
+                    var notification = JsonSerializer.Deserialize<CreateNotificationDto>(message);
                     if (notification != null)
                     {
-                        var result =  await notificationService.SendNotificationAsync(notification);
-                        if(result.IsOk) 
+                        var result = await notificationService.SendNotificationAsync(notification);
+                        if (result.IsOk)
                             logger.LogInformation("Kafka Consumer consumed new notification !");
                     }
                 }
-               
             }
         }
         catch (ConsumeException ce)
@@ -66,12 +66,10 @@ public class NotificationSubBackground(
             _consumerBuilder.Close();
         }
     }
-    
+
     public override void Dispose()
     {
         _consumerBuilder.Dispose();
         base.Dispose();
     }
-
-    
 }

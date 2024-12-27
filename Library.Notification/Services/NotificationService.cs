@@ -9,16 +9,15 @@ namespace Library.Notification.Services;
 
 public class NotificationService(INotificationRepository notificationRepository, IMapper mapper) : INotificationService
 {
-    
     public async Task<IEnumerable<NotificationDto>> GetNotificationsAsync(Guid userId)
     {
         var notifications = await notificationRepository.FindNotificationsByUserIdAsync(userId);
         return mapper.Map<IEnumerable<NotificationDto>>(notifications);
     }
 
-    public async Task<IEnumerable<NotificationDto>> GetLimitNotificationsAsync(Guid userId , int page, int limit)
+    public async Task<IEnumerable<NotificationDto>> GetLimitNotificationsAsync(Guid userId, int page, int limit)
     {
-        var notifications = await notificationRepository.FindLimitNotificationByUserIdAsync(userId , page, limit);
+        var notifications = await notificationRepository.FindLimitNotificationByUserIdAsync(userId, page, limit);
         return mapper.Map<IEnumerable<NotificationDto>>(notifications);
     }
 
@@ -33,13 +32,11 @@ public class NotificationService(INotificationRepository notificationRepository,
             UserNotifications = new List<UserNotification>()
         };
         foreach (var recipientUserId in bulkNotificationDto.RecipientUserIds)
-        {
             notificationModel.UserNotifications.Add(new UserNotification
             {
                 UserId = recipientUserId,
                 IsRead = false
             });
-        }
         await notificationRepository.AddNotificationAsync(notificationModel);
         return new Ok();
     }
@@ -53,16 +50,17 @@ public class NotificationService(INotificationRepository notificationRepository,
         return new Ok();
     }
 
-    public async Task<Result<Ok, Error>> MarkNotificationReadAsync(Guid notificationId , Guid userId)
+    public async Task<Result<Ok, Error>> MarkNotificationReadAsync(Guid notificationId, Guid userId)
     {
-        await notificationRepository.MarkNotificationReadAsync(notificationId , userId);
+        await notificationRepository.MarkNotificationReadAsync(notificationId, userId);
         return new Ok();
     }
 
     public async Task<Result<Ok, Error>> DeleteNotificationByIdAsync(Guid notificationId)
     {
         var notifications = await notificationRepository.FindNotificationByIdAsync(notificationId);
-        if (notifications == null) return new Error(StatusCodes.Status404NotFound, $"Can't found with ID = {notificationId}");
+        if (notifications == null)
+            return new Error(StatusCodes.Status404NotFound, $"Can't found with ID = {notificationId}");
         await notificationRepository.DeleteNotificationAsync(notifications);
         return new Ok();
     }

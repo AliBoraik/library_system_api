@@ -8,9 +8,9 @@ namespace Library.Application.Producer;
 public class ProducerService(ProducerConfig producerConfig) : IProducerService
 {
     private readonly IProducer<Null, string> _producer = new ProducerBuilder<Null, string>(producerConfig).Build();
-    
+
     /*
-     
+
     // send notification
     var notificationRequest = new CreateNotificationDto
     {
@@ -23,11 +23,11 @@ public class ProducerService(ProducerConfig producerConfig) : IProducerService
     // Run the producer service in the background
     _ = Task.Run(() =>
     producerService.SendNotificationEventAsync(AppTopics.NotificationTopic, notificationRequest));
-    
+
     */
 
 
-    public async Task SendNotificationEventAsync(string topic, CreateNotificationDto createNotification )
+    public async Task SendNotificationEventAsync(string topic, CreateNotificationDto createNotification)
     {
         var message = JsonSerializer.Serialize(createNotification);
         await ProduceAsync(topic, message);
