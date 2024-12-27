@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace Library.Application;
 
-public class DepartmentService(IDepartmentRepository departmentRepository,  IMapper mapper) : IDepartmentService
+public class DepartmentService(IDepartmentRepository departmentRepository, IMapper mapper) : IDepartmentService
 {
     public async Task<Result<IEnumerable<DepartmentDto>, Error>> GetAllDepartmentsAsync()
     {
@@ -24,7 +24,6 @@ public class DepartmentService(IDepartmentRepository departmentRepository,  IMap
         if (department == null)
             return new Error(StatusCodes.Status404NotFound, "Not found");
         return mapper.Map<DepartmentDetailsDto>(department);
-
     }
 
     public async Task<Result<DepartmentDetailsDto, Error>> GetDepartmentByIdAsync(int id)
@@ -34,6 +33,7 @@ public class DepartmentService(IDepartmentRepository departmentRepository,  IMap
             return new Error(StatusCodes.Status404NotFound, $"Not found department with id = {id}");
         return mapper.Map<DepartmentDetailsDto>(department);
     }
+
     public async Task<Result<int, Error>> AddDepartmentAsync(CreateDepartmentDto createDepartmentDto)
     {
         var department = mapper.Map<Department>(createDepartmentDto);

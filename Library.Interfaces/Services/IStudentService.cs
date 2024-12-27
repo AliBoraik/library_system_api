@@ -8,6 +8,6 @@ public interface IStudentService
     Task<IEnumerable<StudentDto>> GetAllStudentsAsync();
     Task<Result<StudentDto, Error>> GetStudentByIdAsync(Guid id);
     Task<Result<IEnumerable<StudentDto>, Error>> GetStudentsByDepartmentIdAsync(int departmentId);
-    
+
     Task<Result<Ok, Error>> DeleteStudentAsync(Guid id);
 }

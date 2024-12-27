@@ -14,7 +14,7 @@ namespace Library.Api.Controllers;
 public class DepartmentsController(IDepartmentService departmentService, IOutputCacheStore cacheStore) : ControllerBase
 {
     /// <summary>
-    /// Retrieves all departments.
+    ///     Retrieves all departments.
     /// </summary>
     [HttpGet]
     [OutputCache(Tags = [OutputCacheTags.Departments], PolicyName = nameof(AuthCachePolicy))]
@@ -26,30 +26,26 @@ public class DepartmentsController(IDepartmentService departmentService, IOutput
             dto => Ok(dto),
             error => StatusCode(error.Code, error));
     }
-    
+
     /// <summary>
-    /// Retrieves details of a specific department by userIdClaim.
+    ///     Retrieves details of a specific department by userIdClaim.
     /// </summary>
     [HttpGet("User")]
-    [OutputCache(Tags = [OutputCacheTags.Departments] ,  PolicyName = nameof(AuthUserIdCachePolicy))]
+    [OutputCache(Tags = [OutputCacheTags.Departments], PolicyName = nameof(AuthUserIdCachePolicy))]
     public async Task<ActionResult<DepartmentDetailsDto>> GetUserDepartment()
     {
         // Extract userId from JWT token
         var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
         // Convert userId to Guid
-        if (!Guid.TryParse(userIdClaim, out var userGuid))
-        {
-            return BadRequest("Invalid user ID.");
-        }
+        if (!Guid.TryParse(userIdClaim, out var userGuid)) return BadRequest("Invalid user ID.");
         var result = await departmentService.GetUserDepartmentAsync(userGuid);
         return result.Match<ActionResult<DepartmentDetailsDto>>(
             dto => Ok(dto),
             error => StatusCode(error.Code, error));
-
     }
-    
+
     /// <summary>
-    /// Retrieves details of a specific department by its ID.
+    ///     Retrieves details of a specific department by its ID.
     /// </summary>
     [HttpGet("{id:int}")]
     [OutputCache(Tags = [OutputCacheTags.Departments], PolicyName = nameof(AuthCachePolicy))]
@@ -63,7 +59,7 @@ public class DepartmentsController(IDepartmentService departmentService, IOutput
     }
 
     /// <summary>
-    /// Creates a new department.
+    ///     Creates a new department.
     /// </summary>
     [HttpPost]
     [Authorize(Roles = AppRoles.Admin)]
@@ -78,7 +74,7 @@ public class DepartmentsController(IDepartmentService departmentService, IOutput
     }
 
     /// <summary>
-    /// Updates an existing department.
+    ///     Updates an existing department.
     /// </summary>
     [HttpPut]
     [Authorize(Roles = AppRoles.Admin)]
@@ -92,7 +88,7 @@ public class DepartmentsController(IDepartmentService departmentService, IOutput
     }
 
     /// <summary>
-    /// Deletes a specific department by its ID.
+    ///     Deletes a specific department by its ID.
     /// </summary>
     [HttpDelete("{id:int}")]
     [Authorize(Roles = AppRoles.Admin)]

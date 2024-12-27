@@ -98,11 +98,11 @@
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
 
 volumes:
-  db_data:  
+  db_data:
   uploads-data:
   redis_data:
     driver: local
-   
+  
   
   
   #  docker exec library_kafka kafka-topics --bootstrap-server library_kafka:9092   --create --topic notificationTopic
