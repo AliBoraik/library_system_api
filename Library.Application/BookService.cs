@@ -55,17 +55,13 @@ public class BookService(
 
         // file info
         var bookId = Guid.NewGuid();
-        var baseUploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "Uploads");
-        var fullDirectoryPath = Path.Combine(baseUploadsPath, bookDto.SubjectId.ToString());
-        var fullFilePath = Path.Combine(fullDirectoryPath, bookId.ToString()) +
-                           Path.GetExtension(bookDto.File.FileName);
         // save in disk
-        var uploadResult = await uploadsService.AddFile(fullDirectoryPath, fullFilePath, bookDto.File);
+        var uploadResult = await uploadsService.AddFile(bookDto.SubjectId.ToString(), bookId.ToString(), bookDto.File);
         if (!uploadResult.IsOk)
             return uploadResult.Error;
         // save in database
         var book = mapper.Map<Book>(bookDto);
-        book.FilePath = fullFilePath;
+        book.FilePath = uploadResult.Value;
         book.Id = bookId;
         book.UploadedBy = userId;
         await bookRepository.AddBookAsync(book);

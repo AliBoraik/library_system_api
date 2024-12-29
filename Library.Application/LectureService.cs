@@ -51,21 +51,18 @@ public class LectureService(
         }
         // file info
         var lectureId = Guid.NewGuid();
-        var baseUploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "Uploads");
-        var fullDirectoryPath = Path.Combine(baseUploadsPath, lectureDto.SubjectId.ToString());
-        var fullFilePath = Path.Combine(fullDirectoryPath, lectureId.ToString()) +
-                           Path.GetExtension(lectureDto.File.FileName);
+        // save in disk
+        var uploadResult = await uploadsService.AddFile(lectureDto.SubjectId.ToString(), lectureId.ToString(), lectureDto.File);
+        if (!uploadResult.IsOk)
+            return uploadResult.Error;
         // save in database
         var lecture = mapper.Map<Lecture>(lectureDto);
-        lecture.FilePath = fullFilePath;
+        lecture.FilePath = uploadResult.Value;
         lecture.Id = lectureId;
         lecture.UploadedBy = userId;
         await lectureRepository.AddLectureAsync(lecture);
-        // save in disk
-        var uploadResult = await uploadsService.AddFile(fullDirectoryPath, fullFilePath, lectureDto.File);
-        if (uploadResult.IsOk) return lecture.Id;
-        await lectureRepository.DeleteLectureAsync(lecture);
-        return uploadResult.Error;
+        
+        return lecture.Id;
     }
 
     public async Task<Result<Ok, Error>> DeleteLectureAsync(Guid id, Guid teacherId)

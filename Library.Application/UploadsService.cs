@@ -6,14 +6,18 @@ namespace Library.Application;
 
 public class UploadsService : IUploadsService
 {
-    public async Task<Result<Ok, Error>> AddFile(string fullDirectoryPath, string fullFilePath, IFormFile file)
+    public async Task<Result<string, Error>> AddFile(string subjectId, string fileId, IFormFile file)
     {
         try
         {
+            var baseUploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "Uploads");
+            var fullDirectoryPath = Path.Combine(baseUploadsPath, subjectId);
+            var fullFilePath = Path.Combine(fullDirectoryPath, fileId) +
+                               Path.GetExtension(file.FileName);
             if (!Directory.Exists(fullDirectoryPath)) Directory.CreateDirectory(fullDirectoryPath);
             await using var stream = new FileStream(fullFilePath, FileMode.Create);
             await file.CopyToAsync(stream);
-            return new Ok();
+            return fullFilePath;
         }
         catch (Exception e)
         {
