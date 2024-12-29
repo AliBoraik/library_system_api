@@ -46,12 +46,11 @@ public class BookService(
         // check subject.TeacherId 
         if (subject.TeacherId != userId)
         {
-            // check if userId is Admin 
-            var user = await userManager.FindByIdAsync(userId.ToString());
-            if (user == null) return new Error(StatusCodes.Status404NotFound, "User not found!");
-            // Fetch the roles assigned to the user
-            if (!await userManager.IsInRoleAsync(user, AppRoles.Admin))
+            // Check if userId is in the Admin role
+            if (!await userManager.IsInRoleAsync(new User { Id = userId }, AppRoles.Admin))
+            {
                 return new Error(StatusCodes.Status403Forbidden, "You don't have access");
+            }
         }
 
         // file info

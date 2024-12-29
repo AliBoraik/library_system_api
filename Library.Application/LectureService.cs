@@ -42,7 +42,13 @@ public class LectureService(
         if (subject == null)
             return new Error(StatusCodes.Status404NotFound, $"Subject with Id = {lectureDto.SubjectId} not found");
         if (subject.TeacherId != userId)
-            return new Error(StatusCodes.Status403Forbidden, "You don't have access");
+        {
+            // Check if userId is in the Admin role
+            if (!await userManager.IsInRoleAsync(new User { Id = userId }, AppRoles.Admin))
+            {
+                return new Error(StatusCodes.Status403Forbidden, "You don't have access");
+            }
+        }
         // file info
         var lectureId = Guid.NewGuid();
         var baseUploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "Uploads");
