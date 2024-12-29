@@ -18,10 +18,11 @@ public class NotificationController(INotificationService notificationService) : 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<NotificationDto>>> GetNotifications()
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        Console.WriteLine(userId);
-        if (userId == null) return Unauthorized(StringConstants.UserIdMissing);
-        var notifications = await notificationService.GetNotificationsAsync(Guid.Parse(userId));
+        // Extract userId from JWT token
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        // Convert userId to Guid
+        if (!Guid.TryParse(userIdClaim, out var userGuid)) return BadRequest("Invalid user ID.");
+        var notifications = await notificationService.GetNotificationsAsync(userGuid);
         return Ok(notifications);
     }
 
@@ -31,9 +32,11 @@ public class NotificationController(INotificationService notificationService) : 
     [HttpGet("UnreadNotifications")]
     public async Task<ActionResult<IEnumerable<NotificationDto>>> GetUnreadNotifications()
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (userId == null) return Unauthorized(StringConstants.UserIdMissing);
-        var notifications = await notificationService.GetUnreadNotificationsByUserIdAsync(Guid.Parse(userId));
+        // Extract userId from JWT token
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        // Convert userId to Guid
+        if (!Guid.TryParse(userIdClaim, out var userGuid)) return BadRequest("Invalid user ID.");
+        var notifications = await notificationService.GetUnreadNotificationsByUserIdAsync(userGuid);
         return Ok(notifications);
     }
 
@@ -46,9 +49,12 @@ public class NotificationController(INotificationService notificationService) : 
     {
         if (page <= 0 || limit <= 0)
             return BadRequest(new Error(400, "Page and limit must be greater than zero."));
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (userId == null) return Unauthorized(StringConstants.UserIdMissing);
-        var notifications = await notificationService.GetLimitNotificationsAsync(Guid.Parse(userId), page, limit);
+        // Extract userId from JWT token
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        // Convert userId to Guid
+        if (!Guid.TryParse(userIdClaim, out var userGuid)) return BadRequest("Invalid user ID.");
+        
+        var notifications = await notificationService.GetLimitNotificationsAsync(userGuid, page, limit);
         return Ok(notifications);
     }
 

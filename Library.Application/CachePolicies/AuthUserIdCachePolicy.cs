@@ -1,4 +1,6 @@
 using System.Security.Claims;
+using Library.Domain.Constants;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.Extensions.Primitives;
 
@@ -14,12 +16,14 @@ public class AuthUserIdCachePolicy : IOutputCachePolicy
         var userId = context.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         context.CacheVaryByRules.QueryKeys = $"userId:{userId}";
-
+        
+        // Add the tag to the cache rules
+        var flag = AttemptOutputCaching(context);
         context.EnableOutputCaching = true;
-        context.AllowCacheLookup = true;
-        context.AllowCacheStorage = true;
+        context.AllowCacheLookup = flag;
+        context.AllowCacheStorage = flag;
         context.AllowLocking = true;
-
+        
         return ValueTask.CompletedTask;
     }
 
@@ -28,14 +32,23 @@ public class AuthUserIdCachePolicy : IOutputCachePolicy
         return ValueTask.CompletedTask;
     }
 
-    public ValueTask ServeResponseAsync(OutputCacheContext context, CancellationToken cancellationToken)
+    ValueTask IOutputCachePolicy.ServeResponseAsync(OutputCacheContext context, CancellationToken cancellationToken)
     {
         var response = context.HttpContext.Response;
-
-        // Prevent caching responses with Set-Cookie headers or non-200 status codes
-        if (response.StatusCode != 200 || !StringValues.IsNullOrEmpty(response.Headers.SetCookie))
+        if (!StringValues.IsNullOrEmpty(response.Headers.SetCookie))
+        {
             context.AllowCacheStorage = false;
+            return ValueTask.CompletedTask;
+        }
 
+        if (response.StatusCode == 200)
+            return ValueTask.CompletedTask;
+        context.AllowCacheStorage = false;
         return ValueTask.CompletedTask;
+    }
+    private static bool AttemptOutputCaching(OutputCacheContext context)
+    {
+        var request = context.HttpContext.Request;
+        return HttpMethods.IsGet(request.Method) || HttpMethods.IsHead(request.Method);
     }
 }
