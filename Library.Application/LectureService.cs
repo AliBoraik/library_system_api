@@ -84,13 +84,13 @@ public class LectureService(
         return new Ok();
     }
 
-    public async Task<Result<string, Error>> GetLectureFilePathByIdAsync(Guid userId, Guid lectureId)
+    public async Task<Result<Lecture, Error>> GetLectureFilePathByIdAsync(Guid userId, Guid lectureId)
     {
         var accessToLecture = await HasAccessToLecture(userId, lectureId);
         if (!accessToLecture.IsOk)
             return accessToLecture.Error;
-        var lectureFilePath = accessToLecture.Value.FilePath; 
-        return lectureFilePath;
+        var lecture = accessToLecture.Value; 
+        return lecture;
     }
     
     public async Task<Result<Lecture, Error>> HasAccessToLecture(Guid userId, Guid lectureId)

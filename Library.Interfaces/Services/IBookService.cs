@@ -10,6 +10,6 @@ public interface IBookService
     Task<Result<BookResponseDto, Error>> GetBookByIdAsync(Guid id);
     Task<Result<Guid, Error>> AddBookAsync(CreateBookDto lectureDto, Guid userId);
     Task<Result<Ok, Error>> DeleteBookAsync(Guid id, Guid userId);
-    Task<Result<string, Error>> GetBookFilePathByIdAsync(Guid userId, Guid bookId);
+    Task<Result<Book, Error>> GetBookFilePathByIdAsync(Guid userId, Guid bookId);
     Task<Result<Book, Error>> HasAccessToBook(Guid userId, Guid bookId);
 }

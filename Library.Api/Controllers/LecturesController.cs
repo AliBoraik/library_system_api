@@ -89,8 +89,10 @@ public class LecturesController(ILectureService lectureService, IOutputCacheStor
         if (!Guid.TryParse(userIdClaim, out var userGuid)) return BadRequest("Invalid user ID."); 
         var result = await lectureService.GetLectureFilePathByIdAsync(userGuid, id);
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
-        var path = result.Value;
+        var lecture = result.Value;
+        var path = lecture.FilePath;
+        var fileName = lecture.Title;
         var fileBytes = await System.IO.File.ReadAllBytesAsync(path);
-        return File(fileBytes, "application/octet-stream", Path.GetFileName(path));
+        return File(fileBytes, "application/octet-stream", fileName+Path.GetExtension(path));
     }
 }

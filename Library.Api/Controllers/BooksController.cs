@@ -89,8 +89,10 @@ public class BooksController(IBookService bookService, IOutputCacheStore cacheSt
         if (!Guid.TryParse(userIdClaim, out var userGuid)) return BadRequest("Invalid user ID.");
         var result = await bookService.GetBookFilePathByIdAsync(userGuid, id);
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
-        var path = result.Value;
+        var book = result.Value;
+        var path = book.FilePath;
+        var fileName = book.Title;
         var fileBytes = await System.IO.File.ReadAllBytesAsync(path);
-        return File(fileBytes, "application/octet-stream", Path.GetFileName(path));
+        return File(fileBytes, "application/octet-stream", fileName+Path.GetExtension(path));
     }
 }

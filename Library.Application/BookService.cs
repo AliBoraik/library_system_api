@@ -98,13 +98,13 @@ public class BookService(
         return new Ok();
     }
 
-    public async Task<Result<string, Error>> GetBookFilePathByIdAsync(Guid userId, Guid bookId)
+    public async Task<Result<Book, Error>> GetBookFilePathByIdAsync(Guid userId, Guid bookId)
     {
         var accessToBook = await HasAccessToBook(userId, bookId);
         if (!accessToBook.IsOk)
             return accessToBook.Error;
-        var bookFilePath = accessToBook.Value.FilePath; 
-        return bookFilePath;
+        var book = accessToBook.Value; 
+        return book;
     }
 
     public async Task<Result<Book, Error>> HasAccessToBook(Guid userId, Guid bookId)
