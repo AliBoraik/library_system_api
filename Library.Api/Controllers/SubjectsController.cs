@@ -1,4 +1,6 @@
+using System.Security.Claims;
 using Library.Application.CachePolicies;
+using Library.Application.Common;
 using Library.Domain.Constants;
 using Library.Domain.DTOs.Subject;
 using Library.Interfaces.Services;
@@ -17,6 +19,7 @@ public class SubjectsController(ISubjectService subjectService, IOutputCacheStor
     /// </summary>
     [HttpGet]
     [OutputCache(Tags = [OutputCacheTags.Subjects], PolicyName = nameof(AuthCachePolicy))]
+    [Authorize(Roles = AppRoles.Admin)]
     public async Task<ActionResult<IEnumerable<SubjectDto>>> GetSubjects()
     {
         var subjectsAsyncDto = await subjectService.GetAllSubjectsAsync();
@@ -27,13 +30,22 @@ public class SubjectsController(ISubjectService subjectService, IOutputCacheStor
     ///     Retrieves details of a specific subject by its ID.
     /// </summary>
     [HttpGet("{id:int}")]
-    [OutputCache(Tags = [OutputCacheTags.Subjects], PolicyName = nameof(AuthCachePolicy))]
+    [OutputCache(Tags = [OutputCacheTags.Subjects], PolicyName = nameof(AuthUserIdCachePolicy))]
     public async Task<ActionResult<SubjectDetailsDto>> GetSubject(int id)
     {
-        var result = await subjectService.GetSubjectByIdAsync(id);
-        return result.Match<ActionResult<SubjectDetailsDto>>(
-            dto => Ok(dto),
-            error => StatusCode(error.Code, error));
+        var isAdmin = User.IsInRole(AppRoles.Admin);
+        if (isAdmin)
+        {
+            var adminResult = await subjectService.GetSubjectByIdAsync(id);
+            return ResultHelper.HandleResult(adminResult);
+        }
+        // Extract userId from JWT token
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        // Convert userId to Guid
+        if (!Guid.TryParse(userIdClaim, out var userGuid)) return BadRequest("Invalid user ID.");
+
+        var userResult = await subjectService.GetUserSubjectByIdAsync(id, userGuid);
+        return ResultHelper.HandleResult(userResult);
     }
 
     /// <summary>

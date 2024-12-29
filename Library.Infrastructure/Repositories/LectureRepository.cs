@@ -14,7 +14,7 @@ public class LectureRepository(AppDbContext context) : ILectureRepository
             .ToListAsync();
     }
 
-    public async Task<Lecture?> FindLectureByIdAsync(Guid id)
+    public async Task<Lecture?> FindLectureWithSubjectByIdAsync(Guid id)
     {
         return await context.Lectures
             .AsNoTracking()

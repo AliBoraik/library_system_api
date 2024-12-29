@@ -14,16 +14,11 @@ public class DepartmentRepository(AppDbContext context) : IDepartmentRepository
             .ToListAsync();
     }
 
-    public async Task<Department?> FindUserDepartmentAsync(Guid userId)
+    public async Task<IEnumerable<Department>> FindAllUserDepartmentsAsync(Guid userId)
     {
-        var student = await context.Users
-            .AsNoTracking()
-            .Where(u => u.Id == userId) // Find student by userId
-            .Include(u => u.Department) // Include the department
-            .ThenInclude(d => d.Subjects) // Include subjects in the department
-            .FirstOrDefaultAsync();
-
-        return student?.Department; // Return department with subjects or null if not found
+        return await context.Departments
+            .Where(d => d.Users.Any(u => u.Id == userId))
+            .ToListAsync();
     }
 
     public async Task<Department?> FindDepartmentByIdAsync(int id)
@@ -32,6 +27,14 @@ public class DepartmentRepository(AppDbContext context) : IDepartmentRepository
             .Where(d => d.Id == id)
             .AsNoTracking()
             .Include(d => d.Subjects)
+            .FirstOrDefaultAsync();
+    }
+
+    public async Task<Department?> FindUserDepartmentByIdAsync(Guid userId, int departmentId)
+    {
+        return await context.Departments
+            .Include(d => d.Subjects) // Include related subjects
+            .Where(d => d.Id == departmentId && d.Users.Any(u => u.Id == userId))
             .FirstOrDefaultAsync();
     }
 

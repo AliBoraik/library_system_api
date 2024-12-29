@@ -5,10 +5,11 @@ namespace Library.Interfaces.Repositories;
 public interface IDepartmentRepository
 {
     Task<IEnumerable<Department>> FindAllDepartmentsInfoAsync();
-    Task<Department?> FindUserDepartmentAsync(Guid userId);
+    Task<IEnumerable<Department>> FindAllUserDepartmentsAsync(Guid userId);
 
-    Task<Department?> FindDepartmentByIdAsync(int id);
-    Task<bool> DepartmentExistsAsync(int id);
+    Task<Department?> FindDepartmentByIdAsync(int departmentId);
+    Task<Department?> FindUserDepartmentByIdAsync(Guid userId , int departmentId);
+    Task<bool> DepartmentExistsAsync(int departmentId);
     Task AddDepartmentAsync(Department department);
     Task UpdateDepartmentAsync(Department department);
     Task DeleteDepartmentAsync(Department department);

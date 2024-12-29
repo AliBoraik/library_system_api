@@ -14,7 +14,7 @@ public class BookRepository(AppDbContext context) : IBookRepository
             .ToListAsync();
     }
 
-    public async Task<Book?> FindBookByIdAsync(Guid id)
+    public async Task<Book?> FindBookWithSubjectByIdAsync(Guid id)
     {
         return await context.Books
             .Where(b => b.Id == id)
