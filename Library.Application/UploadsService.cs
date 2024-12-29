@@ -12,8 +12,7 @@ public class UploadsService : IUploadsService
         {
             var baseUploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "Uploads");
             var fullDirectoryPath = Path.Combine(baseUploadsPath, subjectId);
-            var fullFilePath = Path.Combine(fullDirectoryPath, fileId) +
-                               Path.GetExtension(file.FileName);
+            var fullFilePath = Path.Combine(fullDirectoryPath, fileId) + Path.GetExtension(file.FileName);
             if (!Directory.Exists(fullDirectoryPath)) Directory.CreateDirectory(fullDirectoryPath);
             await using var stream = new FileStream(fullFilePath, FileMode.Create);
             await file.CopyToAsync(stream);
