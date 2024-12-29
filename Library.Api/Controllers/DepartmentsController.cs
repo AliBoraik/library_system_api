@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using Library.Application.CachePolicies;
+using Library.Application.Common;
 using Library.Domain.Constants;
 using Library.Domain.DTOs.Department;
 using Library.Interfaces.Services;
@@ -17,45 +18,43 @@ public class DepartmentsController(IDepartmentService departmentService, IOutput
     ///     Retrieves all departments.
     /// </summary>
     [HttpGet]
-    [OutputCache(Tags = [OutputCacheTags.Departments], PolicyName = nameof(AuthCachePolicy))]
-    [Authorize(Roles = AppRoles.Admin)]
+    [OutputCache(Tags = [OutputCacheTags.Departments], PolicyName = nameof(AuthUserIdCachePolicy))]
     public async Task<ActionResult<IEnumerable<DepartmentDto>>> GetDepartments()
     {
-        var result = await departmentService.GetAllDepartmentsAsync();
-        return result.Match<ActionResult<IEnumerable<DepartmentDto>>>(
-            dto => Ok(dto),
-            error => StatusCode(error.Code, error));
-    }
-
-    /// <summary>
-    ///     Retrieves details of a specific department by userIdClaim.
-    /// </summary>
-    [HttpGet("User")]
-    [OutputCache(Tags = [OutputCacheTags.Departments], PolicyName = nameof(AuthUserIdCachePolicy))]
-    public async Task<ActionResult<DepartmentDetailsDto>> GetUserDepartment()
-    {
+        var isAdmin = User.IsInRole(AppRoles.Admin);
+        if (isAdmin)
+        {
+            var adminResult = await departmentService.GetAllDepartmentsAsync();
+            return ResultHelper.HandleResult(adminResult);
+        }
         // Extract userId from JWT token
         var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
         // Convert userId to Guid
         if (!Guid.TryParse(userIdClaim, out var userGuid)) return BadRequest("Invalid user ID.");
-        var result = await departmentService.GetUserDepartmentAsync(userGuid);
-        return result.Match<ActionResult<DepartmentDetailsDto>>(
-            dto => Ok(dto),
-            error => StatusCode(error.Code, error));
+        var userResult = await departmentService.GetAllUserDepartmentsAsync(userGuid);
+        return ResultHelper.HandleResult(userResult);
     }
-
     /// <summary>
     ///     Retrieves details of a specific department by its ID.
     /// </summary>
     [HttpGet("{id:int}")]
-    [OutputCache(Tags = [OutputCacheTags.Departments], PolicyName = nameof(AuthCachePolicy))]
+    [OutputCache(Tags = [OutputCacheTags.Departments], PolicyName = nameof(AuthUserIdCachePolicy))]
     public async Task<ActionResult<DepartmentDetailsDto>> GetDepartment(int id)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
-        var result = await departmentService.GetDepartmentByIdAsync(id);
-        return result.Match<ActionResult<DepartmentDetailsDto>>(
-            dto => Ok(dto),
-            error => StatusCode(error.Code, error));
+        var isAdmin = User.IsInRole(AppRoles.Admin);
+        if (isAdmin)
+        {
+            var adminResult = await departmentService.GetDepartmentByIdAsync(id);
+            return ResultHelper.HandleResult(adminResult);
+        }
+        // Extract userId from JWT token
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        // Convert userId to Guid
+        if (!Guid.TryParse(userIdClaim, out var userGuid)) return BadRequest("Invalid user ID.");
+        var userResult = await departmentService.GetUserDepartmentByIdAsync(userGuid , id);
+        return ResultHelper.HandleResult(userResult);
+      
     }
 
     /// <summary>

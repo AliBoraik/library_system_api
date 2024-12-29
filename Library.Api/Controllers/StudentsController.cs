@@ -1,4 +1,5 @@
 using Library.Application.CachePolicies;
+using Library.Application.Common;
 using Library.Domain.Constants;
 using Library.Domain.DTOs.Users.Student;
 using Library.Interfaces.Services;
@@ -33,9 +34,7 @@ public class StudentsController(IStudentService studentService, IOutputCacheStor
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
         var result = await studentService.GetStudentByIdAsync(id);
-        return result.Match<ActionResult<StudentDto>>(
-            dto => Ok(dto),
-            error => StatusCode(error.Code, error));
+        return ResultHelper.HandleResult(result);
     }
 
 
@@ -44,13 +43,11 @@ public class StudentsController(IStudentService studentService, IOutputCacheStor
     /// </summary>
     [HttpGet("Subject/{id}")]
     [OutputCache(Tags = [OutputCacheTags.Students], PolicyName = nameof(AuthCachePolicy))]
-    public async Task<ActionResult<List<StudentDto>>> GetStudentsBySubjectId(int id)
+    public async Task<ActionResult<IEnumerable<StudentDto>>> GetStudentsBySubjectId(int id)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
         var result = await studentService.GetStudentsByDepartmentIdAsync(id);
-        return result.Match<ActionResult<List<StudentDto>>>(
-            dto => Ok(dto),
-            error => StatusCode(error.Code, error));
+        return ResultHelper.HandleResult(result);
     }
 
     /// <summary>

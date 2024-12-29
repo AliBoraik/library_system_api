@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using Library.Application.CachePolicies;
+using Library.Application.Common;
 using Library.Domain.Constants;
 using Library.Domain.DTOs.Lecture;
 using Library.Interfaces.Services;
@@ -18,6 +19,7 @@ public class LecturesController(ILectureService lectureService, IOutputCacheStor
     /// </summary>
     [HttpGet]
     [OutputCache(Tags = [OutputCacheTags.Lectures], PolicyName = nameof(AuthCachePolicy))]
+    [Authorize(Roles = AppRoles.Admin)]
     public async Task<ActionResult<IEnumerable<LectureResponseDto>>> GetLectures()
     {
         var lecturesAsyncDto = await lectureService.GetAllLecturesAsync();
@@ -29,12 +31,11 @@ public class LecturesController(ILectureService lectureService, IOutputCacheStor
     /// </summary>
     [HttpGet("{id:guid}")]
     [OutputCache(Tags = [OutputCacheTags.Lectures], PolicyName = nameof(AuthCachePolicy))]
+    [Authorize(Roles = AppRoles.Admin)]
     public async Task<ActionResult<LectureResponseDto>> GetLecture(Guid id)
     {
         var result = await lectureService.GetLectureByIdAsync(id);
-        return result.Match<ActionResult<LectureResponseDto>>(
-            dto => Ok(dto),
-            error => StatusCode(error.Code, error));
+        return ResultHelper.HandleResult(result);
     }
 
     /// <summary>
@@ -79,10 +80,14 @@ public class LecturesController(ILectureService lectureService, IOutputCacheStor
     ///     Downloads the content of a specific lecture by its ID.
     /// </summary>
     [HttpGet("Download/{id:guid}")]
-    [OutputCache(Tags = [OutputCacheTags.Lectures])]
+    [OutputCache(Tags = [OutputCacheTags.Lectures], PolicyName = nameof(AuthUserIdCachePolicy))]
     public async Task<IActionResult> DownloadLecture(Guid id)
     {
-        var result = await lectureService.GetLectureFilePathByIdAsync(id);
+        // Extract userId from JWT token
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        // Convert userId to Guid
+        if (!Guid.TryParse(userIdClaim, out var userGuid)) return BadRequest("Invalid user ID."); 
+        var result = await lectureService.GetLectureFilePathByIdAsync(userGuid, id);
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
         var path = result.Value;
         var fileBytes = await System.IO.File.ReadAllBytesAsync(path);

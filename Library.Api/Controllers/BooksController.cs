@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using Library.Application.CachePolicies;
+using Library.Application.Common;
 using Library.Domain.Constants;
 using Library.Domain.DTOs.Book;
 using Library.Interfaces.Services;
@@ -18,6 +19,7 @@ public class BooksController(IBookService bookService, IOutputCacheStore cacheSt
     /// </summary>
     [HttpGet]
     [OutputCache(Tags = [OutputCacheTags.Books], PolicyName = nameof(AuthCachePolicy))]
+    [Authorize(Roles = AppRoles.Admin)]
     public async Task<ActionResult<IEnumerable<BookResponseDto>>> GetBooks()
     {
         var booksAsyncDto = await bookService.GetAllBooksAsync();
@@ -29,12 +31,11 @@ public class BooksController(IBookService bookService, IOutputCacheStore cacheSt
     /// </summary>
     [HttpGet("{id:guid}")]
     [OutputCache(Tags = [OutputCacheTags.Books], PolicyName = nameof(AuthCachePolicy))]
+    [Authorize(Roles = AppRoles.Admin)]
     public async Task<ActionResult<BookResponseDto>> GetBook(Guid id)
     {
         var result = await bookService.GetBookByIdAsync(id);
-        return result.Match<ActionResult<BookResponseDto>>(
-            dto => Ok(dto),
-            error => StatusCode(error.Code, error));
+        return ResultHelper.HandleResult(result);
     }
 
     /// <summary>
@@ -79,10 +80,14 @@ public class BooksController(IBookService bookService, IOutputCacheStore cacheSt
     ///     Downloads the content of a specific book by its ID.
     /// </summary>
     [HttpGet("Download/{id:guid}")]
-    [OutputCache(Tags = [OutputCacheTags.Books])]
+    [OutputCache(Tags = [OutputCacheTags.Books], PolicyName = nameof(AuthUserIdCachePolicy))]
     public async Task<IActionResult> DownloadBook(Guid id)
     {
-        var result = await bookService.GetBookFilePathByIdAsync(id);
+        // Extract userId from JWT token
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        // Convert userId to Guid
+        if (!Guid.TryParse(userIdClaim, out var userGuid)) return BadRequest("Invalid user ID.");
+        var result = await bookService.GetBookFilePathByIdAsync(userGuid, id);
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
         var path = result.Value;
         var fileBytes = await System.IO.File.ReadAllBytesAsync(path);

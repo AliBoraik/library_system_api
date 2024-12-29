@@ -1,4 +1,5 @@
 using Library.Application.CachePolicies;
+using Library.Application.Common;
 using Library.Domain.Constants;
 using Library.Domain.DTOs.Users.Teacher;
 using Library.Interfaces.Services;
@@ -33,9 +34,7 @@ public class TeachersController(ITeacherService teacherService, IOutputCacheStor
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
         var result = await teacherService.GetTeacherByIdAsync(id);
-        return result.Match<ActionResult<TeacherDto>>(
-            dto => Ok(dto),
-            error => StatusCode(error.Code, error));
+        return ResultHelper.HandleResult(result);
     }
 
     /// <summary>
