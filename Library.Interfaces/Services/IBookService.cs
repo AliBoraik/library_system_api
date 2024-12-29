@@ -1,5 +1,6 @@
 using Library.Domain;
 using Library.Domain.DTOs.Book;
+using Library.Domain.Models;
 
 namespace Library.Interfaces.Services;
 
@@ -9,5 +10,6 @@ public interface IBookService
     Task<Result<BookResponseDto, Error>> GetBookByIdAsync(Guid id);
     Task<Result<Guid, Error>> AddBookAsync(CreateBookDto lectureDto, Guid userId);
     Task<Result<Ok, Error>> DeleteBookAsync(Guid id, Guid userId);
-    Task<Result<string, Error>> GetBookFilePathByIdAsync(Guid id);
+    Task<Result<string, Error>> GetBookFilePathByIdAsync(Guid userId, Guid bookId);
+    Task<Result<Book, Error>> HasAccessToBook(Guid userId, Guid bookId);
 }

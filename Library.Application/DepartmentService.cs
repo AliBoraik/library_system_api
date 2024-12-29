@@ -12,26 +12,35 @@ public class DepartmentService(IDepartmentRepository departmentRepository, IMapp
 {
     public async Task<Result<IEnumerable<DepartmentDto>, Error>> GetAllDepartmentsAsync()
     {
-        var subjects = await departmentRepository.FindAllDepartmentsInfoAsync();
-        if (!subjects.Any()) return new Error(StatusCodes.Status404NotFound, "Not found any departments");
-        var dto = mapper.Map<IEnumerable<DepartmentDto>>(subjects);
+        var departments = await departmentRepository.FindAllDepartmentsInfoAsync();
+        if (!departments.Any()) return new Error(StatusCodes.Status404NotFound, "Not found any departments");
+        var dto = mapper.Map<IEnumerable<DepartmentDto>>(departments);
         return Result<IEnumerable<DepartmentDto>, Error>.Ok(dto);
     }
 
-    public async Task<Result<DepartmentDetailsDto, Error>> GetUserDepartmentAsync(Guid userId)
+    public async Task<Result<IEnumerable<DepartmentDto>, Error>> GetAllUserDepartmentsAsync(Guid userId)
     {
-        var department = await departmentRepository.FindUserDepartmentAsync(userId);
+        var departments = await departmentRepository.FindAllUserDepartmentsAsync(userId);
+        if (!departments.Any()) return new Error(StatusCodes.Status404NotFound, "Not found any departments");
+        var dto = mapper.Map<IEnumerable<DepartmentDto>>(departments);
+        return Result<IEnumerable<DepartmentDto>, Error>.Ok(dto);
+    }
+
+    public async Task<Result<DepartmentDetailsDto, Error>> GetDepartmentByIdAsync(int departmentId)
+    {
+        var department = await departmentRepository.FindDepartmentByIdAsync(departmentId);
         if (department == null)
-            return new Error(StatusCodes.Status404NotFound, "Not found");
+            return new Error(StatusCodes.Status404NotFound, $"Not found department with departmentId = {departmentId}");
         return mapper.Map<DepartmentDetailsDto>(department);
     }
 
-    public async Task<Result<DepartmentDetailsDto, Error>> GetDepartmentByIdAsync(int id)
+    public async Task<Result<DepartmentDetailsDto, Error>> GetUserDepartmentByIdAsync(Guid userId, int departmentId)
     {
-        var department = await departmentRepository.FindDepartmentByIdAsync(id);
+        var department = await departmentRepository.FindUserDepartmentByIdAsync(userId, departmentId);
         if (department == null)
-            return new Error(StatusCodes.Status404NotFound, $"Not found department with id = {id}");
+            return new Error(StatusCodes.Status404NotFound, $"Not found department with id = {departmentId}");
         return mapper.Map<DepartmentDetailsDto>(department);
+
     }
 
     public async Task<Result<int, Error>> AddDepartmentAsync(CreateDepartmentDto createDepartmentDto)

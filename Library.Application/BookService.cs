@@ -28,10 +28,10 @@ public class BookService(
 
     public async Task<Result<BookResponseDto, Error>> GetBookByIdAsync(Guid id)
     {
-        var lecture = await bookRepository.FindBookByIdAsync(id);
-        if (lecture == null)
-            return new Error(StatusCodes.Status404NotFound, $"Not found lecture with id = {id}");
-        return mapper.Map<BookResponseDto>(lecture);
+        var book = await bookRepository.FindBookWithSubjectByIdAsync(id);
+        if (book == null)
+            return new Error(StatusCodes.Status404NotFound, $"Not found book with id = {id}");
+        return mapper.Map<BookResponseDto>(book);
     }
 
     public async Task<Result<Guid, Error>> AddBookAsync(CreateBookDto bookDto, Guid userId)
@@ -85,7 +85,7 @@ public class BookService(
 
     public async Task<Result<Ok, Error>> DeleteBookAsync(Guid id, Guid userId)
     {
-        var book = await bookRepository.FindBookByIdAsync(id);
+        var book = await bookRepository.FindBookWithSubjectByIdAsync(id);
         if (book == null) return new Error(StatusCodes.Status404NotFound, $"Can't found Lecture with ID = {id}");
         if (book.Subject.TeacherId != userId)
             return new Error(StatusCodes.Status403Forbidden, "Unauthorized to delete");
@@ -99,12 +99,34 @@ public class BookService(
         return new Ok();
     }
 
-    public async Task<Result<string, Error>> GetBookFilePathByIdAsync(Guid id)
+    public async Task<Result<string, Error>> GetBookFilePathByIdAsync(Guid userId, Guid bookId)
     {
-        var bookFilePath = await bookRepository.FindBookFilePathByIdAsync(id);
-        if (bookFilePath == null)
-            return new Error(StatusCodes.Status404NotFound, $"Can't found Book with ID = {id}");
+        var accessToBook = await HasAccessToBook(userId, bookId);
+        if (!accessToBook.IsOk)
+            return accessToBook.Error;
+        var bookFilePath = accessToBook.Value.FilePath; 
         return bookFilePath;
+    }
+
+    public async Task<Result<Book, Error>> HasAccessToBook(Guid userId, Guid bookId)
+    {
+        var book = await bookRepository.FindBookWithSubjectByIdAsync(bookId);
+        if (book == null)
+            return new Error(StatusCodes.Status404NotFound, $"Not found book with id = {bookId}");
+        // teacher can access books 
+        if (book.Subject.TeacherId == userId)
+            return book;
+        // Get the current user
+        var user = await userManager.FindByIdAsync(userId.ToString());
+        if (user == null)
+            return new  Error(StatusCodes.Status401Unauthorized,"User not found.");
+        // Admins can download any book
+        if (await userManager.IsInRoleAsync(user, AppRoles.Admin))
+            return book;
+        // Students can access books linked to their department
+        if (user.DepartmentId != book.Subject.DepartmentId)
+            return new Error(StatusCodes.Status403Forbidden, "You do not have permission to download this file.");
+        return book;
     }
 
 

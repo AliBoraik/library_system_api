@@ -20,11 +20,24 @@ public class SubjectService(
         return mapper.Map<IEnumerable<SubjectDto>>(subjects);
     }
 
-    public async Task<Result<SubjectDetailsDto, Error>> GetSubjectByIdAsync(int id)
+    public async Task<Result<SubjectDetailsDto, Error>> GetUserSubjectByIdAsync(int subjectId, Guid userId)
     {
-        var subject = await subjectRepository.FindSubjectDetailsByIdAsync(id);
+        var departments = (await departmentRepository.FindAllUserDepartmentsAsync(userId)).ToList();
+        if (!departments.Any()) return new Error(StatusCodes.Status404NotFound, "Not found any departments");
+        var subjectResult = await GetSubjectByIdAsync(subjectId);
+        if (!subjectResult.IsOk)
+            return subjectResult.Error;
+        var subjectDto = subjectResult.Value;
+        if (departments.Any(d => d.Id == subjectDto.DepartmentId))
+            return subjectDto;
+        return new Error(StatusCodes.Status403Forbidden, "User not have access for this subject!");
+    }
+
+    public async Task<Result<SubjectDetailsDto, Error>> GetSubjectByIdAsync(int subjectId)
+    {
+        var subject = await subjectRepository.FindSubjectDetailsByIdAsync(subjectId);
         if (subject == null)
-            return new Error(StatusCodes.Status404NotFound, $"Not found subject with id = {id}");
+            return new Error(StatusCodes.Status404NotFound, $"Not found subject with id = {subjectId}");
         return mapper.Map<SubjectDetailsDto>(subject);
     }
 
