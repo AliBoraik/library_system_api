@@ -1,7 +1,7 @@
 using AutoMapper;
-using Library.Domain;
 using Library.Domain.DTOs.Notification;
 using Library.Domain.Models;
+using Library.Domain.Utilities;
 
 namespace Library.Notification.Mapping;
 

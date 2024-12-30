@@ -1,5 +1,4 @@
 using System.Security.Claims;
-using Library.Domain.Constants;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.Extensions.Primitives;
@@ -16,14 +15,14 @@ public class AuthUserIdCachePolicy : IOutputCachePolicy
         var userId = context.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         context.CacheVaryByRules.QueryKeys = $"userId:{userId}";
-        
+
         // Add the tag to the cache rules
         var flag = AttemptOutputCaching(context);
         context.EnableOutputCaching = true;
         context.AllowCacheLookup = flag;
         context.AllowCacheStorage = flag;
         context.AllowLocking = true;
-        
+
         return ValueTask.CompletedTask;
     }
 
