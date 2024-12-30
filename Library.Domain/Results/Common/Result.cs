@@ -1,4 +1,4 @@
-namespace Library.Domain;
+namespace Library.Domain.Results.Common;
 
 public readonly struct Result<TValue, TError>
 {

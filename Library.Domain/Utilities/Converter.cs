@@ -1,4 +1,4 @@
-namespace Library.Domain;
+namespace Library.Domain.Utilities;
 
 public static class Converter
 {
