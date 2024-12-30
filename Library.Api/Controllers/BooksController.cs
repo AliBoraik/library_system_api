@@ -1,8 +1,9 @@
 using System.Security.Claims;
 using Library.Application.CachePolicies;
-using Library.Application.Common;
 using Library.Domain.Constants;
 using Library.Domain.DTOs.Book;
+using Library.Domain.Results;
+using Library.Domain.Results.Common;
 using Library.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -49,7 +50,7 @@ public class BooksController(IBookService bookService, IOutputCacheStore cacheSt
         // Extract userId from JWT token
         var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
         // Convert userId to Guid
-        if (!Guid.TryParse(userIdClaim, out var userGuid)) return BadRequest("Invalid user ID.");
+        if (!Guid.TryParse(userIdClaim, out var userGuid)) return BadRequest(Errors.BadRequest("Invalid user ID."));
         var result = await bookService.AddBookAsync(createLectureDto, userGuid);
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Books, CancellationToken.None);
@@ -68,7 +69,7 @@ public class BooksController(IBookService bookService, IOutputCacheStore cacheSt
         // Extract userId from JWT token
         var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
         // Convert userId to Guid
-        if (!Guid.TryParse(userIdClaim, out var userGuid)) return BadRequest("Invalid user ID.");
+        if (!Guid.TryParse(userIdClaim, out var userGuid)) BadRequest(Errors.BadRequest("Invalid user ID."));
         var result = await bookService.DeleteBookAsync(id, userGuid);
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Books, CancellationToken.None);
@@ -86,13 +87,13 @@ public class BooksController(IBookService bookService, IOutputCacheStore cacheSt
         // Extract userId from JWT token
         var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
         // Convert userId to Guid
-        if (!Guid.TryParse(userIdClaim, out var userGuid)) return BadRequest("Invalid user ID.");
+        if (!Guid.TryParse(userIdClaim, out var userGuid)) BadRequest(Errors.BadRequest("Invalid user ID."));
         var result = await bookService.GetBookFilePathByIdAsync(userGuid, id);
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
         var book = result.Value;
         var path = book.FilePath;
         var fileName = book.Title;
         var fileBytes = await System.IO.File.ReadAllBytesAsync(path);
-        return File(fileBytes, "application/octet-stream", fileName+Path.GetExtension(path));
+        return File(fileBytes, "application/octet-stream", fileName + Path.GetExtension(path));
     }
 }

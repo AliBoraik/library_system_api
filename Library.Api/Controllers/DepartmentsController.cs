@@ -1,8 +1,9 @@
 using System.Security.Claims;
 using Library.Application.CachePolicies;
-using Library.Application.Common;
 using Library.Domain.Constants;
 using Library.Domain.DTOs.Department;
+using Library.Domain.Results;
+using Library.Domain.Results.Common;
 using Library.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -27,13 +28,15 @@ public class DepartmentsController(IDepartmentService departmentService, IOutput
             var adminResult = await departmentService.GetAllDepartmentsAsync();
             return ResultHelper.HandleResult(adminResult);
         }
+
         // Extract userId from JWT token
         var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
         // Convert userId to Guid
-        if (!Guid.TryParse(userIdClaim, out var userGuid)) return BadRequest("Invalid user ID.");
+        if (!Guid.TryParse(userIdClaim, out var userGuid)) BadRequest(Errors.BadRequest("Invalid user ID."));
         var userResult = await departmentService.GetAllUserDepartmentsAsync(userGuid);
         return ResultHelper.HandleResult(userResult);
     }
+
     /// <summary>
     ///     Retrieves details of a specific department by its ID.
     /// </summary>
@@ -48,13 +51,13 @@ public class DepartmentsController(IDepartmentService departmentService, IOutput
             var adminResult = await departmentService.GetDepartmentByIdAsync(id);
             return ResultHelper.HandleResult(adminResult);
         }
+
         // Extract userId from JWT token
         var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
         // Convert userId to Guid
-        if (!Guid.TryParse(userIdClaim, out var userGuid)) return BadRequest("Invalid user ID.");
-        var userResult = await departmentService.GetUserDepartmentByIdAsync(userGuid , id);
+        if (!Guid.TryParse(userIdClaim, out var userGuid)) return BadRequest(Errors.BadRequest("Invalid user ID."));
+        var userResult = await departmentService.GetUserDepartmentByIdAsync(userGuid, id);
         return ResultHelper.HandleResult(userResult);
-      
     }
 
     /// <summary>

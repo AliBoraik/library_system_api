@@ -1,7 +1,7 @@
 using Library.Application.CachePolicies;
-using Library.Application.Common;
 using Library.Domain.Constants;
 using Library.Domain.DTOs.Users.Student;
+using Library.Domain.Results.Common;
 using Library.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
