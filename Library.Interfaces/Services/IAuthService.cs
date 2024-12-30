@@ -1,5 +1,6 @@
-using Library.Domain;
 using Library.Domain.Auth;
+using Library.Domain.Results;
+using Library.Domain.Results.Common;
 
 namespace Library.Interfaces.Services;
 

@@ -1,6 +1,7 @@
-using Library.Domain;
 using Library.Domain.DTOs.Lecture;
 using Library.Domain.Models;
+using Library.Domain.Results;
+using Library.Domain.Results.Common;
 
 namespace Library.Interfaces.Services;
 

@@ -1,4 +1,5 @@
-using Library.Domain;
+using Library.Domain.Results;
+using Library.Domain.Results.Common;
 using Microsoft.AspNetCore.Http;
 
 namespace Library.Interfaces.Services;

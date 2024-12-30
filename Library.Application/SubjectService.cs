@@ -1,10 +1,10 @@
 using AutoMapper;
-using Library.Domain;
 using Library.Domain.DTOs.Subject;
 using Library.Domain.Models;
+using Library.Domain.Results;
+using Library.Domain.Results.Common;
 using Library.Interfaces.Repositories;
 using Library.Interfaces.Services;
-using Microsoft.AspNetCore.Http;
 
 namespace Library.Application;
 
@@ -23,51 +23,53 @@ public class SubjectService(
     public async Task<Result<SubjectDetailsDto, Error>> GetUserSubjectByIdAsync(int subjectId, Guid userId)
     {
         var departments = (await departmentRepository.FindAllUserDepartmentsAsync(userId)).ToList();
-        if (!departments.Any()) return new Error(StatusCodes.Status404NotFound, "Not found any departments");
+        if (!departments.Any())
+            return Result<SubjectDetailsDto, Error>.Err(Errors.NotFound("subject"));
         var subjectResult = await GetSubjectByIdAsync(subjectId);
         if (!subjectResult.IsOk)
             return subjectResult.Error;
         var subjectDto = subjectResult.Value;
         if (departments.Any(d => d.Id == subjectDto.DepartmentId))
-            return subjectDto;
-        return new Error(StatusCodes.Status403Forbidden, "User not have access for this subject!");
+            return Result<SubjectDetailsDto, Error>.Ok(subjectDto);
+        return Result<SubjectDetailsDto, Error>.Err(Errors.Forbidden("get subject"));
     }
 
     public async Task<Result<SubjectDetailsDto, Error>> GetSubjectByIdAsync(int subjectId)
     {
         var subject = await subjectRepository.FindSubjectDetailsByIdAsync(subjectId);
         if (subject == null)
-            return new Error(StatusCodes.Status404NotFound, $"Not found subject with id = {subjectId}");
-        return mapper.Map<SubjectDetailsDto>(subject);
+            return Result<SubjectDetailsDto, Error>.Err(Errors.NotFound("subject"));
+
+        var dto = mapper.Map<SubjectDetailsDto>(subject);
+        return Result<SubjectDetailsDto, Error>.Ok(dto);
     }
 
     public async Task<Result<int, Error>> AddSubjectAsync(CreateSubjectDto createSubjectDto)
     {
         var department = await departmentRepository.DepartmentExistsAsync(createSubjectDto.DepartmentId);
         if (!department)
-            return new Error(StatusCodes.Status404NotFound,
-                $"Not found department with id = {createSubjectDto.DepartmentId}");
+            return Result<int, Error>.Err(Errors.NotFound("department"));
         var subject = mapper.Map<Subject>(createSubjectDto);
         await subjectRepository.AddSubjectAsync(subject);
-        return subject.Id;
+        return Result<int, Error>.Ok(subject.Id);
     }
 
     public async Task<Result<Ok, Error>> UpdateSubjectAsync(SubjectDto subjectDto)
     {
         var subjectExists = await subjectRepository.SubjectExistsAsync(subjectDto.DepartmentId);
         if (!subjectExists)
-            return new Error(StatusCodes.Status404NotFound, $"Not found subject with ID = {subjectDto.DepartmentId}");
+            return Result<Ok, Error>.Err(Errors.NotFound("subject"));
         var subject = mapper.Map<Subject>(subjectDto);
         await subjectRepository.UpdateSubjectAsync(subject);
-        return new Ok();
+        return ResultHelper.Ok();
     }
 
     public async Task<Result<Ok, Error>> DeleteSubjectAsync(int id)
     {
         var subject = await subjectRepository.FindSubjectByIdAsync(id);
         if (subject == null)
-            return new Error(StatusCodes.Status404NotFound, $"Not found subject with id = {id}");
+            return Result<Ok, Error>.Err(Errors.NotFound("subject"));
         await subjectRepository.DeleteSubjectAsync(subject);
-        return new Ok();
+        return ResultHelper.Ok();
     }
 }

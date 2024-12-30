@@ -1,7 +1,8 @@
 using AutoMapper;
-using Library.Domain;
 using Library.Domain.DTOs.Notification;
 using Library.Domain.Models;
+using Library.Domain.Results;
+using Library.Domain.Results.Common;
 using Library.Interfaces.Repositories;
 using Library.Interfaces.Services;
 

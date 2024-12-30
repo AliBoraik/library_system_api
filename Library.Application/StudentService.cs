@@ -1,9 +1,9 @@
 using AutoMapper;
-using Library.Domain;
 using Library.Domain.DTOs.Users.Student;
+using Library.Domain.Results;
+using Library.Domain.Results.Common;
 using Library.Interfaces.Repositories;
 using Library.Interfaces.Services;
-using Microsoft.AspNetCore.Http;
 
 namespace Library.Application;
 
@@ -23,17 +23,19 @@ public class StudentService(
     {
         var student = await studentRepository.FindStudentByIdAsync(id);
         if (student == null)
-            return new Error(StatusCodes.Status404NotFound, $"Not found student with id = {id}");
-        return mapper.Map<StudentDto>(student);
+            return Result<StudentDto, Error>.Err(Errors.NotFound("student"));
+        var dto = mapper.Map<StudentDto>(student);
+        return Result<StudentDto, Error>.Ok(dto);
     }
 
     public async Task<Result<IEnumerable<StudentDto>, Error>> GetStudentsByDepartmentIdAsync(int departmentId)
     {
         var department = await departmentRepository.FindDepartmentByIdAsync(departmentId);
         if (department == null)
-            return new Error(StatusCodes.Status404NotFound, $"Not found department with id = {departmentId}");
+            return Result<IEnumerable<StudentDto>, Error>.Err(Errors.NotFound("department"));
         var students = await studentRepository.FindStudentsByDepartmentIdAsync(departmentId);
-        return Result<IEnumerable<StudentDto>, Error>.Ok(mapper.Map<IEnumerable<StudentDto>>(students));
+        var dto = mapper.Map<IEnumerable<StudentDto>>(students);
+        return Result<IEnumerable<StudentDto>, Error>.Ok(dto);
     }
 
 
@@ -41,8 +43,8 @@ public class StudentService(
     {
         var studentExists = await studentRepository.FindStudentByIdAsync(id);
         if (studentExists == null)
-            return new Error(StatusCodes.Status404NotFound, $"Can't found Student with ID = {id}");
+            return Result<Ok, Error>.Err(Errors.NotFound("student"));
         await studentRepository.DeleteStudentAsync(studentExists);
-        return new Ok();
+        return ResultHelper.Ok();
     }
 }

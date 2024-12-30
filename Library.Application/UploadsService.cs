@@ -1,4 +1,5 @@
-using Library.Domain;
+using Library.Domain.Results;
+using Library.Domain.Results.Common;
 using Library.Interfaces.Services;
 using Microsoft.AspNetCore.Http;
 
@@ -21,7 +22,7 @@ public class UploadsService : IUploadsService
         catch (Exception e)
         {
             Console.WriteLine(e);
-            return new Error(StatusCodes.Status500InternalServerError, "Can't save file");
+            return Result<string, Error>.Err(Errors.InternalServerError());
         }
     }
 
@@ -30,11 +31,11 @@ public class UploadsService : IUploadsService
         try
         {
             if (File.Exists(filePath)) File.Delete(filePath);
-            return new Ok();
+            return ResultHelper.Ok();
         }
         catch (Exception e)
         {
-            return new Error(StatusCodes.Status500InternalServerError, e.Message);
+            return Result<Ok, Error>.Err(Errors.InternalServerError());
         }
     }
 }

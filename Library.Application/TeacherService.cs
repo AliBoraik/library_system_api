@@ -1,9 +1,9 @@
 using AutoMapper;
-using Library.Domain;
 using Library.Domain.DTOs.Users.Teacher;
+using Library.Domain.Results;
+using Library.Domain.Results.Common;
 using Library.Interfaces.Repositories;
 using Library.Interfaces.Services;
-using Microsoft.AspNetCore.Http;
 
 namespace Library.Application;
 
@@ -19,8 +19,9 @@ public class TeacherService(ITeacherRepository teacherRepository, IMapper mapper
     {
         var teacher = await teacherRepository.FindTeacherByIdAsync(id);
         if (teacher == null)
-            return new Error(StatusCodes.Status404NotFound, $"Not found teacher with id = {id}");
-        return mapper.Map<TeacherDto>(teacher);
+            return Result<TeacherDto, Error>.Err(Errors.NotFound("teacher"));
+        var dto = mapper.Map<TeacherDto>(teacher);
+        return Result<TeacherDto, Error>.Ok(dto);
     }
 
 
@@ -28,8 +29,8 @@ public class TeacherService(ITeacherRepository teacherRepository, IMapper mapper
     {
         var teacherExists = await teacherRepository.FindTeacherByIdAsync(id);
         if (teacherExists == null)
-            return new Error(StatusCodes.Status404NotFound, $"Can't found Teacher with ID = {id}");
+            return Result<Ok, Error>.Err(Errors.NotFound("teacher"));
         await teacherRepository.DeleteTeacherAsync(teacherExists);
-        return new Ok();
+        return ResultHelper.Ok();
     }
 }

@@ -1,7 +1,8 @@
 using AutoMapper;
-using Library.Domain;
 using Library.Domain.DTOs.Department;
 using Library.Domain.Models;
+using Library.Domain.Results;
+using Library.Domain.Results.Common;
 using Library.Interfaces.Repositories;
 using Library.Interfaces.Services;
 using Microsoft.AspNetCore.Http;
@@ -13,7 +14,6 @@ public class DepartmentService(IDepartmentRepository departmentRepository, IMapp
     public async Task<Result<IEnumerable<DepartmentDto>, Error>> GetAllDepartmentsAsync()
     {
         var departments = await departmentRepository.FindAllDepartmentsInfoAsync();
-        if (!departments.Any()) return new Error(StatusCodes.Status404NotFound, "Not found any departments");
         var dto = mapper.Map<IEnumerable<DepartmentDto>>(departments);
         return Result<IEnumerable<DepartmentDto>, Error>.Ok(dto);
     }
@@ -21,7 +21,6 @@ public class DepartmentService(IDepartmentRepository departmentRepository, IMapp
     public async Task<Result<IEnumerable<DepartmentDto>, Error>> GetAllUserDepartmentsAsync(Guid userId)
     {
         var departments = await departmentRepository.FindAllUserDepartmentsAsync(userId);
-        if (!departments.Any()) return new Error(StatusCodes.Status404NotFound, "Not found any departments");
         var dto = mapper.Map<IEnumerable<DepartmentDto>>(departments);
         return Result<IEnumerable<DepartmentDto>, Error>.Ok(dto);
     }
@@ -30,17 +29,18 @@ public class DepartmentService(IDepartmentRepository departmentRepository, IMapp
     {
         var department = await departmentRepository.FindDepartmentByIdAsync(departmentId);
         if (department == null)
-            return new Error(StatusCodes.Status404NotFound, $"Not found department with departmentId = {departmentId}");
-        return mapper.Map<DepartmentDetailsDto>(department);
+            return Result<DepartmentDetailsDto, Error>.Err(Errors.NotFound("department"));
+        var dto = mapper.Map<DepartmentDetailsDto>(department);
+        return Result<DepartmentDetailsDto, Error>.Ok(dto);
     }
 
     public async Task<Result<DepartmentDetailsDto, Error>> GetUserDepartmentByIdAsync(Guid userId, int departmentId)
     {
         var department = await departmentRepository.FindUserDepartmentByIdAsync(userId, departmentId);
         if (department == null)
-            return new Error(StatusCodes.Status404NotFound, $"Not found department with id = {departmentId}");
-        return mapper.Map<DepartmentDetailsDto>(department);
-
+            return Result<DepartmentDetailsDto, Error>.Err(Errors.NotFound("department"));
+        var dto = mapper.Map<DepartmentDetailsDto>(department);
+        return Result<DepartmentDetailsDto, Error>.Ok(dto);
     }
 
     public async Task<Result<int, Error>> AddDepartmentAsync(CreateDepartmentDto createDepartmentDto)
@@ -48,20 +48,19 @@ public class DepartmentService(IDepartmentRepository departmentRepository, IMapp
         var department = mapper.Map<Department>(createDepartmentDto);
         var departmentExists = await departmentRepository.FindDepartmentByIdAsync(department.Id);
         if (departmentExists != null)
-            return new Error(StatusCodes.Status409Conflict, "Department already exists");
+            return Result<int, Error>.Err(Errors.Conflict("department"));
         await departmentRepository.AddDepartmentAsync(department);
-        return department.Id;
+        return Result<int, Error>.Ok(department.Id);
     }
 
     public async Task<Result<Ok, Error>> UpdateDepartmentAsync(DepartmentDto departmentDto)
     {
         var departmentExists = await departmentRepository.DepartmentExistsAsync(departmentDto.Id);
         if (!departmentExists)
-            return new Error(StatusCodes.Status404NotFound,
-                $"Can't found Department with ID = {departmentDto.Id}");
+            return Result<Ok, Error>.Err(Errors.NotFound("department"));
         var department = mapper.Map<Department>(departmentDto);
         await departmentRepository.UpdateDepartmentAsync(department);
-        return new Ok();
+        return ResultHelper.Ok();
     }
 
     public async Task<Result<Ok, Error>> DeleteDepartmentAsync(int id)
@@ -70,6 +69,6 @@ public class DepartmentService(IDepartmentRepository departmentRepository, IMapp
         if (departmentExists == null)
             return new Error(StatusCodes.Status404NotFound, $"Can't found Department with ID = {id}");
         await departmentRepository.DeleteDepartmentAsync(departmentExists);
-        return new Ok();
+        return ResultHelper.Ok();
     }
 }
