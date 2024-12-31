@@ -1,8 +1,7 @@
-using System.Security.Claims;
 using Library.Application.CachePolicies;
 using Library.Domain.Constants;
 using Library.Domain.DTOs.Book;
-using Library.Domain.Results;
+using Library.Domain.Extensions;
 using Library.Domain.Results.Common;
 using Library.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -48,10 +47,8 @@ public class BooksController(IBookService bookService, IOutputCacheStore cacheSt
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
         // Extract userId from JWT token
-        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        // Convert userId to Guid
-        if (!Guid.TryParse(userIdClaim, out var userGuid)) return BadRequest(Errors.BadRequest("Invalid user ID."));
-        var result = await bookService.AddBookAsync(createLectureDto, userGuid);
+        var userId = User.GetUserId();
+        var result = await bookService.AddBookAsync(createLectureDto, userId);
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Books, CancellationToken.None);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Subjects, CancellationToken.None);
@@ -67,10 +64,8 @@ public class BooksController(IBookService bookService, IOutputCacheStore cacheSt
     public async Task<IActionResult> DeleteBook(Guid id)
     {
         // Extract userId from JWT token
-        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        // Convert userId to Guid
-        if (!Guid.TryParse(userIdClaim, out var userGuid)) BadRequest(Errors.BadRequest("Invalid user ID."));
-        var result = await bookService.DeleteBookAsync(id, userGuid);
+        var userId = User.GetUserId();
+        var result = await bookService.DeleteBookAsync(id, userId);
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Books, CancellationToken.None);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Subjects, CancellationToken.None);
@@ -85,10 +80,8 @@ public class BooksController(IBookService bookService, IOutputCacheStore cacheSt
     public async Task<IActionResult> DownloadBook(Guid id)
     {
         // Extract userId from JWT token
-        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        // Convert userId to Guid
-        if (!Guid.TryParse(userIdClaim, out var userGuid)) BadRequest(Errors.BadRequest("Invalid user ID."));
-        var result = await bookService.GetBookFilePathByIdAsync(userGuid, id);
+        var userId = User.GetUserId();
+        var result = await bookService.GetBookFilePathByIdAsync(userId, id);
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
         var book = result.Value;
         var path = book.FilePath;

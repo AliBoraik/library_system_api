@@ -1,8 +1,7 @@
-using System.Security.Claims;
 using Library.Application.CachePolicies;
 using Library.Domain.Constants;
 using Library.Domain.DTOs.Lecture;
-using Library.Domain.Results;
+using Library.Domain.Extensions;
 using Library.Domain.Results.Common;
 using Library.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -48,10 +47,8 @@ public class LecturesController(ILectureService lectureService, IOutputCacheStor
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
         // Extract userId from JWT token
-        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        // Convert userId to Guid
-        if (!Guid.TryParse(userIdClaim, out var userGuid)) return BadRequest(Errors.BadRequest("Invalid user ID."));
-        var result = await lectureService.AddLectureAsync(createLectureDto, userGuid);
+        var userId = User.GetUserId();
+         var result = await lectureService.AddLectureAsync(createLectureDto, userId);
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Lectures, CancellationToken.None);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Subjects, CancellationToken.None);
@@ -67,10 +64,8 @@ public class LecturesController(ILectureService lectureService, IOutputCacheStor
     public async Task<IActionResult> DeleteLecture(Guid id)
     {
         // Extract userId from JWT token
-        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        // Convert userId to Guid
-        if (!Guid.TryParse(userIdClaim, out var userGuid)) return BadRequest(Errors.BadRequest("Invalid user ID."));
-        var result = await lectureService.DeleteLectureAsync(id, userGuid);
+        var userId = User.GetUserId();
+        var result = await lectureService.DeleteLectureAsync(id, userId);
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Lectures, CancellationToken.None);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Subjects, CancellationToken.None);
@@ -85,10 +80,8 @@ public class LecturesController(ILectureService lectureService, IOutputCacheStor
     public async Task<IActionResult> DownloadLecture(Guid id)
     {
         // Extract userId from JWT token
-        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        // Convert userId to Guid
-        if (!Guid.TryParse(userIdClaim, out var userGuid)) return BadRequest(Errors.BadRequest("Invalid user ID."));
-        var result = await lectureService.GetLectureFilePathByIdAsync(userGuid, id);
+        var userId = User.GetUserId();
+        var result = await lectureService.GetLectureFilePathByIdAsync(userId, id);
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
         var lecture = result.Value;
         var path = lecture.FilePath;

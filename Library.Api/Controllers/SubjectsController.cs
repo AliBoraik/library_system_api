@@ -1,8 +1,7 @@
-using System.Security.Claims;
 using Library.Application.CachePolicies;
 using Library.Domain.Constants;
 using Library.Domain.DTOs.Subject;
-using Library.Domain.Results;
+using Library.Domain.Extensions;
 using Library.Domain.Results.Common;
 using Library.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -40,13 +39,9 @@ public class SubjectsController(ISubjectService subjectService, IOutputCacheStor
             var adminResult = await subjectService.GetSubjectByIdAsync(id);
             return ResultHelper.HandleResult(adminResult);
         }
-
         // Extract userId from JWT token
-        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        // Convert userId to Guid
-        if (!Guid.TryParse(userIdClaim, out var userGuid)) return BadRequest(Errors.BadRequest("Invalid user ID."));
-
-        var userResult = await subjectService.GetUserSubjectByIdAsync(id, userGuid);
+        var userId = User.GetUserId();
+        var userResult = await subjectService.GetUserSubjectByIdAsync(id, userId);
         return ResultHelper.HandleResult(userResult);
     }
 
