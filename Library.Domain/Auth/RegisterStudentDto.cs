@@ -26,5 +26,5 @@ public class RegisterStudentDto
     [DataType(DataType.Password)]
     [Compare("Password")]
     [NotMapped]
-    public string ConfirmPassword { get; set; }
+    public string ConfirmPassword { get; set; } = null!;
 }

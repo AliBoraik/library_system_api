@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Library.Domain.Auth;
 
-public class RegisterDto
+public class RegisterAdminDto
 {
     [EmailAddress]
     [Required(ErrorMessage = "Email is required")]
@@ -24,5 +24,5 @@ public class RegisterDto
     [DataType(DataType.Password)]
     [Compare("Password")]
     [NotMapped]
-    public string ConfirmPassword { get; set; }
+    public string ConfirmPassword { get; set; } = null!;
 }

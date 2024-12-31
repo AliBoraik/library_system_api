@@ -36,10 +36,10 @@ public class AuthController(IAuthService authService, IOutputCacheStore cacheSto
     [HttpPost]
     [Route("Register-Admin")]
     [Authorize(Roles = AppRoles.Admin)]
-    public async Task<IActionResult> RegisterAdmin([FromBody] RegisterDto registerDto)
+    public async Task<IActionResult> RegisterAdmin([FromBody] RegisterAdminDto registerAdminDto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
-        var result = await authService.RegisterAdmin(registerDto);
+        var result = await authService.RegisterAdmin(registerAdminDto);
         return result.Match<IActionResult>(
             _ => Ok(),
             error => StatusCode(error.Code, error));

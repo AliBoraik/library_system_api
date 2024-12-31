@@ -139,18 +139,18 @@ public class AuthService(UserManager<User> userManager, ITokenService tokenServi
         return Result<Guid, Error>.Ok(user.Id);
     }
 
-    public async Task<Result<Guid, Error>> RegisterAdmin(RegisterDto dto)
+    public async Task<Result<Guid, Error>> RegisterAdmin(RegisterAdminDto adminDto)
     {
-        var userExists = await userManager.FindByEmailAsync(dto.Email);
+        var userExists = await userManager.FindByEmailAsync(adminDto.Email);
         if (userExists != null)
             return Result<Guid, Error>.Err(Errors.Conflict("user"));
         var user = new User
         {
-            Email = dto.Email,
+            Email = adminDto.Email,
             SecurityStamp = Guid.NewGuid().ToString(),
-            UserName = dto.Username
+            UserName = adminDto.Username
         };
-        var result = await userManager.CreateAsync(user, dto.Password);
+        var result = await userManager.CreateAsync(user, adminDto.Password);
         if (!result.Succeeded)
             return Result<Guid, Error>.Err(Errors.InternalServerError());
         await userManager.AddToRoleAsync(user, AppRoles.Admin);
