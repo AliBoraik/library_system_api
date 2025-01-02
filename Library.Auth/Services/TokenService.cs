@@ -1,7 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Library.Domain;
 using Library.Domain.Auth;
 using Library.Domain.Utilities;
 using Library.Interfaces.Services;
