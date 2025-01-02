@@ -104,6 +104,3 @@ volumes:
     driver: local
   
   
-  
-  #  docker exec library_kafka kafka-topics --bootstrap-server library_kafka:9092   --create --topic notificationTopic
-  
