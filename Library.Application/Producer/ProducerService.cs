@@ -12,7 +12,7 @@ public class ProducerService(ProducerConfig producerConfig) : IProducerService
     /*
 
     // send notification
-    var notificationRequest = new CreateNotificationDto
+    var notificationRequest = new NotificationEvent
     {
         Message = $"Nwe department created with name {department.Name} and description {department.Description}",
         Title = "NEW DEPARTMENT CREATED",
@@ -27,15 +27,15 @@ public class ProducerService(ProducerConfig producerConfig) : IProducerService
     */
 
 
-    public async Task SendNotificationEventAsync(string topic, CreateNotificationDto createNotification)
+    public async Task SendNotificationEventAsync(string topic, NotificationEvent notification)
     {
-        var message = JsonSerializer.Serialize(createNotification);
+        var message = JsonSerializer.Serialize(notification);
         await ProduceAsync(topic, message);
     }
 
-    public async Task SendBulkNotificationEventToAsync(string topic, CreateBulkNotificationDto bulkNotificationDto)
+    public async Task SendBulkNotificationEventToAsync(string topic, StudentBulkNotificationEvent bulkNotificationEvent)
     {
-        var message = JsonSerializer.Serialize(bulkNotificationDto);
+        var message = JsonSerializer.Serialize(bulkNotificationEvent);
         await ProduceAsync(topic, message);
     }
 
