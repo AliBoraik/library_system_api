@@ -1,12 +1,12 @@
 using AutoMapper;
 using Library.Domain.Constants;
 using Library.Domain.DTOs.Lecture;
+using Library.Domain.DTOs.Notification;
 using Library.Domain.Models;
 using Library.Domain.Results;
 using Library.Domain.Results.Common;
 using Library.Interfaces.Repositories;
 using Library.Interfaces.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 
 namespace Library.Application;
@@ -15,6 +15,7 @@ public class LectureService(
     ILectureRepository lectureRepository,
     ISubjectRepository subjectRepository,
     UserManager<User> userManager,
+    IProducerService producerService,
     IMapper mapper,
     IUploadsService uploadsService)
     : ILectureService
@@ -60,22 +61,40 @@ public class LectureService(
         lecture.Id = lectureId;
         lecture.UploadedBy = userId;
         await lectureRepository.AddLectureAsync(lecture);
+        
+        // Run sending notification in the background
+        _ = Task.Run(async () =>
+        {
+            // Create the bulk notification request
+            var notificationRequest = new StudentBulkNotificationEvent
+            {
+                Title = $"Lecture Added - {lectureDto.Title}",
+                Message = "New Lecture Added you can download or read it",
+                SenderId = userId,
+                DepartmentId = subject.DepartmentId
+            };
+            // Send notification in the background
+            await producerService.SendBulkNotificationEventToAsync(AppTopics.NotificationTopic, notificationRequest);
+        });
+        
         return Result<Guid, Error>.Ok(lecture.Id);
     }
 
-    public async Task<Result<Ok, Error>> DeleteLectureAsync(Guid id, Guid teacherId)
+    public async Task<Result<Ok, Error>> DeleteLectureAsync(Guid id, Guid userId)
     {
         var lecture = await lectureRepository.FindLectureWithSubjectByIdAsync(id);
-        if (lecture == null) return new Error(StatusCodes.Status404NotFound, $"Can't found Lecture with ID = {id}");
-        if (lecture.Subject.TeacherId != teacherId)
-            return Result<Ok, Error>.Err(Errors.Forbidden("delete lecture"));
-        await lectureRepository.DeleteLectureAsync(lecture);
+        if (lecture == null)
+            return Result<Ok, Error>.Err(Errors.NotFound("lecture"));
+        // check subject.TeacherId 
+        if (lecture.Subject.TeacherId  != userId)
+            // Check if userId is in the Admin role
+            if (!await userManager.IsInRoleAsync(new User { Id = userId }, AppRoles.Admin))
+                return Result<Ok, Error>.Err(Errors.Forbidden("delete lecture"));
+        
         var uploadResult = uploadsService.DeleteFile(lecture.FilePath);
         if (!uploadResult.IsOk)
-        {
-            // TODO check if Can't delete file from disk 
-        }
-
+            return Result<Ok, Error>.Err(Errors.InternalServerError());
+        await lectureRepository.DeleteLectureAsync(lecture);
         return ResultHelper.Ok();
     }
 

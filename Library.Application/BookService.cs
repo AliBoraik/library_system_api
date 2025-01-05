@@ -16,7 +16,6 @@ public class BookService(
     ISubjectRepository subjectRepository,
     IProducerService producerService,
     UserManager<User> userManager,
-    IStudentRepository studentRepository,
     IMapper mapper,
     IUploadsService uploadsService) : IBookService
 {
@@ -63,14 +62,19 @@ public class BookService(
         book.UploadedBy = userId;
         await bookRepository.AddBookAsync(book);
 
-        // Run sending notification  in the background
-        var recipients = await studentRepository.FindStudentIdsByDepartmentIdAsync(subject.DepartmentId);
-
+        // Run sending notification in the background
         _ = Task.Run(async () =>
         {
+            // Create the bulk notification request
+            var notificationRequest = new StudentBulkNotificationEvent
+            {
+                Title = $"Book Added - {bookDto.Title}",
+                Message = "New Book Added you can download or read it",
+                SenderId = userId,
+                DepartmentId = subject.DepartmentId
+            };
             // Send notification in the background
-            await SendBulkNotificationAsync($"Book Added - {bookDto.Title}",
-                "New Book Added you can download or read it", recipients, subject.TeacherId);
+            await producerService.SendBulkNotificationEventToAsync(AppTopics.NotificationTopic, notificationRequest);
         });
 
         return Result<Guid, Error>.Ok(book.Id);
@@ -79,18 +83,18 @@ public class BookService(
     public async Task<Result<Ok, Error>> DeleteBookAsync(Guid id, Guid userId)
     {
         var book = await bookRepository.FindBookWithSubjectByIdAsync(id);
-
         if (book == null)
-            return Result<Ok, Error>.Err(Errors.NotFound("lecture"));
-        if (book.Subject.TeacherId != userId)
-            return Result<Ok, Error>.Err(Errors.Forbidden("delete book"));
-        await bookRepository.DeleteBookAsync(book);
+            return Result<Ok, Error>.Err(Errors.NotFound("book"));
+        // check subject.TeacherId 
+        if (book.Subject.TeacherId  != userId)
+            // Check if userId is in the Admin role
+            if (!await userManager.IsInRoleAsync(new User { Id = userId }, AppRoles.Admin))
+                return Result<Ok, Error>.Err(Errors.Forbidden("delete book"));
+        
         var uploadResult = uploadsService.DeleteFile(book.FilePath);
         if (!uploadResult.IsOk)
-        {
-            // TODO check if Can't delete file from disk 
-        }
-
+            return Result<Ok, Error>.Err(Errors.InternalServerError());
+        await bookRepository.DeleteBookAsync(book);
         return ResultHelper.Ok();
     }
 
@@ -122,22 +126,5 @@ public class BookService(
         if (user.DepartmentId != book.Subject.DepartmentId)
             return Result<Book, Error>.Err(Errors.Forbidden("access book"));
         return Result<Book, Error>.Ok(book);
-    }
-
-
-    private async Task SendBulkNotificationAsync(string title, string message, IEnumerable<Guid> recipients,
-        Guid senderId)
-    {
-        // Create the notification request
-        var notificationRequest = new CreateBulkNotificationDto
-        {
-            Title = title,
-            Message = message,
-            SenderId = senderId,
-            RecipientUserIds = recipients
-        };
-
-        // Send the notification event asynchronously
-        await producerService.SendBulkNotificationEventToAsync(AppTopics.NotificationTopic, notificationRequest);
     }
 }

@@ -1,6 +1,6 @@
 namespace Library.Domain.DTOs.Notification;
 
-public class CreateNotificationDto
+public class NotificationEvent
 {
     public required string Title { get; init; }
     public required string Message { get; init; }
