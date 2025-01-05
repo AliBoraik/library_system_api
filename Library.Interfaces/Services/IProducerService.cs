@@ -1,4 +1,4 @@
-using Library.Domain.DTOs.Notification;
+using Library.Domain.Events.Notification;
 
 namespace Library.Interfaces.Services;
 

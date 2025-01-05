@@ -1,4 +1,5 @@
 using Library.Domain.DTOs.Notification;
+using Library.Domain.Events.Notification;
 using Library.Domain.Results;
 using Library.Domain.Results.Common;
 

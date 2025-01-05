@@ -74,12 +74,13 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
         var teacherRoleId = Guid.NewGuid();
         var studentRoleId = Guid.NewGuid();
         // admin id 
-        var adminId = Guid.Parse("5526a0f8-4e48-4e32-a227-a6f881dd8e26");
-        // user 1 id
+        var adminId = AdminConstants.SystemAdminId;
+        // teacherId
         var teacherId = Guid.Parse("f33f8675-06a1-4a28-b111-f7201cd6eb2f");
-        // user 2 id
+        // studentId
         var studentId = Guid.Parse("bdbb81d1-824f-41c7-b4a9-982c8dcb13dc");
-
+        // passwordHasher 
+        var passwordHasher = new PasswordHasher<User>();
 
         modelBuilder.Entity<IdentityRole<Guid>>()
             .HasData(new IdentityRole<Guid>
@@ -102,63 +103,55 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
                 Name = AppRoles.Student,
                 NormalizedName = AppRoles.Student.ToUpper()
             });
-        modelBuilder.Entity<User>()
-            .HasData(new User
-            {
-                Id = adminId,
-                Email = "admin@gmail.com",
-                NormalizedEmail = "ADMIN@GMAIL.COM",
-                SecurityStamp = Guid.NewGuid().ToString(),
-                UserName = "admin",
-                NormalizedUserName = "ADMIN",
-                PasswordHash = "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q=="
-            });
+        
+        // Seed admin user
+        var adminUser = new User
+        {
+            Id = AdminConstants.SystemAdminId,
+            UserName = AdminConstants.SystemAdminUserName,
+            NormalizedUserName = AdminConstants.SystemAdminUserName.ToUpper(),
+            Email = AdminConstants.SystemAdminEmail,
+            NormalizedEmail = AdminConstants.SystemAdminEmail.ToUpper(),
+            EmailConfirmed = true,
+            PasswordHash = passwordHasher.HashPassword(null!, AdminConstants.DefaultAdminPassword)
+        };
 
+        // Seed teacher user
+        var teacherSeed = new User
+        {
+            Id = teacherId,
+            Email = "teacher@system.com",
+            NormalizedEmail = "TEACHER@SYSTEM.COM",
+            SecurityStamp = Guid.NewGuid().ToString(),
+            UserName = "teacher",
+            NormalizedUserName = "TEACHER",
+            PasswordHash = "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q==",
+            DepartmentId = 1
+        };
+
+        // Seed student user
+        var studentSeed = new User
+        {
+            Id = studentId,
+            Email = "student@system.com",
+            NormalizedEmail = "STUDENT@SYSTEM.COM",
+            SecurityStamp = Guid.NewGuid().ToString(),
+            UserName = "student",
+            NormalizedUserName = "STUDENT",
+            PasswordHash = "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q==",
+            DepartmentId = 1
+        };
+
+        modelBuilder.Entity<User>()
+            .HasData(adminUser , teacherSeed , studentSeed);
+        
         modelBuilder.Entity<IdentityUserRole<Guid>>().HasData(
             new IdentityUserRole<Guid>
             {
                 RoleId = adminRoleId,
                 UserId = adminId
             });
-
-        modelBuilder.Entity<User>()
-            .HasData(new User
-            {
-                Id = teacherId,
-                Email = "teacher@gmail.com",
-                NormalizedEmail = "TEACHER@GMAIL.COM",
-                SecurityStamp = Guid.NewGuid().ToString(),
-                UserName = "teacher",
-                NormalizedUserName = "TEACHER",
-                PasswordHash = "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q=="
-            });
-
-        modelBuilder.Entity<Teacher>()
-            .HasData(new Teacher
-            {
-                Id = teacherId
-            });
-
-        modelBuilder.Entity<User>()
-            .HasData(new User
-            {
-                Id = studentId,
-                Email = "student@gmail.com",
-                NormalizedEmail = "STUDENT@GMAIL.COM",
-                SecurityStamp = Guid.NewGuid().ToString(),
-                UserName = "student",
-                NormalizedUserName = "STUDENT",
-                PasswordHash = "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q==",
-                DepartmentId = 1
-            });
-
-        modelBuilder.Entity<Student>()
-            .HasData(new Student
-            {
-                Id = studentId
-            });
-
-
+        
         modelBuilder.Entity<IdentityUserRole<Guid>>().HasData(
             new IdentityUserRole<Guid>
             {
@@ -173,6 +166,18 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
                 UserId = studentId
             });
 
+
+        modelBuilder.Entity<Teacher>()
+            .HasData(new Teacher
+            {
+                Id = teacherId
+            });
+        
+        modelBuilder.Entity<Student>()
+            .HasData(new Student
+            {
+                Id = studentId
+            });
 
         var department1 = new Department
         {

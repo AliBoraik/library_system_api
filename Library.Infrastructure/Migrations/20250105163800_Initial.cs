@@ -338,19 +338,15 @@ namespace Library.Infrastructure.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { new Guid("0ec09036-8afa-4cf1-a3ce-3bbf1558e68c"), null, "student", "STUDENT" },
-                    { new Guid("b3625075-b908-48ff-bf15-7db72245b4e2"), null, "teacher", "TEACHER" },
-                    { new Guid("ef032e1f-4366-4dd4-842e-26bdfc5ebb66"), null, "admin", "ADMIN" }
+                    { new Guid("391d26e1-d310-4da4-a4f0-49770b5d1776"), null, "admin", "ADMIN" },
+                    { new Guid("3b4b302e-2d43-42ea-906f-e53bece227aa"), null, "student", "STUDENT" },
+                    { new Guid("bcaf4cb2-299c-456f-9cd8-c68649d0562f"), null, "teacher", "TEACHER" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "DepartmentId", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[,]
-                {
-                    { new Guid("5526a0f8-4e48-4e32-a227-a6f881dd8e26"), 0, "2b9241ac-308c-4fd6-aa8c-17fbf6656c3b", null, "admin@gmail.com", false, false, null, "ADMIN@GMAIL.COM", "ADMIN", "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q==", null, false, "a80aa9f0-b693-4e9a-aeae-beb15b576aab", false, "admin" },
-                    { new Guid("f33f8675-06a1-4a28-b111-f7201cd6eb2f"), 0, "b86f59a9-890c-4b23-8bff-77a4e8296f97", null, "teacher@gmail.com", false, false, null, "TEACHER@GMAIL.COM", "TEACHER", "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q==", null, false, "6f37fa27-85f6-40f2-8190-94ca0d42f1ed", false, "teacher" }
-                });
+                values: new object[] { new Guid("00000000-0000-0000-0000-000000000001"), 0, "8efac4a2-d9a4-47bb-a98e-fae34b5af358", null, "admin@system.com", true, false, null, "ADMIN@SYSTEM.COM", "SYSTEMADMIN", "AQAAAAIAAYagAAAAELI3q/drRmvf9T6Kcj8B6LJUxcxVSlrs/ywaaGVpCPAJ6qrPHkPksTRI8k6zrDMg6A==", null, false, null, false, "SystemAdmin" });
 
             migrationBuilder.InsertData(
                 table: "Departments",
@@ -364,31 +360,35 @@ namespace Library.Infrastructure.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
                 columns: new[] { "RoleId", "UserId" },
-                values: new object[,]
-                {
-                    { new Guid("ef032e1f-4366-4dd4-842e-26bdfc5ebb66"), new Guid("5526a0f8-4e48-4e32-a227-a6f881dd8e26") },
-                    { new Guid("b3625075-b908-48ff-bf15-7db72245b4e2"), new Guid("f33f8675-06a1-4a28-b111-f7201cd6eb2f") }
-                });
+                values: new object[] { new Guid("391d26e1-d310-4da4-a4f0-49770b5d1776"), new Guid("00000000-0000-0000-0000-000000000001") });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "DepartmentId", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { new Guid("bdbb81d1-824f-41c7-b4a9-982c8dcb13dc"), 0, "584ee2d6-8b94-4c5e-8672-0c8025e258bb", 1, "student@gmail.com", false, false, null, "STUDENT@GMAIL.COM", "STUDENT", "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q==", null, false, "3f8286ff-af5e-4667-94e4-19566daa3637", false, "student" });
-
-            migrationBuilder.InsertData(
-                table: "Teachers",
-                column: "Id",
-                value: new Guid("f33f8675-06a1-4a28-b111-f7201cd6eb2f"));
+                values: new object[,]
+                {
+                    { new Guid("bdbb81d1-824f-41c7-b4a9-982c8dcb13dc"), 0, "aed762c2-a9cd-4d72-8ff1-97de5472767a", 1, "student@system.com", false, false, null, "STUDENT@SYSTEM.COM", "STUDENT", "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q==", null, false, "d86e0f9f-ffc8-4c0e-b1ab-e3e93bcf5e6f", false, "student" },
+                    { new Guid("f33f8675-06a1-4a28-b111-f7201cd6eb2f"), 0, "de3e6912-aeac-41f5-a25e-66500bea4e38", 1, "teacher@system.com", false, false, null, "TEACHER@SYSTEM.COM", "TEACHER", "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q==", null, false, "a5cd5db5-9166-4ddf-b8ef-1eb8ad0f77c7", false, "teacher" }
+                });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
                 columns: new[] { "RoleId", "UserId" },
-                values: new object[] { new Guid("0ec09036-8afa-4cf1-a3ce-3bbf1558e68c"), new Guid("bdbb81d1-824f-41c7-b4a9-982c8dcb13dc") });
+                values: new object[,]
+                {
+                    { new Guid("3b4b302e-2d43-42ea-906f-e53bece227aa"), new Guid("bdbb81d1-824f-41c7-b4a9-982c8dcb13dc") },
+                    { new Guid("bcaf4cb2-299c-456f-9cd8-c68649d0562f"), new Guid("f33f8675-06a1-4a28-b111-f7201cd6eb2f") }
+                });
 
             migrationBuilder.InsertData(
                 table: "Students",
                 column: "Id",
                 value: new Guid("bdbb81d1-824f-41c7-b4a9-982c8dcb13dc"));
+
+            migrationBuilder.InsertData(
+                table: "Teachers",
+                column: "Id",
+                value: new Guid("f33f8675-06a1-4a28-b111-f7201cd6eb2f"));
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",

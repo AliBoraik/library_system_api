@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using Library.Domain.Constants;
 using Library.Domain.DTOs.Notification;
+using Library.Domain.Events.Notification;
 using Library.Domain.Results;
 using Library.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;

@@ -17,5 +17,8 @@ public static class ConfigureServices
         // register services 
         services.AddScoped<IAuthService, AuthService>();
         services.AddSingleton<ITokenService, TokenService>();
+        // add kafka ProducerConfig for sending notifications 
+        services.AddKafkaProducerConfig(configuration);
+        
     }
 }

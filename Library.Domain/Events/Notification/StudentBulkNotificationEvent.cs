@@ -1,4 +1,4 @@
-namespace Library.Domain.DTOs.Notification;
+namespace Library.Domain.Events.Notification;
 
 public class StudentBulkNotificationEvent
 {

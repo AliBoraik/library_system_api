@@ -2,6 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Library.Domain.Auth;
 using Library.Domain.Constants;
+using Library.Domain.Events.Notification;
 using Library.Domain.Models;
 using Library.Domain.Results;
 using Library.Domain.Results.Common;
@@ -12,7 +13,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Library.Auth.Services;
 
-public class AuthService(UserManager<User> userManager, ITokenService tokenService, AppDbContext context)
+public class AuthService(UserManager<User> userManager, ITokenService tokenService,IProducerService producerService, AppDbContext context)
     : IAuthService
 {
     public async Task<Result<AuthDataResponse, Error>> LoginAsync(LoginDto loginDto)
@@ -136,6 +137,21 @@ public class AuthService(UserManager<User> userManager, ITokenService tokenServi
         await context.Students.AddAsync(student);
         await context.SaveChangesAsync();
         await userManager.AddToRoleAsync(user, AppRoles.Student);
+        
+        // Run sending notification in the background
+        _ = Task.Run(async () =>
+        {
+            // Create the notification event
+            var notificationEvent = new NotificationEvent
+            {
+                Title = "Welcome to the System!",
+                Message = "Hello and welcome to our system! We're excited to have you on board. If you need any help, feel free to reach out to support.",
+                SenderUserId = AdminConstants.SystemAdminId, 
+                RecipientUserId = user.Id
+            };
+            // Send notification in the background
+            await producerService.SendNotificationEventAsync(AppTopics.NotificationTopic, notificationEvent);
+        });
         return Result<Guid, Error>.Ok(user.Id);
     }
 

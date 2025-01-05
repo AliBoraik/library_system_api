@@ -287,33 +287,33 @@ namespace Library.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("5526a0f8-4e48-4e32-a227-a6f881dd8e26"),
+                            Id = new Guid("00000000-0000-0000-0000-000000000001"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "2b9241ac-308c-4fd6-aa8c-17fbf6656c3b",
-                            Email = "admin@gmail.com",
-                            EmailConfirmed = false,
+                            ConcurrencyStamp = "8efac4a2-d9a4-47bb-a98e-fae34b5af358",
+                            Email = "admin@system.com",
+                            EmailConfirmed = true,
                             LockoutEnabled = false,
-                            NormalizedEmail = "ADMIN@GMAIL.COM",
-                            NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q==",
+                            NormalizedEmail = "ADMIN@SYSTEM.COM",
+                            NormalizedUserName = "SYSTEMADMIN",
+                            PasswordHash = "AQAAAAIAAYagAAAAELI3q/drRmvf9T6Kcj8B6LJUxcxVSlrs/ywaaGVpCPAJ6qrPHkPksTRI8k6zrDMg6A==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "a80aa9f0-b693-4e9a-aeae-beb15b576aab",
                             TwoFactorEnabled = false,
-                            UserName = "admin"
+                            UserName = "SystemAdmin"
                         },
                         new
                         {
                             Id = new Guid("f33f8675-06a1-4a28-b111-f7201cd6eb2f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "b86f59a9-890c-4b23-8bff-77a4e8296f97",
-                            Email = "teacher@gmail.com",
+                            ConcurrencyStamp = "de3e6912-aeac-41f5-a25e-66500bea4e38",
+                            DepartmentId = 1,
+                            Email = "teacher@system.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
-                            NormalizedEmail = "TEACHER@GMAIL.COM",
+                            NormalizedEmail = "TEACHER@SYSTEM.COM",
                             NormalizedUserName = "TEACHER",
                             PasswordHash = "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "6f37fa27-85f6-40f2-8190-94ca0d42f1ed",
+                            SecurityStamp = "a5cd5db5-9166-4ddf-b8ef-1eb8ad0f77c7",
                             TwoFactorEnabled = false,
                             UserName = "teacher"
                         },
@@ -321,16 +321,16 @@ namespace Library.Infrastructure.Migrations
                         {
                             Id = new Guid("bdbb81d1-824f-41c7-b4a9-982c8dcb13dc"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "584ee2d6-8b94-4c5e-8672-0c8025e258bb",
+                            ConcurrencyStamp = "aed762c2-a9cd-4d72-8ff1-97de5472767a",
                             DepartmentId = 1,
-                            Email = "student@gmail.com",
+                            Email = "student@system.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
-                            NormalizedEmail = "STUDENT@GMAIL.COM",
+                            NormalizedEmail = "STUDENT@SYSTEM.COM",
                             NormalizedUserName = "STUDENT",
                             PasswordHash = "AQAAAAIAAYagAAAAEB06+sY86pJ8aS/cc9CPo9ut/NBhGXU6rZO/YXvY33qmZqz2L97P27e13UvDnGx+7Q==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "3f8286ff-af5e-4667-94e4-19566daa3637",
+                            SecurityStamp = "d86e0f9f-ffc8-4c0e-b1ab-e3e93bcf5e6f",
                             TwoFactorEnabled = false,
                             UserName = "student"
                         });
@@ -383,19 +383,19 @@ namespace Library.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("ef032e1f-4366-4dd4-842e-26bdfc5ebb66"),
+                            Id = new Guid("391d26e1-d310-4da4-a4f0-49770b5d1776"),
                             Name = "admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = new Guid("b3625075-b908-48ff-bf15-7db72245b4e2"),
+                            Id = new Guid("bcaf4cb2-299c-456f-9cd8-c68649d0562f"),
                             Name = "teacher",
                             NormalizedName = "TEACHER"
                         },
                         new
                         {
-                            Id = new Guid("0ec09036-8afa-4cf1-a3ce-3bbf1558e68c"),
+                            Id = new Guid("3b4b302e-2d43-42ea-906f-e53bece227aa"),
                             Name = "student",
                             NormalizedName = "STUDENT"
                         });
@@ -487,18 +487,18 @@ namespace Library.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = new Guid("5526a0f8-4e48-4e32-a227-a6f881dd8e26"),
-                            RoleId = new Guid("ef032e1f-4366-4dd4-842e-26bdfc5ebb66")
+                            UserId = new Guid("00000000-0000-0000-0000-000000000001"),
+                            RoleId = new Guid("391d26e1-d310-4da4-a4f0-49770b5d1776")
                         },
                         new
                         {
                             UserId = new Guid("f33f8675-06a1-4a28-b111-f7201cd6eb2f"),
-                            RoleId = new Guid("b3625075-b908-48ff-bf15-7db72245b4e2")
+                            RoleId = new Guid("bcaf4cb2-299c-456f-9cd8-c68649d0562f")
                         },
                         new
                         {
                             UserId = new Guid("bdbb81d1-824f-41c7-b4a9-982c8dcb13dc"),
-                            RoleId = new Guid("0ec09036-8afa-4cf1-a3ce-3bbf1558e68c")
+                            RoleId = new Guid("3b4b302e-2d43-42ea-906f-e53bece227aa")
                         });
                 });
 
