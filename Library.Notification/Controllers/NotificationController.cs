@@ -63,7 +63,7 @@ public class NotificationController(INotificationService notificationService) : 
     /// </summary>
     [HttpPost("Send")]
     [Authorize(Roles = AppRoles.Admin)]
-    public async Task<ActionResult> SendNotification([FromBody] CreateNotificationDto request)
+    public async Task<ActionResult> SendNotification([FromBody] NotificationEvent request)
     {
         var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         // Convert userId to Guid
@@ -79,7 +79,7 @@ public class NotificationController(INotificationService notificationService) : 
     /// </summary>
     [HttpPost("SendBulk")]
     [Authorize(Roles = AppRoles.Admin)]
-    public async Task<ActionResult> SendBulkNotification([FromBody] CreateBulkNotificationDto request)
+    public async Task<ActionResult> SendBulkNotification([FromBody] StudentBulkNotificationEvent request)
     {
         // Extract userId from JWT token
         var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);

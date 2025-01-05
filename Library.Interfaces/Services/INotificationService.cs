@@ -6,8 +6,8 @@ namespace Library.Interfaces.Services;
 
 public interface INotificationService
 {
-    Task<Result<Ok, Error>> SendNotificationAsync(CreateNotificationDto createNotification);
-    Task<Result<Ok, Error>> SendBulkNotificationAsync(CreateBulkNotificationDto bulkNotificationDto);
+    Task<Result<Ok, Error>> SendNotificationAsync(NotificationEvent notificationEvent);
+    Task<Result<Ok, Error>> SendBulkNotificationAsync(StudentBulkNotificationEvent bulkNotificationEvent);
     Task<IEnumerable<NotificationDto>> GetNotificationsAsync(Guid userId);
     Task<IEnumerable<NotificationDto>> GetLimitNotificationsAsync(Guid userId, int page, int limit);
     Task<IEnumerable<NotificationDto>> GetUnreadNotificationsByUserIdAsync(Guid userId);

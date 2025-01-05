@@ -8,27 +8,37 @@ namespace Library.Infrastructure.Repositories;
 public class NotificationRepository(AppDbContext context) : INotificationRepository
 {
     // Get all notifications for a specific user
-    public async Task<IEnumerable<NotificationModel>> FindNotificationsByUserIdAsync(Guid userId)
+    public async Task<IEnumerable<UserNotification>> FindNotificationsByUserIdAsync(Guid userId)
     {
-        return await context.Notifications
-            .Where(n => n.UserNotifications.Any(un => un.UserId == userId)) // Filter notifications by userId
-            .Include(n =>
-                n.UserNotifications.Where(un => un.UserId == userId)) // Include only UserNotifications where Id matches
-            .OrderByDescending(n => n.SentAt)
+        return await context.UserNotifications
+            .Where(un => un.UserId == userId) // Filter by UserId
+            .Include(un => un.Notification)
+            .OrderByDescending(un => un.Notification.SentAt) // Order by SentAt
             .ToListAsync();
     }
 
-    public async Task<IEnumerable<NotificationModel>> FindLimitNotificationByUserIdAsync(Guid userId, int page,
+    public async Task<IEnumerable<UserNotification>> FindLimitNotificationByUserIdAsync(Guid userId, int page,
         int limit)
     {
-        return await context.Notifications
-            .Where(n => n.UserNotifications.Any(un => un.UserId == userId)) // Filter notifications by userId
-            .Include(n =>
-                n.UserNotifications.Where(un => un.UserId == userId)) // Include only UserNotifications where Id matches
-            .OrderByDescending(n => n.SentAt)
+        return await  context.UserNotifications
+            .Where(un => un.UserId == userId) // Filter by UserId
+            .Include(un => un.Notification)
+            .OrderByDescending(n => n.Notification.SentAt)
             .Skip((page - 1) * limit)
             .Take(limit)
             .ToListAsync();
+    }
+    
+    
+    // Get unread notifications for a user
+    public async Task<IEnumerable<UserNotification>> FindUnreadNotificationsByUserIdAsync(Guid userId)
+    {
+        return await context.UserNotifications
+            .Where(un => un.UserId == userId && !un.IsRead) // Filter by user and unread status
+            .Include(un => un.Notification)
+            .OrderByDescending(n => n.Notification.SentAt)
+
+            .ToListAsync(); //
     }
 
     // Add a new notification
@@ -53,26 +63,20 @@ public class NotificationRepository(AppDbContext context) : INotificationReposit
             await SaveChangesAsync();
         }
     }
+    
+    public async Task<UserNotification?> FindNotificationByIdAndUserIdAsync(Guid notificationId, Guid userId)
+    {
+        return await context.UserNotifications
+            .Where(un => un.UserId == userId && un.NotificationId == notificationId)
+            .FirstOrDefaultAsync();
+    }
 
 
     // Get a single notification by ID
     public async Task<NotificationModel?> FindNotificationByIdAsync(Guid notificationId)
     {
         return await context.Notifications
-            .Include(n => n.UserNotifications)
             .FirstOrDefaultAsync(n => n.Id == notificationId);
-    }
-
-    // Get unread notifications for a user
-    public async Task<IEnumerable<NotificationModel>> FindUnreadNotificationsByUserIdAsync(Guid userId)
-    {
-        return await context.Notifications
-            .Where(n => n.UserNotifications.Any(un =>
-                un.UserId == userId && !un.IsRead)) // Filter notifications by userId
-            .Include(n =>
-                n.UserNotifications.Where(un => un.UserId == userId)) // Include only UserNotifications where Id matches
-            .OrderByDescending(n => n.SentAt)
-            .ToListAsync();
     }
 
     public async Task DeleteNotificationAsync(NotificationModel notification)

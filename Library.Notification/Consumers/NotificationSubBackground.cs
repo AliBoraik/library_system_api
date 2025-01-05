@@ -34,9 +34,9 @@ public class NotificationSubBackground(
                 // Deserialize the message
                 var message = consumeResult.Message.Value;
 
-                if (message.Contains("RecipientUserIds")) // Identify Bulk Notification
+                if (message.Contains("DepartmentId")) // Identify Bulk Notification
                 {
-                    var bulkNotification = JsonSerializer.Deserialize<CreateBulkNotificationDto>(message);
+                    var bulkNotification = JsonSerializer.Deserialize<StudentBulkNotificationEvent>(message);
                     if (bulkNotification != null)
                     {
                         var result = await notificationService.SendBulkNotificationAsync(bulkNotification);
@@ -46,7 +46,7 @@ public class NotificationSubBackground(
                 }
                 else // Single Notification
                 {
-                    var notification = JsonSerializer.Deserialize<CreateNotificationDto>(message);
+                    var notification = JsonSerializer.Deserialize<NotificationEvent>(message);
                     if (notification != null)
                     {
                         var result = await notificationService.SendNotificationAsync(notification);

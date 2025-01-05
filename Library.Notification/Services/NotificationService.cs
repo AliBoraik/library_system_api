@@ -8,7 +8,7 @@ using Library.Interfaces.Services;
 
 namespace Library.Notification.Services;
 
-public class NotificationService(INotificationRepository notificationRepository, IMapper mapper) : INotificationService
+public class NotificationService(INotificationRepository notificationRepository,IStudentRepository studentRepository, IMapper mapper) : INotificationService
 {
     public async Task<IEnumerable<NotificationDto>> GetNotificationsAsync(Guid userId)
     {
@@ -22,48 +22,53 @@ public class NotificationService(INotificationRepository notificationRepository,
         return mapper.Map<IEnumerable<NotificationDto>>(notifications);
     }
 
-    public async Task<Result<Ok, Error>> SendBulkNotificationAsync(CreateBulkNotificationDto bulkNotificationDto)
+    public async Task<Result<Ok, Error>> SendBulkNotificationAsync(StudentBulkNotificationEvent bulkNotificationEvent)
     {
         var notificationModel = new NotificationModel
         {
-            Title = bulkNotificationDto.Title,
-            Message = bulkNotificationDto.Message,
+            Title = bulkNotificationEvent.Title,
+            Message = bulkNotificationEvent.Message,
             SentAt = DateTime.UtcNow,
-            SenderUserId = bulkNotificationDto.SenderId,
+            SenderUserId = bulkNotificationEvent.SenderId,
             UserNotifications = new List<UserNotification>()
         };
-        foreach (var recipientUserId in bulkNotificationDto.RecipientUserIds)
+        var recipientUserIds =
+            await studentRepository.FindStudentIdsByDepartmentIdAsync(bulkNotificationEvent.DepartmentId);
+        foreach (var recipientUserId in recipientUserIds)
             notificationModel.UserNotifications.Add(new UserNotification
             {
                 UserId = recipientUserId,
                 IsRead = false
             });
         await notificationRepository.AddNotificationAsync(notificationModel);
-        return new Ok();
+        return ResultHelper.Ok();
     }
 
-    public async Task<Result<Ok, Error>> SendNotificationAsync(CreateNotificationDto createNotification)
+    public async Task<Result<Ok, Error>> SendNotificationAsync(NotificationEvent notificationEvent)
     {
-        // TODO check RecipientUserId  
-        var notification = mapper.Map<NotificationModel>(createNotification);
+        var notification = mapper.Map<NotificationModel>(notificationEvent);
         await notificationRepository.AddNotificationAsync(notification);
-
-        return new Ok();
+        return ResultHelper.Ok();
     }
 
     public async Task<Result<Ok, Error>> MarkNotificationReadAsync(Guid notificationId, Guid userId)
     {
-        await notificationRepository.MarkNotificationReadAsync(notificationId, userId);
-        return new Ok();
+        var userNotification = await notificationRepository.FindNotificationByIdAndUserIdAsync(notificationId , userId);
+        if(userNotification == null)
+            return Result<Ok, Error>.Err(Errors.NotFound("user notification"));
+        
+        userNotification.IsRead = true;
+        await notificationRepository.SaveChangesAsync();
+        return ResultHelper.Ok();
     }
 
     public async Task<Result<Ok, Error>> DeleteNotificationByIdAsync(Guid notificationId)
     {
         var notifications = await notificationRepository.FindNotificationByIdAsync(notificationId);
         if (notifications == null)
-            return new Error(StatusCodes.Status404NotFound, $"Can't found with ID = {notificationId}");
+            return Result<Ok, Error>.Err(Errors.NotFound("notification"));
         await notificationRepository.DeleteNotificationAsync(notifications);
-        return new Ok();
+        return ResultHelper.Ok();
     }
 
     public async Task<IEnumerable<NotificationDto>> GetUnreadNotificationsByUserIdAsync(Guid userId)
