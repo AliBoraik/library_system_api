@@ -107,7 +107,6 @@ You can access the Swagger UI for the APIs using the following links:
 - **PUT** `/Api/Subjects` - Update a subject.  
 - **GET** `/Api/Subjects/{id}` - Get details of a specific subject by ID.  
 - **DELETE** `/Api/Subjects/{id}` - Delete a specific subject by ID.
-- **POST** `/Api/AddStudent` -  Adds a student to a subject.
 
 #### Teachers
 - **GET** `/Api/Teachers` - Retrieve all teachers.  
