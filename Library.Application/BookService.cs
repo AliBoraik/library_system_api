@@ -74,8 +74,8 @@ public class BookService(
                 SenderId = userId,
                 DepartmentId = subject.DepartmentId
             };
-            // Send notification in the background
-            await producerService.SendBulkNotificationEventToAsync(AppTopics.NotificationTopic, notificationRequest);
+            // Send notification in the background  
+            await producerService.SendBulkNotificationEventAsync(AppTopics.NotificationTopic, notificationRequest);
         });
 
         return Result<Guid, Error>.Ok(book.Id);

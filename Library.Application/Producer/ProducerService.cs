@@ -15,7 +15,7 @@ public class ProducerService(ProducerConfig producerConfig) : IProducerService
         await ProduceAsync(topic, message);
     }
 
-    public async Task SendBulkNotificationEventToAsync(string topic, StudentBulkNotificationEvent bulkNotificationEvent)
+    public async Task SendBulkNotificationEventAsync(string topic, StudentBulkNotificationEvent bulkNotificationEvent)
     {
         var message = JsonSerializer.Serialize(bulkNotificationEvent);
         await ProduceAsync(topic, message);

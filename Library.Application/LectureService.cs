@@ -75,7 +75,7 @@ public class LectureService(
                 DepartmentId = subject.DepartmentId
             };
             // Send notification in the background
-            await producerService.SendBulkNotificationEventToAsync(AppTopics.NotificationTopic, notificationRequest);
+            await producerService.SendBulkNotificationEventAsync(AppTopics.NotificationTopic, notificationRequest);
         });
         
         return Result<Guid, Error>.Ok(lecture.Id);
