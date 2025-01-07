@@ -98,7 +98,8 @@ You can access the Swagger UI for the APIs using the following links:
 #### Students
 - **GET** `/Api/Students` - Retrieve all students.  
 - **GET** `/Api/Students/{id}` - Get details of a specific student by ID.  
-- **DELETE** `/Api/Students/{id}` - Delete a specific student by ID.  
+- **DELETE** `/Api/Students/{id}` - Delete a specific student by ID.
+- **GET** `/Api/Students/Subject/{id}` - Retrieve all students of a specific subject by ID .  
 
 #### Subjects
 - **GET** `/Api/Subjects` - Retrieve all subjects.  
