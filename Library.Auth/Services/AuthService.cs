@@ -19,9 +19,10 @@ public class AuthService(UserManager<User> userManager, ITokenService tokenServi
     public async Task<Result<AuthDataResponse, Error>> LoginAsync(LoginDto loginDto)
     {
         var user = await userManager.FindByEmailAsync(loginDto.Email);
-        if (user == null) return new Error(StatusCodes.Status401Unauthorized, ResponseMessage.UnauthorizedAccess);
+        if (user == null)
+            return Result<AuthDataResponse, Error>.Err(Errors.NotFound("user"));
         if (!await userManager.CheckPasswordAsync(user, loginDto.Password))
-            return Result<AuthDataResponse, Error>.Err(Errors.Unauthorized("login"));
+            return Result<AuthDataResponse, Error>.Err(Errors.BadRequest("Incorrect password"));
 
         var userRoles = await userManager.GetRolesAsync(user);
         var accessAuthClaims = new List<Claim>
