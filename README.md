@@ -98,7 +98,8 @@ You can access the Swagger UI for the APIs using the following links:
 #### Students
 - **GET** `/Api/Students` - Retrieve all students.  
 - **GET** `/Api/Students/{id}` - Get details of a specific student by ID.  
-- **DELETE** `/Api/Students/{id}` - Delete a specific student by ID.  
+- **DELETE** `/Api/Students/{id}` - Delete a specific student by ID.
+- **GET** `/Api/Students/Subject/{id}` - Retrieve all students of a specific subject by ID .  
 
 #### Subjects
 - **GET** `/Api/Subjects` - Retrieve all subjects.  
@@ -106,7 +107,6 @@ You can access the Swagger UI for the APIs using the following links:
 - **PUT** `/Api/Subjects` - Update a subject.  
 - **GET** `/Api/Subjects/{id}` - Get details of a specific subject by ID.  
 - **DELETE** `/Api/Subjects/{id}` - Delete a specific subject by ID.
-- **POST** `/Api/AddStudent` -  Adds a student to a subject.
 
 #### Teachers
 - **GET** `/Api/Teachers` - Retrieve all teachers.  
@@ -118,7 +118,9 @@ You can access the Swagger UI for the APIs using the following links:
 #### Notification
 - **GET** `/Api/Notification` - Retrieve all notifications.
 - **GET** `/Api/Notification/UnreadNotifications` - Retrieves all Unread notifications.
+- **GET** `/Api/Notification/LimitNotifications` - Retrieves all notifications by page number and limit per page .
 - **POST** `/Api/Notification/Send` - Sends a notification to the specified recipients.
+- **POST** `/Api/Notification/SendBulk` - Sends a notification to multiply the recipients .
 - **PATCH** `/Api/Notification/{id}/Read` - Marks the specified notification as read.
 - **DELETE** `/Api/Notification/{id}` - Deletes a specific notification by its ID.
 
