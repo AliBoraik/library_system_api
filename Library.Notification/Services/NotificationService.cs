@@ -9,7 +9,10 @@ using Library.Interfaces.Services;
 
 namespace Library.Notification.Services;
 
-public class NotificationService(INotificationRepository notificationRepository,IStudentRepository studentRepository, IMapper mapper) : INotificationService
+public class NotificationService(
+    INotificationRepository notificationRepository,
+    IStudentRepository studentRepository,
+    IMapper mapper) : INotificationService
 {
     public async Task<IEnumerable<NotificationDto>> GetNotificationsAsync(Guid userId)
     {
@@ -54,10 +57,10 @@ public class NotificationService(INotificationRepository notificationRepository,
 
     public async Task<Result<Ok, Error>> MarkNotificationReadAsync(Guid notificationId, Guid userId)
     {
-        var userNotification = await notificationRepository.FindNotificationByIdAndUserIdAsync(notificationId , userId);
-        if(userNotification == null)
+        var userNotification = await notificationRepository.FindNotificationByIdAndUserIdAsync(notificationId, userId);
+        if (userNotification == null)
             return Result<Ok, Error>.Err(Errors.NotFound("user notification"));
-        
+
         userNotification.IsRead = true;
         await notificationRepository.SaveChangesAsync();
         return ResultHelper.Ok();

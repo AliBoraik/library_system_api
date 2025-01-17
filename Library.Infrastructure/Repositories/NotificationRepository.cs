@@ -20,7 +20,7 @@ public class NotificationRepository(AppDbContext context) : INotificationReposit
     public async Task<IEnumerable<UserNotification>> FindLimitNotificationByUserIdAsync(Guid userId, int page,
         int limit)
     {
-        return await  context.UserNotifications
+        return await context.UserNotifications
             .Where(un => un.UserId == userId) // Filter by UserId
             .Include(un => un.Notification)
             .OrderByDescending(n => n.Notification.SentAt)
@@ -28,8 +28,8 @@ public class NotificationRepository(AppDbContext context) : INotificationReposit
             .Take(limit)
             .ToListAsync();
     }
-    
-    
+
+
     // Get unread notifications for a user
     public async Task<IEnumerable<UserNotification>> FindUnreadNotificationsByUserIdAsync(Guid userId)
     {
@@ -37,7 +37,6 @@ public class NotificationRepository(AppDbContext context) : INotificationReposit
             .Where(un => un.UserId == userId && !un.IsRead) // Filter by user and unread status
             .Include(un => un.Notification)
             .OrderByDescending(n => n.Notification.SentAt)
-
             .ToListAsync(); //
     }
 
@@ -63,7 +62,7 @@ public class NotificationRepository(AppDbContext context) : INotificationReposit
             await SaveChangesAsync();
         }
     }
-    
+
     public async Task<UserNotification?> FindNotificationByIdAndUserIdAsync(Guid notificationId, Guid userId)
     {
         return await context.UserNotifications

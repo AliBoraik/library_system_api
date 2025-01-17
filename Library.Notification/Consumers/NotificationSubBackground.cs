@@ -1,7 +1,6 @@
 using System.Text.Json;
 using Confluent.Kafka;
 using Library.Domain.Constants;
-using Library.Domain.DTOs.Notification;
 using Library.Domain.Events.Notification;
 using Library.Interfaces.Services;
 
