@@ -1,7 +1,6 @@
 using AutoMapper;
 using Library.Domain.Constants;
 using Library.Domain.DTOs.Book;
-using Library.Domain.DTOs.Notification;
 using Library.Domain.Events.Notification;
 using Library.Domain.Models;
 using Library.Domain.Results;
@@ -87,11 +86,11 @@ public class BookService(
         if (book == null)
             return Result<Ok, Error>.Err(Errors.NotFound("book"));
         // check subject.TeacherId 
-        if (book.Subject.TeacherId  != userId)
+        if (book.Subject.TeacherId != userId)
             // Check if userId is in the Admin role
             if (!await userManager.IsInRoleAsync(new User { Id = userId }, AppRoles.Admin))
                 return Result<Ok, Error>.Err(Errors.Forbidden("delete book"));
-        
+
         var uploadResult = uploadsService.DeleteFile(book.FilePath);
         if (!uploadResult.IsOk)
             return Result<Ok, Error>.Err(Errors.InternalServerError());

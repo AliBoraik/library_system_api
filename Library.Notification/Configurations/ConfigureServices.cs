@@ -27,6 +27,5 @@ public static class ConfigureServices
         // register repository
         services.AddScoped<INotificationRepository, NotificationRepository>();
         services.AddScoped<IStudentRepository, StudentRepository>();
-        
     }
 }

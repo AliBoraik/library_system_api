@@ -27,6 +27,7 @@ public class DepartmentsController(IDepartmentService departmentService, IOutput
             var adminResult = await departmentService.GetAllDepartmentsAsync();
             return ResultHelper.HandleResult(adminResult);
         }
+
         // Extract userId from JWT token
         var userId = User.GetUserId();
         var userResult = await departmentService.GetAllUserDepartmentsAsync(userId);
@@ -47,6 +48,7 @@ public class DepartmentsController(IDepartmentService departmentService, IOutput
             var adminResult = await departmentService.GetDepartmentByIdAsync(id);
             return ResultHelper.HandleResult(adminResult);
         }
+
         // Extract userId from JWT token
         var userId = User.GetUserId();
         var userResult = await departmentService.GetUserDepartmentByIdAsync(userId, id);
