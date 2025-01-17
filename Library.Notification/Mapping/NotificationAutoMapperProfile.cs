@@ -10,7 +10,6 @@ public class NotificationAutoMapperProfile : Profile
 {
     public NotificationAutoMapperProfile()
     {
-        
         // Map NotificationModel to NotificationDto
         CreateMap<NotificationModel, NotificationDto>()
             .ForMember(dest => dest.SentAt, opt => opt.MapFrom(src => Converter.ToUnixTimestampSeconds(src.SentAt)));

@@ -48,7 +48,7 @@ public class LecturesController(ILectureService lectureService, IOutputCacheStor
         if (!ModelState.IsValid) return BadRequest(ModelState);
         // Extract userId from JWT token
         var userId = User.GetUserId();
-         var result = await lectureService.AddLectureAsync(createLectureDto, userId);
+        var result = await lectureService.AddLectureAsync(createLectureDto, userId);
         if (!result.IsOk) return StatusCode(result.Error.Code, result.Error);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Lectures, CancellationToken.None);
         await cacheStore.EvictByTagAsync(OutputCacheTags.Subjects, CancellationToken.None);

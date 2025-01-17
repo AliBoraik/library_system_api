@@ -1,7 +1,6 @@
 using AutoMapper;
 using Library.Domain.Constants;
 using Library.Domain.DTOs.Lecture;
-using Library.Domain.DTOs.Notification;
 using Library.Domain.Events.Notification;
 using Library.Domain.Models;
 using Library.Domain.Results;
@@ -62,7 +61,7 @@ public class LectureService(
         lecture.Id = lectureId;
         lecture.UploadedBy = userId;
         await lectureRepository.AddLectureAsync(lecture);
-        
+
         // Run sending notification in the background
         _ = Task.Run(async () =>
         {
@@ -77,7 +76,7 @@ public class LectureService(
             // Send notification in the background
             await producerService.SendBulkNotificationEventAsync(AppTopics.NotificationTopic, notificationRequest);
         });
-        
+
         return Result<Guid, Error>.Ok(lecture.Id);
     }
 
@@ -87,11 +86,11 @@ public class LectureService(
         if (lecture == null)
             return Result<Ok, Error>.Err(Errors.NotFound("lecture"));
         // check subject.TeacherId 
-        if (lecture.Subject.TeacherId  != userId)
+        if (lecture.Subject.TeacherId != userId)
             // Check if userId is in the Admin role
             if (!await userManager.IsInRoleAsync(new User { Id = userId }, AppRoles.Admin))
                 return Result<Ok, Error>.Err(Errors.Forbidden("delete lecture"));
-        
+
         var uploadResult = uploadsService.DeleteFile(lecture.FilePath);
         if (!uploadResult.IsOk)
             return Result<Ok, Error>.Err(Errors.InternalServerError());

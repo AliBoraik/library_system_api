@@ -10,8 +10,8 @@ public interface INotificationRepository
     Task MarkNotificationReadAsync(Guid notificationId, Guid userId);
 
     Task<NotificationModel?> FindNotificationByIdAsync(Guid notificationId);
-    
-    Task<UserNotification?> FindNotificationByIdAndUserIdAsync(Guid notificationId , Guid userId);
+
+    Task<UserNotification?> FindNotificationByIdAndUserIdAsync(Guid notificationId, Guid userId);
 
     Task DeleteNotificationAsync(NotificationModel notificationId);
     Task<IEnumerable<UserNotification>> FindUnreadNotificationsByUserIdAsync(Guid userId);
