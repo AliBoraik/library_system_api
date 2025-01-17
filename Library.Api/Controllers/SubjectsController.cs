@@ -39,6 +39,7 @@ public class SubjectsController(ISubjectService subjectService, IOutputCacheStor
             var adminResult = await subjectService.GetSubjectByIdAsync(id);
             return ResultHelper.HandleResult(adminResult);
         }
+
         // Extract userId from JWT token
         var userId = User.GetUserId();
         var userResult = await subjectService.GetUserSubjectByIdAsync(id, userId);
