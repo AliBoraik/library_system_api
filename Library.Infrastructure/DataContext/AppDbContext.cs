@@ -103,7 +103,7 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
                 Name = AppRoles.Student,
                 NormalizedName = AppRoles.Student.ToUpper()
             });
-        
+
         // Seed admin user
         var adminUser = new User
         {
@@ -143,15 +143,15 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
         };
 
         modelBuilder.Entity<User>()
-            .HasData(adminUser , teacherSeed , studentSeed);
-        
+            .HasData(adminUser, teacherSeed, studentSeed);
+
         modelBuilder.Entity<IdentityUserRole<Guid>>().HasData(
             new IdentityUserRole<Guid>
             {
                 RoleId = adminRoleId,
                 UserId = adminId
             });
-        
+
         modelBuilder.Entity<IdentityUserRole<Guid>>().HasData(
             new IdentityUserRole<Guid>
             {
@@ -172,7 +172,7 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
             {
                 Id = teacherId
             });
-        
+
         modelBuilder.Entity<Student>()
             .HasData(new Student
             {

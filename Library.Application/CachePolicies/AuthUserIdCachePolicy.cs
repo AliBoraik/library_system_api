@@ -45,6 +45,7 @@ public class AuthUserIdCachePolicy : IOutputCachePolicy
         context.AllowCacheStorage = false;
         return ValueTask.CompletedTask;
     }
+
     private static bool AttemptOutputCaching(OutputCacheContext context)
     {
         var request = context.HttpContext.Request;

@@ -13,7 +13,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Library.Auth.Services;
 
-public class AuthService(UserManager<User> userManager, ITokenService tokenService,IProducerService producerService, AppDbContext context)
+public class AuthService(
+    UserManager<User> userManager,
+    ITokenService tokenService,
+    IProducerService producerService,
+    AppDbContext context)
     : IAuthService
 {
     public async Task<Result<AuthDataResponse, Error>> LoginAsync(LoginDto loginDto)
@@ -138,7 +142,7 @@ public class AuthService(UserManager<User> userManager, ITokenService tokenServi
         await context.Students.AddAsync(student);
         await context.SaveChangesAsync();
         await userManager.AddToRoleAsync(user, AppRoles.Student);
-        
+
         // Run sending notification in the background
         _ = Task.Run(async () =>
         {
@@ -146,8 +150,9 @@ public class AuthService(UserManager<User> userManager, ITokenService tokenServi
             var notificationEvent = new NotificationEvent
             {
                 Title = "Welcome to the System!",
-                Message = "Hello and welcome to our system! We're excited to have you on board. If you need any help, feel free to reach out to support.",
-                SenderUserId = AdminConstants.SystemAdminId, 
+                Message =
+                    "Hello and welcome to our system! We're excited to have you on board. If you need any help, feel free to reach out to support.",
+                SenderUserId = AdminConstants.SystemAdminId,
                 RecipientUserId = user.Id
             };
             // Send notification in the background
